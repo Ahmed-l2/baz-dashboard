@@ -12,6 +12,7 @@ import Products from './pages/Products';
 import Banners from './pages/Banners';
 import QuoteRequests from './pages/QuoteRequests';
 import Users from './pages/Users';
+import Promotions from './pages/Promotions';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +37,7 @@ function AppContent() {
             <Route path="/products" element={<Products />} />
             <Route path="/banners" element={<Banners />} />
             <Route path="/quote-requests" element={<QuoteRequests />} />
+            <Route path="/promotions" element={<Promotions />} />
             <Route path="/users" element={<Users />} />
             <Route path="/settings" element={<Dashboard />} />
           </Routes>

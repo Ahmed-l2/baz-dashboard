@@ -17,7 +17,7 @@ const navigation = [
   { name: 'Banners', href: '/banners', icon: Image },
   { name: 'Quote Requests', href: '/quote-requests', icon: FileText },
   { name: 'Users', href: '/users', icon: Users },
-  { name: 'Push Notifications', href: '/', icon: Bell },
+  { name: 'Push Notifications', href: '/promotions', icon: Bell },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
