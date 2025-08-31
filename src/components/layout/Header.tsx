@@ -3,8 +3,8 @@ import { Bell, Search } from 'lucide-react';
 
 export default function Header() {
   return (
-    <div className="lg:pl-64">
-      <div className="sticky top-0 z-40 flex h-16 flex-shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <div className="lg:pl-64 ">
+      <div className="sticky top-0 z-40 flex rounded-xl mx-4   shadow-2xl h-16 flex-shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-8">
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
           <div className="relative flex flex-1">
             <Search className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400 ml-3" />

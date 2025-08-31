@@ -14,25 +14,25 @@ export default function Dashboard() {
       name: 'Total Products',
       value: products?.length || 0,
       icon: Package,
-      color: 'bg-blue-500',
+      color: 'bg-baz',
     },
     {
       name: 'Metal Prices',
       value: metalPrices?.length || 0,
       icon: Activity,
-      color: 'bg-emerald-500',
+      color: 'bg-baz',
     },
     {
       name: 'Quote Requests',
       value: quoteRequests?.length || 0,
       icon: FileText,
-      color: 'bg-orange-500',
+      color: 'bg-baz',
     },
     {
       name: 'Pending Quotes',
       value: quoteRequests?.filter(q => q.status === 'pending')?.length || 0,
       icon: TrendingUp,
-      color: 'bg-purple-500',
+      color: 'bg-baz',
     },
   ];
 

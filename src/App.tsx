@@ -26,7 +26,7 @@ function AppContent() {
   return (
     <>
       <SignedIn>
-        <div className="min-h-screen bg-gray-50">
+      <div  className="min-h-screen bg-gradient-to-r from-white via-baz/30 to-baz/20">
           <Sidebar />
           <Header />
           
