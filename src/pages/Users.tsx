@@ -18,7 +18,7 @@ export default function Users() {
 
           <div className="text-center py-12">
             <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">User Management</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-500">User Management</h3>
             <p className="mt-1 text-sm text-gray-500">
               User management is handled through Clerk. Visit your Clerk dashboard to manage users, roles, and permissions.
             </p>

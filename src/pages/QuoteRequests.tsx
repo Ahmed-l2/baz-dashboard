@@ -273,7 +273,7 @@ export default function QuoteRequests() {
     return (
       <div className="lg:pl-64">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-baz"></div>
         </div>
       </div>
     );
@@ -285,7 +285,7 @@ export default function QuoteRequests() {
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
+              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">
                 Quote Requests
               </h1>
               <p className="mt-2 text-sm text-gray-700">
