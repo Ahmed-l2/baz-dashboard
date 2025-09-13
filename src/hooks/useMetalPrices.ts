@@ -4,10 +4,10 @@ import { useSupabaseWithClerk } from '../lib/supabase';
 
 export type MetalPrice = {
   id: string;
-  metal_name: string;
+  type: string;
   price: number;
+  change: number;
   unit: string;
-  last_updated: string;
   created_at: string;
 };
 
@@ -17,14 +17,25 @@ export const useMetalPrices = () => {
   return useQuery({
     queryKey: ['metal-prices'],
     queryFn: async () => {
+      console.log('Fetching metal prices...');
+      
       const { data, error } = await supabase
         .from('metal_prices')
         .select('*')
-        .order('metal_name');
+        .order('type');
 
-      if (error) throw error;
+      console.log('Supabase response:', { data, error });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Metal prices fetched successfully:', data);
       return data as MetalPrice[];
     },
+    retry: 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 
@@ -33,18 +44,24 @@ export const useCreateMetalPrice = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { metal_name: string; price: number; unit: string }) => {
+    mutationFn: async (data: { type: string; price: number; change: number; unit: string }) => {
+      console.log('Creating metal price:', data);
+      
       const { error } = await supabase
         .from('metal_prices')
         .insert([data]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Create error:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['metal-prices'] });
       toast.success('Metal price created successfully');
     },
     onError: (error) => {
+      console.error('Create mutation error:', error);
       toast.error(error.message);
     },
   });
@@ -55,19 +72,25 @@ export const useUpdateMetalPrice = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, ...data }: { id: string; metal_name?: string; price?: number; unit?: string }) => {
+    mutationFn: async ({ id, ...data }: { id: string; type?: string; price?: number; change?: number; unit?: string }) => {
+      console.log('Updating metal price:', { id, data });
+      
       const { error } = await supabase
         .from('metal_prices')
-        .update({ ...data, last_updated: new Date().toISOString() })
+        .update(data)
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['metal-prices'] });
       toast.success('Metal price updated successfully');
     },
     onError: (error) => {
+      console.error('Update mutation error:', error);
       toast.error(error.message);
     },
   });
@@ -79,18 +102,24 @@ export const useDeleteMetalPrice = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
+      console.log('Deleting metal price:', id);
+      
       const { error } = await supabase
         .from('metal_prices')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['metal-prices'] });
       toast.success('Metal price deleted successfully');
     },
     onError: (error) => {
+      console.error('Delete mutation error:', error);
       toast.error(error.message);
     },
   });

@@ -6,6 +6,7 @@ import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
+import { Loader } from '../components/loader';
 
 interface BannerForm {
   title: string;
@@ -82,11 +83,7 @@ export default function Banners() {
 
   if (isLoading) {
     return (
-      <div className="lg:pl-64">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-        </div>
-      </div>
+      <Loader />
     );
   }
 
@@ -166,7 +163,7 @@ export default function Banners() {
                       Edit
                     </Button>
                     <Button
-                      variant="danger"
+                      variant="ghost"
                       size="sm"
                       icon={<Trash2 className="h-4 w-4" />}
                       onClick={() => handleDelete(banner.id)}

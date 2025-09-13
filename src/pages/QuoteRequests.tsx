@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { format } from 'date-fns';
 import { generateQuotePDFEdge } from '../utils/pdfGeneratorEdge';
 import ProductSpecsForm from '../components/ProductSpecsForm';
+import { Loader } from '../components/loader';
 
 interface QuoteResponseForm {
   validity_period: number;
@@ -271,11 +272,7 @@ export default function QuoteRequests() {
 
   if (isLoading) {
     return (
-      <div className="lg:pl-64">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-baz"></div>
-        </div>
-      </div>
+      <Loader />
     );
   }
 

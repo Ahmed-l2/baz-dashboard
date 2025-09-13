@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import ProductSpecsManager from '../components/ProductSpecsManager';
 import CategorySelector from '../components/CategorySelector';
 import SpecificationsDisplay from '../components/SpecificationsDisplay';
+import { Loader } from '../components/loader';
 
 interface ProductSpec {
   spec_name: string;
@@ -118,11 +119,7 @@ export default function Products() {
 
   if (isLoading) {
     return (
-      <div className="lg:pl-64">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-        </div>
-      </div>
+      <Loader />
     );
   }
 
@@ -219,7 +216,7 @@ export default function Products() {
                         Edit
                       </Button>
                       <Button
-                        variant="danger"
+                        variant="ghost"
                         size="sm"
                         icon={<Trash2 className="h-4 w-4" />}
                         onClick={() => handleDelete(product.id)}

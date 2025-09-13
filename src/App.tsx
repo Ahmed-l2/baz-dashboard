@@ -13,6 +13,7 @@ import Banners from './pages/Banners';
 import QuoteRequests from './pages/QuoteRequests';
 import Users from './pages/Users';
 import Promotions from './pages/Promotions';
+import Employements from './pages/Employementes';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,7 +28,7 @@ function AppContent() {
   return (
     <>
       <SignedIn>
-      <div  className="min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-gray-200">
+      <div  className="min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-amber-100/20">
           <Sidebar />
           <Header />
           
@@ -38,6 +39,7 @@ function AppContent() {
             <Route path="/banners" element={<Banners />} />
             <Route path="/quote-requests" element={<QuoteRequests />} />
             <Route path="/promotions" element={<Promotions />} />
+            <Route path="/employements" element={<Employements />} />
             <Route path="/users" element={<Users />} />
             <Route path="/settings" element={<Dashboard />} />
           </Routes>

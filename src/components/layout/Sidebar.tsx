@@ -7,7 +7,8 @@ import {
   Users,
   Settings,
   Activity,
-  Bell
+  Bell,
+  Briefcase
 } from 'lucide-react';
 
 const navigation = [
@@ -18,7 +19,8 @@ const navigation = [
   { name: 'Quote Requests', href: '/quote-requests', icon: FileText },
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Push Notifications', href: '/promotions', icon: Bell },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Employements', href: '/employements', icon:  Briefcase },
+  // { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -26,11 +28,11 @@ export default function Sidebar() {
 
   return (
     <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-      <div className="flex flex-col  flex-grow shadow-2xl bg-gradient-to-b from-white via-baz/10 to-baz/20 backdrop-blur-lg rounded-br-3xl pt-5 pb-4 overflow-y-auto">
+      <div className="flex flex-col  flex-grow shadow-2xl bg-gradient-to-b from-white via-amber-300/5 to-amber-500/10 backdrop-blur-lg rounded-br-3xl pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4">
           <div className="flex items-center w-full ">
-            <Activity className="h-8 w-8 text-gray-800" />
-            <span className="ml-2 text-xl text-center font-bold text-gray-800">Baz Admin</span>
+            <img  src='./assets/logo/baz-logo-nobg.svg' className='w-10 h-auto'/>
+            <span className="ml-2 text-xl  font-bold text-baz">Baz Steel Admin</span>
           </div>
         </div>
         <nav className="mt-8 flex-1 flex flex-col divide-y divide-gray-800 overflow-y-auto">

@@ -2,7 +2,7 @@ import { useMetalPrices } from '../hooks/useMetalPrices';
 import { useProducts } from '../hooks/useProducts';
 import { useQuoteRequests } from '../hooks/useQuoteRequests';
 import { Activity, Package, FileText, TrendingUp } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 
 export default function Dashboard() {
   const { data: metalPrices } = useMetalPrices();
@@ -35,6 +35,13 @@ export default function Dashboard() {
       color: 'bg-baz',
     },
   ];
+
+  // Helper function to safely format dates
+  const safeFormatDate = (dateValue: any, formatString: string) => {
+    if (!dateValue) return 'N/A';
+    const date = new Date(dateValue);
+    return isValid(date) ? format(date, formatString) : 'Invalid Date';
+  };
 
   return (
     <div className="lg:pl-64">
@@ -72,33 +79,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Metal Prices Ticker */}
-          {metalPrices && metalPrices.length > 0 && (
-            <div className="mt-8">
-              <div className="bg-white shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-                    Live Metal Prices
-                  </h3>
-                  <div className="overflow-hidden">
-                    <div className="flex animate-marquee space-x-8">
-                      {metalPrices.map((price) => (
-                        <div key={price.id} className="flex items-center space-x-2 bg-gray-50 px-4 py-2 rounded-lg whitespace-nowrap">
-                          <span className="font-medium text-gray-900">{price.metal_name}</span>
-                          <span className="text-green-600 font-semibold">
-                            ${price.price.toFixed(2)}/{price.unit}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {format(new Date(price.last_updated), 'HH:mm')}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Recent Quote Requests */}
           {quoteRequests && quoteRequests.length > 0 && (
@@ -130,7 +110,7 @@ export default function Dashboard() {
                             {request.status || 'pending'}
                           </span>
                           <p className="text-xs text-gray-500 mt-1">
-                            {format(new Date(request.created_at), 'MMM d, yyyy')}
+                            {safeFormatDate(request.created_at, 'MMM d, yyyy')}
                           </p>
                         </div>
                       </div>
