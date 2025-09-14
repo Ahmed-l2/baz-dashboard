@@ -44,7 +44,7 @@ export default function EmploymentApplications() {
   }
 
   return (
-    <div className="lg:pl-64">
+    <div className="lg:pl-64 rtl:pr-64">
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">

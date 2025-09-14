@@ -13,6 +13,8 @@ export type ProductSpec = {
 };
 
 export type Product = {
+  arabic_type: boolean;
+  arabic_name: boolean;
   id: string;
   name: string;
   type: string[] | null;

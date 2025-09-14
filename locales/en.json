@@ -1,0 +1,116 @@
+{
+  "welcome": "Welcome to the dashboard",
+  "logout": "Logout",
+
+
+   "sidebar": {
+    "title":"Baz steel admin",
+    "dashboard": "Dashboard",
+    "metalPrices": "Metal Prices",
+    "products": "Products",
+    "banners": "Banners",
+    "quoteRequests": "Quote Requests",
+    "users": "Users",
+    "pushNotifications": "Push Notifications",
+    "employements": "Employements"
+  },
+
+  "header": {
+    "search": "Search..."
+  },
+   "dashboard": {
+    "title": "Dashboard",
+    "totalProducts": "Total Products",
+    "metalPrices": "Metal Prices",
+    "quoteRequests": "Quote Requests",
+    "pendingQuotes": "Pending Quotes",
+    "recentQuotes": "Recent Quote Requests",
+    "anonymous": "Anonymous Customer",
+    "invalidDate": "Invalid Date",
+    "notAvailable": "N/A"
+  },
+
+    "products": {
+    "title": "Products",
+    "subtitle": "Manage your product catalog with categories and pricing",
+    "add": "Add Product",
+    "edit": "Edit Product",
+    "update": "Update",
+    "create": "Create",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "no_products": "No products",
+    "get_started": "Get started by creating your first product.",
+    "product": "Product",
+    "category": "Category",
+    "type": "Type",
+    "specifications": "Specifications",
+    "image": "Image",
+    "actions": "Actions",
+    "no_types": "No types",
+    "no_specs": "No specs",
+    "hide": "Hide",
+    "show": "Show",
+    "product_specifications": "Product Specifications",
+    "form": {
+      "name": "Product Name",
+      "name_required": "Product name is required",
+      "types": "Product Types",
+      "types_placeholder": "e.g. Hot Rolled, Cold Rolled (comma separated)",
+      "types_helper": "Enter multiple types separated by commas",
+      "image_url": "Image URL",
+      "image_helper": "Enter a valid image URL or upload to Supabase storage"
+    }
+  },
+   "quoteRequests": {
+    "title": "Quote Requests",
+    "subtitle": "Manage incoming quote requests from mobile app users",
+    "actions": {
+      "create": "Create Quote Request",
+      "view": "View",
+      "respond": "Respond",
+      "downloadPdf": "Download PDF",
+      "previewPdf": "Preview PDF",
+      "cancel": "Cancel",
+      "sendResponse": "Send Quote Response"
+    },
+    "table": {
+      "customer": "Customer",
+      "items": "Items",
+      "status": "Status",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "empty": {
+      "title": "No quote requests",
+      "description": "Quote requests from the mobile app will appear here."
+    },
+    "detail": {
+      "title": "Quote Request Details",
+      "customerInfo": "Customer Information",
+      "requestInfo": "Request Information",
+      "notes": "Notes",
+      "items": "Quote Items",
+      "response": "Quote Response",
+      "totalAmount": "Total Amount",
+      "validFor": "Valid for",
+      "days": "days"
+    },
+    "responseModal": {
+      "title": "Create Quote Response",
+      "validityLabel": "Validity Period (days)",
+      "validityHelper": "Quote will expire after this many days from creation",
+      "notes": "Response Notes (optional)",
+      "total": "Total Quote Amount"
+    },
+    "createModal": {
+      "title": "Create New Quote Request",
+      "customerInfo": "Customer Information",
+      "quoteItems": "Quote Items",
+      "addItem": "Add Item",
+      "itemNotes": "Item Notes",
+      "submit": "Create Quote Request"
+    }
+  }
+  
+}

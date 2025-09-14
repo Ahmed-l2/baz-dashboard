@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { generateQuotePDFEdge } from '../utils/pdfGeneratorEdge';
 import ProductSpecsForm from '../components/ProductSpecsForm';
 import { Loader } from '../components/loader';
+import i18n from '../i18n';
 
 interface QuoteResponseForm {
   validity_period: number;
@@ -275,9 +276,9 @@ export default function QuoteRequests() {
       <Loader />
     );
   }
-
+const isRTL = i18n.language === 'ar';
   return (
-    <div className="lg:pl-64">
+    <div className="lg:pl-64"  dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">

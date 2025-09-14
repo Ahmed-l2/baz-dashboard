@@ -1,0 +1,62 @@
+{
+  "welcome": "مرحبًا بك في لوحة التحكم",
+  "logout": "تسجيل الخروج",
+
+   "sidebar": {
+    "title":"لوحة تحكم باز",
+    "dashboard": "لوحة التحكم",
+    "metalPrices": "أسعار المعادن",
+    "products": "المنتجات",
+    "banners": "اللافتات",
+    "quoteRequests": "طلبات التسعير",
+    "users": "المستخدمون",
+    "pushNotifications": "إشعارات الدفع",
+    "employements": "التوظيف"
+  },
+  "header": {
+    "search": "ابحث..."
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "totalProducts": "إجمالي المنتجات",
+    "metalPrices": "أسعار المعادن",
+    "quoteRequests": "طلبات التسعير",
+    "pendingQuotes": "العروض المعلقة",
+    "recentQuotes": "أحدث طلبات التسعير",
+    "anonymous": "عميل مجهول",
+    "invalidDate": "تاريخ غير صالح",
+    "notAvailable": "غير متاح"
+  },
+  "products": {
+    "title": "المنتجات",
+    "subtitle": "إدارة كتالوج المنتجات مع الفئات والأسعار",
+    "add": "إضافة منتج",
+    "edit": "تعديل المنتج",
+    "update": "تحديث",
+    "create": "إنشاء",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "no_products": "لا توجد منتجات",
+    "get_started": "ابدأ بإنشاء أول منتج لك.",
+    "product": "المنتج",
+    "category": "الفئة",
+    "type": "النوع",
+    "specifications": "المواصفات",
+    "image": "الصورة",
+    "actions": "الإجراءات",
+    "no_types": "لا أنواع",
+    "no_specs": "لا مواصفات",
+    "hide": "إخفاء",
+    "show": "عرض",
+    "product_specifications": "مواصفات المنتج",
+    "form": {
+      "name": "اسم المنتج",
+      "name_required": "اسم المنتج مطلوب",
+      "types": "أنواع المنتج",
+      "types_placeholder": "مثل: مدرفل على الساخن، مدرفل على البارد",
+      "types_helper": "أدخل أنواعًا متعددة مفصولة بفواصل",
+      "image_url": "رابط الصورة",
+      "image_helper": "أدخل رابط صورة صحيح أو ارفعها إلى Supabase"
+    }
+  }
+}

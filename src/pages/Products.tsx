@@ -1,16 +1,27 @@
 import { useState } from 'react';
-import { Plus, Edit, Trash2, Package, ChevronDown, ChevronRight } from 'lucide-react';
-import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../hooks/useProducts';
+import { useTranslation } from 'react-i18next';
+import {
+  Plus, Edit, Trash2, Package,
+  ChevronDown, ChevronRight
+} from 'lucide-react';
+import {
+  useProducts, useCreateProduct,
+  useUpdateProduct, useDeleteProduct
+} from '../hooks/useProducts';
 import { useCategories } from '../hooks/useCategories';
 import { useForm } from 'react-hook-form';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
+import {
+  Table, TableBody, TableCell,
+  TableHead, TableHeader, TableRow
+} from '../components/ui/Table';
 import ProductSpecsManager from '../components/ProductSpecsManager';
 import CategorySelector from '../components/CategorySelector';
 import SpecificationsDisplay from '../components/SpecificationsDisplay';
 import { Loader } from '../components/loader';
+import i18n from '../i18n';
 
 interface ProductSpec {
   spec_name: string;
@@ -29,6 +40,8 @@ interface ProductForm {
 }
 
 export default function Products() {
+  const { t } = useTranslation();
+  const isRTL = i18n.dir() === 'rtl'; 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [currentSpecs, setCurrentSpecs] = useState<ProductSpec[]>([]);
@@ -47,23 +60,21 @@ export default function Products() {
     try {
       const payload = {
         name: data.name,
-        type: data.type && data.type.trim() ? data.type.split(',').map(t => t.trim()).filter(t => t.length > 0) : undefined,
+        type: data.type?.trim()
+          ? data.type.split(',').map(t => t.trim()).filter(Boolean)
+          : undefined,
         category_id: currentCategoryId || undefined,
         image_url: data.image_url || undefined,
         specs: currentSpecs.filter(spec => spec.spec_name && spec.unit),
       };
-
       if (editingProduct) {
-        await updateMutation.mutateAsync({
-          id: editingProduct.id,
-          ...payload,
-        });
+        await updateMutation.mutateAsync({ id: editingProduct.id, ...payload });
       } else {
         await createMutation.mutateAsync(payload);
       }
       closeModal();
-    } catch (error) {
-      // Error handled by mutation
+    } catch {
+      /* handled by mutation */
     }
   };
 
@@ -80,13 +91,7 @@ export default function Products() {
       setCurrentCategoryId(product.category_id || '');
       setCurrentSpecs(product.product_specs || []);
     } else {
-      reset({
-        name: '',
-        type: '',
-        category_id: '',
-        image_url: '',
-        specs: []
-      });
+      reset({ name: '', type: '', category_id: '', image_url: '', specs: [] });
       setCurrentCategoryId('');
       setCurrentSpecs([]);
     }
@@ -101,137 +106,134 @@ export default function Products() {
     reset();
   };
 
-  const toggleRow = (productId: string) => {
-    const newExpanded = new Set(expandedRows);
-    if (newExpanded.has(productId)) {
-      newExpanded.delete(productId);
-    } else {
-      newExpanded.add(productId);
-    }
-    setExpandedRows(newExpanded);
+  const toggleRow = (id: string) => {
+    const copy = new Set(expandedRows);
+    copy.has(id) ? copy.delete(id) : copy.add(id);
+    setExpandedRows(copy);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+    if (window.confirm(t('common:confirm_delete'))) {
       await deleteMutation.mutateAsync(id);
     }
   };
 
-  if (isLoading) {
-    return (
-      <Loader />
-    );
-  }
+  if (isLoading) return <Loader />;
 
   return (
-    <div className="lg:pl-64">
+    <div className="lg:pl-64 " dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">
-                Products
+              <h1 className="text-3xl font-bold text-gray-500">
+                {t('products.title')}
               </h1>
               <p className="mt-2 text-sm text-gray-700">
-                Manage your product catalog with categories and pricing
+                {t('products.subtitle')}
               </p>
             </div>
             <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <Button
-                icon={<Plus className="h-4 w-4" />}
-                onClick={() => openModal()}
-              >
-                Add Product
+              <Button icon={<Plus className="h-4 w-4" />} onClick={() => openModal()}>
+                {t('products.add')}
               </Button>
             </div>
           </div>
 
           <Table>
             <TableHeader>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Specifications</TableHead>
-              <TableHead>Image</TableHead>
-              <TableHead className="relative"><span className="sr-only">Actions</span></TableHead>
+              <TableHead className='rtl:text-right'>{t('products.product')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('products.category')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('products.type')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('products.specifications')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('products.image')}</TableHead>
+              <TableHead  className="relative rtl:text-right">
+                <span className="sr-only">{t('products.actions')}</span>
+              </TableHead>
             </TableHeader>
             <TableBody>
-              {products?.map((product) => (
+              {products?.map((p) => (
                 <>
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{product.category?.name || 'Uncategorized'}</TableCell>
+                  <TableRow key={p.id}>
+                    <TableCell className="font-medium"> {isRTL && p.arabic_name ? p.arabic_name : p.name}</TableCell>
+                    <TableCell>{isRTL && p.arabic_type ? p.arabic_type : p.type || t('common:uncategorized')}</TableCell>
                     <TableCell>
-                      {product.type && Array.isArray(product.type) && product.type.length ? (
+                      {Array.isArray(p.type) && p.type.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                          {product.type.map((type, index) => (
-                            <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {type}
+                          {p.type.map((ty, i) => (
+                            <span
+                              key={i}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                            >
+                              {ty}
                             </span>
                           ))}
                         </div>
                       ) : (
-                        <span className="text-gray-500">No types</span>
+                        <span className="text-gray-500">{t('products.no_types')}</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      {product.product_specs?.length ? (
+                      {p.product_specs?.length ? (
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-gray-600">
-                            {product.product_specs.length} specification{product.product_specs.length !== 1 ? 's' : ''}
+                            {p.product_specs.length} {t('products.specifications')}
                           </span>
                           <Button
                             variant="ghost"
                             size="sm"
-                            icon={expandedRows.has(product.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                            onClick={() => toggleRow(product.id)}
+                            icon={
+                              expandedRows.has(p.id)
+                                ? <ChevronDown className="h-4 w-4" />
+                                : <ChevronRight className="h-4 w-4" />
+                            }
+                            onClick={() => toggleRow(p.id)}
                           >
-                            {expandedRows.has(product.id) ? 'Hide' : 'Show'}
+                            {expandedRows.has(p.id) ? t('products.hide') : t('products.show')}
                           </Button>
                         </div>
                       ) : (
-                        <span className="text-gray-500">No specs</span>
+                        <span className="text-gray-500">{t('products.no_specs')}</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="h-10 w-10 rounded object-cover"
-                        />
+                      {p.image_url ? (
+                        <img src={p.image_url} alt={p.name} className="h-10 w-10 rounded object-cover" />
                       ) : (
                         <div className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center">
                           <Package className="h-5 w-5 text-gray-400" />
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
+                    <TableCell className="text-right space-x-2 rtl:space-x-reverse">
                       <Button
                         variant="ghost"
                         size="sm"
-                        icon={<Edit className="h-4 w-4" />}
-                        onClick={() => openModal(product)}
+                        icon={<Edit className="h-4 w-4 rtl:mx-2" />}
+                        onClick={() => openModal(p)}
                       >
-                        Edit
+                        {t('products.edit')}
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
-                        icon={<Trash2 className="h-4 w-4" />}
-                        onClick={() => handleDelete(product.id)}
+                        icon={<Trash2 className="h-4 w-4 rtl:mx-2" />}
+                        onClick={() => handleDelete(p.id)}
                         loading={deleteMutation.isPending}
                       >
-                        Delete
+                        {t('products.delete')}
                       </Button>
                     </TableCell>
                   </TableRow>
-                  {expandedRows.has(product.id) && product.product_specs?.length && (
+
+                  {expandedRows.has(p.id) && p.product_specs?.length && (
                     <TableRow>
                       <TableCell colSpan={6} className="bg-gray-50 border-t-0">
                         <div className="py-4">
-                          <h4 className="text-sm font-medium text-gray-900 mb-3">Product Specifications</h4>
-                          <SpecificationsDisplay specs={product.product_specs} />
+                          <h4 className="text-sm font-medium text-gray-900 mb-3">
+                            {t('products.product_specifications')}
+                          </h4>
+                          <SpecificationsDisplay specs={p.product_specs} />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -244,12 +246,14 @@ export default function Products() {
           {products?.length === 0 && (
             <div className="text-center py-12">
               <Package className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No products</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                {t('products.no_products')}
+              </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Get started by creating your first product.
+                {t('products.get_started')}
               </p>
               <div className="mt-6">
-                <Button onClick={() => openModal()}>Add Product</Button>
+                <Button onClick={() => openModal()}>{t('products.add')}</Button>
               </div>
             </div>
           )}
@@ -259,24 +263,23 @@ export default function Products() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingProduct ? 'Edit Product' : 'Add Product'}
+        title={editingProduct ? t('products.edit') : t('products.add')}
         maxWidth="2xl"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Input
-            label="Product Name"
-            {...register('name', { required: 'Product name is required' })}
+            label={t('products.form.name')}
+            {...register('name', { required: t('products.form.name_required') })}
             error={errors.name?.message}
-            placeholder="Enter product name"
+            placeholder={t('products.form.name')}
           />
 
           <div className="grid grid-cols-1 gap-4">
             <Input
-              label="Product Types"
+              label={t('products.form.types')}
               {...register('type')}
-              error={errors.type?.message}
-              placeholder="e.g. Hot Rolled, Cold Rolled, Galvanized Steel (comma separated)"
-              helperText="Enter multiple types separated by commas"
+              placeholder={t('products.form.types_placeholder')}
+              helperText={t('products.form.types_helper')}
             />
 
             <CategorySelector
@@ -287,27 +290,23 @@ export default function Products() {
           </div>
 
           <Input
-            label="Image URL"
+            label={t('products.form.image_url')}
             {...register('image_url')}
-            error={errors.image_url?.message}
             placeholder="https://example.com/image.jpg"
-            helperText="Enter a valid image URL or upload to Supabase storage"
+            helperText={t('products.form.image_helper')}
           />
 
-          <ProductSpecsManager
-            specs={currentSpecs}
-            onChange={setCurrentSpecs}
-          />
+          <ProductSpecsManager specs={currentSpecs} onChange={setCurrentSpecs} />
 
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-4">
             <Button variant="secondary" onClick={closeModal}>
-              Cancel
+              {t('products.cancel')}
             </Button>
             <Button
               type="submit"
               loading={createMutation.isPending || updateMutation.isPending}
             >
-              {editingProduct ? 'Update' : 'Create'}
+              {editingProduct ? t('products.update') : t('products.create')}
             </Button>
           </div>
         </form>

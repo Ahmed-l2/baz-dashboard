@@ -7,6 +7,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import { Loader } from '../components/loader';
+import i18n from '../i18n';
 
 interface BannerForm {
   title: string;
@@ -86,9 +87,9 @@ export default function Banners() {
       <Loader />
     );
   }
-
+const isRTL = i18n.language === 'ar';
   return (
-    <div className="lg:pl-64">
+    <div className="lg:pl-64 "  dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">

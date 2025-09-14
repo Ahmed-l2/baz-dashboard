@@ -14,7 +14,8 @@ import QuoteRequests from './pages/QuoteRequests';
 import Users from './pages/Users';
 import Promotions from './pages/Promotions';
 import Employements from './pages/Employementes';
-
+import './i18n';
+import i18n from './i18n';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -28,7 +29,7 @@ function AppContent() {
   return (
     <>
       <SignedIn>
-      <div  className="min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-amber-100/20">
+      <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}  className="min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-amber-100/20">
           <Sidebar />
           <Header />
           
