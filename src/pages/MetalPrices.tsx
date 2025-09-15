@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { format } from 'date-fns';
 import { Loader } from '../components/loader';
 import i18n from '../i18n';
+import { useTranslation } from 'react-i18next';
 
 interface MetalPrice {
   id: string;
@@ -34,6 +35,7 @@ interface ChangeInfo {
 }
 
 export default function MetalPrices() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingPrice, setEditingPrice] = useState<MetalPrice | null>(null);
 
@@ -94,7 +96,7 @@ export default function MetalPrices() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this metal price?')) {
+    if (window.confirm(t('metalPrices.deleteConfirm'))) {
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -109,31 +111,42 @@ export default function MetalPrices() {
     };
   };
 
+  const getUnitOptions = () => [
+    { value: 'oz', label: t('metalPrices.units.oz') },
+    { value: 'lb', label: t('metalPrices.units.lb') },
+    { value: 'kg', label: t('metalPrices.units.kg') },
+    { value: 'g', label: t('metalPrices.units.g') },
+    { value: 'ton', label: t('metalPrices.units.ton') },
+    { value: 'tonne', label: t('metalPrices.units.tonne') },
+  ];
+
   if (isLoading) {
     return (
       <Loader />
     );
   }
-const isRTL = i18n.language === 'ar';
+
+  const isRTL = i18n.language === 'ar';
+
   return (
-    <div className="lg:pl-64 " dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={` ${isRTL ? 'lg:pr-64' : 'lg:pl-64'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
               <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">
-                Metal Prices
+                {t('metalPrices.title')}
               </h1>
               <p className="mt-2 text-sm text-gray-700">
-                Manage live metal pricing that appears in the mobile app ticker
+                {t('metalPrices.description')}
               </p>
             </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <div className={`mt-4 sm:mt-0 sm:flex-none ${isRTL ? 'sm:mr-16' : 'sm:ml-16'}`}>
               <Button
                 icon={<Plus className="h-4 w-4" />}
                 onClick={() => openModal()}
               >
-                Add Metal Price
+                {t('metalPrices.addButton')}
               </Button>
             </div>
           </div>
@@ -141,8 +154,8 @@ const isRTL = i18n.language === 'ar';
           {/* Ticker Preview */}
           {metalPrices && metalPrices.length > 0 && (
             <div className="mt-8 bg-black rounded-lg p-4 overflow-hidden">
-              <h3 className="text-sm font-medium text-gray-100 mb-2">Ticker Preview</h3>
-              <div className="flex animate-marquee  space-x-8">
+              <h3 className="text-sm font-medium text-gray-100 mb-2">{t('metalPrices.tickerPreview')}</h3>
+              <div className="flex animate-marquee space-x-8">
                 {metalPrices.map((price: MetalPrice) => {
                   const changeInfo = formatChange(price.change);
                   const ChangeIcon = changeInfo.icon;
@@ -166,12 +179,12 @@ const isRTL = i18n.language === 'ar';
 
           <Table>
             <TableHeader>
-              <TableHead>Metal Type</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Change</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="relative"><span className="sr-only">Actions</span></TableHead>
+              <TableHead className='rtl:text-right'>{t('metalPrices.table.metalType')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('metalPrices.table.price')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('metalPrices.table.change')}</TableHead>
+              <TableHead className='rtl:text-right'> {t('metalPrices.table.unit')}</TableHead>
+              <TableHead className='rtl:text-right'>{t('metalPrices.table.created')}</TableHead>
+              <TableHead className="relative rtl:text-right"><span className="sr-only">{t('common.actions')}</span></TableHead>
             </TableHeader>
             <TableBody>
               {metalPrices?.map((price: MetalPrice) => {
@@ -191,20 +204,20 @@ const isRTL = i18n.language === 'ar';
                     </TableCell>
                     <TableCell>
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        {price.unit}
+                        {t(`metalPrices.units.${price.unit}`, { defaultValue: price.unit })}
                       </span>
                     </TableCell>
                     <TableCell className="text-gray-500">
                       {format(new Date(price.created_at), 'MMM d, yyyy HH:mm')}
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
+                    <TableCell className={`space-x-2 ${isRTL ? 'text-left' : 'text-right'}`}>
                       <Button
                         variant="ghost"
                         size="sm"
                         icon={<Edit className="h-4 w-4" />}
                         onClick={() => openModal(price)}
                       >
-                        Edit
+                        {t('common.edit')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -213,7 +226,7 @@ const isRTL = i18n.language === 'ar';
                         onClick={() => handleDelete(price.id)}
                         loading={deleteMutation.isPending}
                       >
-                        Delete
+                        {t('common.delete')}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -225,12 +238,12 @@ const isRTL = i18n.language === 'ar';
           {metalPrices?.length === 0 && (
             <div className="text-center py-12">
               <Activity className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No metal prices</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('metalPrices.empty.title')}</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Get started by creating your first metal price.
+                {t('metalPrices.empty.description')}
               </p>
               <div className="mt-6">
-                <Button onClick={() => openModal()}>Add Metal Price</Button>
+                <Button onClick={() => openModal()}>{t('metalPrices.addButton')}</Button>
               </div>
             </div>
           )}
@@ -240,23 +253,24 @@ const isRTL = i18n.language === 'ar';
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingPrice ? 'Edit Metal Price' : 'Add Metal Price'}
+        title={editingPrice ? t('metalPrices.modal.editTitle') : t('metalPrices.modal.addTitle')}
+        
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
           <Input
-            label="Metal Type"
-            {...register('type', { required: 'Metal type is required' })}
+            label={t('metalPrices.form.metalType.label')}
+            {...register('type', { required: t('metalPrices.form.metalType.required') })}
             error={errors.type?.message}
-            placeholder="e.g., Gold, Silver, Copper, Aluminum"
+            placeholder={t('metalPrices.form.metalType.placeholder')}
           />
           
           <Input
-            label="Price"
+            label={t('metalPrices.form.price.label')}
             type="number"
             step="0.01"
             {...register('price', { 
-              required: 'Price is required',
-              min: { value: 0, message: 'Price must be positive' },
+              required: t('metalPrices.form.price.required'),
+              min: { value: 0, message: t('metalPrices.form.price.minError') },
               valueAsNumber: true
             })}
             error={errors.price?.message}
@@ -264,44 +278,43 @@ const isRTL = i18n.language === 'ar';
           />
           
           <Input
-            label="Change"
+            label={t('metalPrices.form.change.label')}
             type="number"
             step="0.01"
             {...register('change', { 
-              required: 'Change value is required',
+              required: t('metalPrices.form.change.required'),
               valueAsNumber: true
             })}
             error={errors.change?.message}
             placeholder="0.00"
-            helperText="Use negative values for price decreases"
+            helperText={t('metalPrices.form.change.helperText')}
           />
           
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">Unit</label>
+            <label className="block text-sm font-medium text-gray-700">{t('metalPrices.form.unit.label')}</label>
             <select
-              {...register('unit', { required: 'Unit is required' })}
+              {...register('unit', { required: t('metalPrices.form.unit.required') })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="">Select unit</option>
-              <option value="oz">Ounce (oz)</option>
-              <option value="lb">Pound (lb)</option>
-              <option value="kg">Kilogram (kg)</option>
-              <option value="g">Gram (g)</option>
-              <option value="ton">Ton</option>
-              <option value="tonne">Tonne</option>
+              <option value="">{t('metalPrices.form.unit.placeholder')}</option>
+              {getUnitOptions().map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
             {errors.unit && <p className="text-sm text-red-600">{errors.unit.message}</p>}
           </div>
           
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className={`flex justify-end space-x-3 pt-4 ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <Button variant="secondary" onClick={closeModal}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               loading={createMutation.isPending || updateMutation.isPending}
             >
-              {editingPrice ? 'Update' : 'Create'}
+              {editingPrice ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>

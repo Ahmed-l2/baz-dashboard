@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FileText, Eye, Send, Download, Plus, Trash2 } from 'lucide-react';
 import { useQuoteRequests, useCreateQuoteResponse, useUpdateQuoteItemPrice, useCreateQuoteRequest } from '../hooks/useQuoteRequests';
@@ -13,6 +14,7 @@ import { generateQuotePDFEdge } from '../utils/pdfGeneratorEdge';
 import ProductSpecsForm from '../components/ProductSpecsForm';
 import { Loader } from '../components/loader';
 import i18n from '../i18n';
+import { useTranslation } from 'react-i18next';
 
 interface QuoteResponseForm {
   validity_period: number;
@@ -42,6 +44,7 @@ interface CreateQuoteRequestForm {
 }
 
 export default function QuoteRequests() {
+  const {t} = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -216,7 +219,7 @@ export default function QuoteRequests() {
     }
 
     if (!specs || Object.keys(specs).length === 0) {
-      return <span className="text-gray-400">No specifications</span>;
+      return <span className="text-gray-400">{t('quoteRequests.noSpecifications')}</span>;
     }
 
     return (
@@ -262,11 +265,21 @@ export default function QuoteRequests() {
       responded: 'bg-green-100 text-green-800',
     };
 
+    const statusTranslations: Record<string, string> = {
+      draft: t('quoteRequests.status.draft'),
+      submitted: t('quoteRequests.status.submitted'),
+      quoted: t('quoteRequests.status.quoted'),
+      accepted: t('quoteRequests.status.accepted'),
+      rejected: t('quoteRequests.status.rejected'),
+      pending: t('quoteRequests.status.pending'),
+      responded: t('quoteRequests.status.responded'),
+    };
+
     return (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
         statusColors[status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'
       }`}>
-        {status || 'draft'}
+        {statusTranslations[status] || status || t('quoteRequests.status.draft')}
       </span>
     );
   };
@@ -276,18 +289,20 @@ export default function QuoteRequests() {
       <Loader />
     );
   }
-const isRTL = i18n.language === 'ar';
+
+  const isRTL = i18n.language === 'ar';
+
   return (
-    <div className="lg:pl-64"  dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={` ${isRTL ? 'lg:pr-64' : 'lg:pl-64'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
               <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">
-                Quote Requests
+                {t('quoteRequests.title')}
               </h1>
               <p className="mt-2 text-sm text-gray-700">
-                Manage incoming quote requests from mobile app users
+                {t('quoteRequests.description')}
               </p>
             </div>
             <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -296,18 +311,18 @@ const isRTL = i18n.language === 'ar';
                 onClick={openCreateModal}
                 icon={<Plus className="h-4 w-4" />}
               >
-                Create Quote Request
+                {t('quoteRequests.createRequest')}
               </Button>
             </div>
           </div>
 
           <Table>
             <TableHeader>
-              <TableHead>Customer</TableHead>
-              <TableHead>Items</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="relative"><span className="sr-only">Actions</span></TableHead>
+              <TableHead>{t('quoteRequests.table.customer')}</TableHead>
+              <TableHead>{t('quoteRequests.table.items')}</TableHead>
+              <TableHead>{t('quoteRequests.table.status')}</TableHead>
+              <TableHead>{t('quoteRequests.table.created')}</TableHead>
+              <TableHead className="relative"><span className="sr-only">{t('quoteRequests.table.actions')}</span></TableHead>
             </TableHeader>
             <TableBody>
               {quoteRequests?.map((request) => (
@@ -315,7 +330,7 @@ const isRTL = i18n.language === 'ar';
                   <TableCell>
                     <div>
                       <div className="font-medium text-gray-900">
-                        {request.customer_name || 'Anonymous'}
+                        {request.customer_name || t('quoteRequests.anonymous')}
                       </div>
                       <div className="text-gray-500 text-sm">
                         {request.customer_email}
@@ -329,7 +344,7 @@ const isRTL = i18n.language === 'ar';
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      {request.quote_items?.length || 0} item(s)
+                      {t('quoteRequests.itemsCount', { count: request.quote_items?.length || 0 })}
                     </div>
                   </TableCell>
                   <TableCell>{getStatusBadge(request.status || 'pending')}</TableCell>
@@ -343,7 +358,7 @@ const isRTL = i18n.language === 'ar';
                       icon={<Eye className="h-4 w-4" />}
                       onClick={() => openDetailModal(request)}
                     >
-                      View
+                      {t('quoteRequests.actions.view')}
                     </Button>
                     {(request.status === 'submitted' || request.status === 'pending') && (
                       <Button
@@ -352,7 +367,7 @@ const isRTL = i18n.language === 'ar';
                         icon={<Send className="h-4 w-4" />}
                         onClick={() => openModal(request)}
                       >
-                        Respond
+                        {t('quoteRequests.actions.respond')}
                       </Button>
                     )}
                     {request.quote_response && (
@@ -364,7 +379,7 @@ const isRTL = i18n.language === 'ar';
                         onClick={() => handleGeneratePDF(request, false)}
                         loading={isGeneratingPDF}
                       >
-                        Download PDF
+                        {t('quoteRequests.actions.downloadPDF')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -373,7 +388,7 @@ const isRTL = i18n.language === 'ar';
                         onClick={() => handleGeneratePDF(request, true)}
                         loading={isGeneratingPDF}
                       >
-                        Preview PDF
+                        {t('quoteRequests.actions.previewPDF')}
                       </Button>
                       </div>
                     )}
@@ -386,9 +401,9 @@ const isRTL = i18n.language === 'ar';
           {quoteRequests?.length === 0 && (
             <div className="text-center py-12">
               <FileText className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No quote requests</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('quoteRequests.empty.title')}</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Quote requests from the mobile app will appear here.
+                {t('quoteRequests.empty.description')}
               </p>
             </div>
           )}
@@ -399,57 +414,57 @@ const isRTL = i18n.language === 'ar';
       <Modal
         isOpen={isDetailModalOpen}
         onClose={closeDetailModal}
-        title="Quote Request Details"
+        title={t('quoteRequests.detailModal.title')}
         maxWidth="2xl"
       >
         {selectedRequest && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-gray-900">Customer Information</h4>
+                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.customerInformation')}</h4>
                 <div className="mt-2 space-y-1 text-sm text-gray-600">
-                  <p>Name: {selectedRequest.customer_name || 'Not provided'}</p>
-                  <p>Email: {selectedRequest.customer_email || 'Not provided'}</p>
-                  <p>Phone: {selectedRequest.customer_phone || 'Not provided'}</p>
+                  <p>{t('quoteRequests.detailModal.name')}: {selectedRequest.customer_name || t('common.notProvided')}</p>
+                  <p>{t('quoteRequests.detailModal.email')}: {selectedRequest.customer_email || t('common.notProvided')}</p>
+                  <p>{t('quoteRequests.detailModal.phone')}: {selectedRequest.customer_phone || t('common.notProvided')}</p>
                 </div>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">Request Information</h4>
+                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.requestInformation')}</h4>
                 <div className="mt-2 space-y-1 text-sm text-gray-600">
-                  <p>Status: {getStatusBadge(selectedRequest.status || 'pending')}</p>
-                  <p>Created: {format(new Date(selectedRequest.created_at), 'MMM d, yyyy HH:mm')}</p>
-                  <p>Items: {selectedRequest.quote_items?.length || 0}</p>
+                  <p>{t('quoteRequests.detailModal.status')}: {getStatusBadge(selectedRequest.status || 'pending')}</p>
+                  <p>{t('quoteRequests.detailModal.created')}: {format(new Date(selectedRequest.created_at), 'MMM d, yyyy HH:mm')}</p>
+                  <p>{t('quoteRequests.detailModal.items')}: {selectedRequest.quote_items?.length || 0}</p>
                 </div>
               </div>
             </div>
 
             {selectedRequest.notes && (
               <div>
-                <h4 className="font-medium text-gray-900">Notes</h4>
+                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.notes')}</h4>
                 <p className="mt-2 text-sm text-gray-600">{selectedRequest.notes}</p>
               </div>
             )}
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-3">Quote Items</h4>
+              <h4 className="font-medium text-gray-900 mb-3">{t('quoteRequests.detailModal.quoteItems')}</h4>
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
+                        {t('quoteRequests.detailModal.product')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Dimensions
+                        {t('quoteRequests.detailModal.dimensions')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Quantity
+                        {t('quoteRequests.detailModal.quantity')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Unit Price
+                        {t('quoteRequests.detailModal.unitPrice')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Total
+                        {t('quoteRequests.detailModal.total')}
                       </th>
                     </tr>
                   </thead>
@@ -458,10 +473,10 @@ const isRTL = i18n.language === 'ar';
                       <tr key={item.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
-                            {item.product?.name || 'Unknown Product'}
+                            {item.product?.name || t('quoteRequests.unknownProduct')}
                           </div>
                           <div className="text-xs text-gray-500">
-                            {item.product?.type && `Type: ${Array.isArray(item.product.type) ? item.product.type.join(', ') : item.product.type}`}
+                            {item.product?.type && `${t('quoteRequests.type')}: ${Array.isArray(item.product.type) ? item.product.type.join(', ') : item.product.type}`}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -489,12 +504,12 @@ const isRTL = i18n.language === 'ar';
                             />
                           ) : (
                             <span className="text-sm text-gray-500">
-                              {item.unit_price ? `$${item.unit_price.toFixed(2)}` : 'Not set'}
+                              {item.unit_price ? `SAR ${item.unit_price.toFixed(2)}` : t('quoteRequests.notSet')}
                             </span>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.total_price ? `$${item.total_price.toFixed(2)}` : 'Not calculated'}
+                          {item.total_price ? `SAR ${item.total_price.toFixed(2)}` : t('quoteRequests.notCalculated')}
                         </td>
                       </tr>
                     ))}
@@ -505,14 +520,14 @@ const isRTL = i18n.language === 'ar';
               {/* Display item notes if any exist */}
               {selectedRequest.quote_items?.some((item: any) => item.notes) && (
                 <div className="mt-4">
-                  <h5 className="text-sm font-medium text-gray-900 mb-2">Item Notes</h5>
+                  <h5 className="text-sm font-medium text-gray-900 mb-2">{t('quoteRequests.detailModal.itemNotes')}</h5>
                   <div className="space-y-2">
                     {selectedRequest.quote_items
                       ?.filter((item: any) => item.notes)
                       .map((item: any) => (
                         <div key={`notes-${item.id}`} className="p-3 bg-blue-50 rounded-lg">
                           <div className="text-sm font-medium text-gray-900">
-                            {item.product?.name || 'Unknown Product'}
+                            {item.product?.name || t('quoteRequests.unknownProduct')}
                           </div>
                           <div className="text-sm text-gray-600 mt-1">
                             {item.notes.replace(/"/g, '')}
@@ -526,17 +541,17 @@ const isRTL = i18n.language === 'ar';
 
             {selectedRequest.quote_response && (
               <div>
-                <h4 className="font-medium text-gray-900">Quote Response</h4>
+                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.quoteResponse')}</h4>
                 <div className="mt-2 p-4 bg-green-50 rounded-lg">
                   <p className="text-sm text-gray-600">
-                    <span className="font-medium">Total Amount:</span> ${selectedRequest.quote_response[0]?.total_amount?.toFixed(2)}
+                    <span className="font-medium">{t('quoteRequests.detailModal.totalAmount')}:</span> SAR {selectedRequest.quote_response[0]?.total_amount?.toFixed(2)}
                   </p>
                   <p className="text-sm text-gray-600">
-                    <span className="font-medium">Valid for:</span> {selectedRequest.quote_response[0]?.validity_period} days
+                    <span className="font-medium">{t('quoteRequests.detailModal.validFor')}:</span> {t('quoteRequests.detailModal.validityDays', { days: selectedRequest.quote_response[0]?.validity_period })}
                   </p>
                   {selectedRequest.quote_response[0]?.response_notes && (
                     <p className="text-sm text-gray-600 mt-2">
-                      <span className="font-medium">Notes:</span> {selectedRequest.quote_response[0]?.response_notes}
+                      <span className="font-medium">{t('quoteRequests.detailModal.notes')}:</span> {selectedRequest.quote_response[0]?.response_notes}
                     </p>
                   )}
                 </div>
@@ -550,31 +565,31 @@ const isRTL = i18n.language === 'ar';
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="Create Quote Response"
+        title={t('quoteRequests.responseModal.title')}
         maxWidth="2xl"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Quote Items Section */}
           <div>
-            <h4 className="font-medium text-gray-900 mb-4">Quote Items & Pricing</h4>
+            <h4 className="font-medium text-gray-900 mb-4">{t('quoteRequests.responseModal.itemsPricing')}</h4>
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product
+                      {t('quoteRequests.responseModal.product')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Dimensions
+                      {t('quoteRequests.responseModal.dimensions')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Qty
+                      {t('quoteRequests.responseModal.qty')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Unit Price ($)
+                      {t('quoteRequests.responseModal.unitPrice')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total ($)
+                      {t('quoteRequests.responseModal.total')}
                     </th>
                   </tr>
                 </thead>
@@ -583,10 +598,10 @@ const isRTL = i18n.language === 'ar';
                     <tr key={item.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          {item.product?.name || 'Unknown Product'}
+                          {item.product?.name || t('quoteRequests.unknownProduct')}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {item.product?.type && `Type: ${Array.isArray(item.product.type) ? item.product.type.join(', ') : item.product.type}`}
+                          {item.product?.type && `${t('quoteRequests.type')}: ${Array.isArray(item.product.type) ? item.product.type.join(', ') : item.product.type}`}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -604,8 +619,8 @@ const isRTL = i18n.language === 'ar';
                           className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                           placeholder="0.00"
                           {...register(`items.${index}.unit_price` as const, {
-                            required: 'Unit price is required',
-                            min: { value: 0, message: 'Price must be positive' },
+                            required: t('quoteRequests.validation.unitPriceRequired'),
+                            min: { value: 0, message: t('quoteRequests.validation.pricePositive') },
                             onChange: (e) => {
                               const unitPrice = parseFloat(e.target.value) || 0;
                               const totalPrice = unitPrice * item.quantity;
@@ -620,7 +635,7 @@ const isRTL = i18n.language === 'ar';
                         <input type="hidden" {...register(`items.${index}.quote_item_id` as const)} value={item.id} />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${(watchedItems?.[index]?.total_price || 0).toFixed(2)}
+                        SAR {(watchedItems?.[index]?.total_price || 0).toFixed(2)}
                         <input type="hidden" {...register(`items.${index}.total_price` as const)} />
                       </td>
                     </tr>
@@ -632,50 +647,51 @@ const isRTL = i18n.language === 'ar';
             {/* Total Amount Display */}
             <div className="mt-4 bg-gray-50 p-4 rounded-lg">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium text-gray-900">Total Quote Amount:</span>
-                <span className="text-xl font-bold text-blue-600">
-                  ${(watchedItems?.reduce((sum, item) => sum + (item?.total_price || 0), 0) || 0).toFixed(2)}
+                <span className="text-lg font-medium text-gray-900">{t('quoteRequests.responseModal.totalQuoteAmount')}:</span>
+                <span className="text-xl font-bold text-green-600">
+                  SAR {(watchedItems?.reduce((sum, item) => sum + (item?.total_price || 0), 0) || 0).toFixed(2)}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Response Details */}
+         {/* Response Details */}
           <div>
             <Input
-              label="Validity Period (days)"
+              label={t('quoteRequests.responseModal.validityPeriod')}
               type="number"
               {...register('validity_period', {
-                required: 'Validity period is required',
-                min: { value: 1, message: 'Must be at least 1 day' }
+                required: t('quoteRequests.validation.validityRequired'),
+                min: { value: 1, message: t('quoteRequests.validation.validityMinimum') }
               })}
               error={errors.validity_period?.message}
               placeholder="30"
-              helperText="Quote will expire after this many days from creation"
+              helperText={t('quoteRequests.responseModal.validityHelperText')}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Response Notes (optional)
+            <label className={`block text-sm font-medium text-gray-700 mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('quoteRequests.responseModal.responseNotes')}
             </label>
             <textarea
               {...register('notes')}
               rows={3}
-              className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              placeholder="Additional notes, terms, or conditions..."
+              className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}
+              placeholder={t('quoteRequests.responseModal.notesPlaceholder')}
+              dir={isRTL ? 'rtl' : 'ltr'}
             />
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t">
+          <div className={`flex ${isRTL ? 'justify-start' : 'justify-end'} space-x-3 pt-4 border-t ${isRTL ? 'space-x-reverse' : ''}`}>
             <Button variant="secondary" onClick={closeModal}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               loading={createResponseMutation.isPending}
             >
-              Send Quote Response
+              {t('quoteRequests.responseModal.sendResponse')}
             </Button>
           </div>
         </form>
@@ -685,77 +701,82 @@ const isRTL = i18n.language === 'ar';
       <Modal
         isOpen={isCreateModalOpen}
         onClose={closeCreateModal}
-        title="Create New Quote Request"
+        title={t('quoteRequests.createModal.title')}
         maxWidth="2xl"
       >
         <form onSubmit={handleSubmitCreate(onSubmitCreate)} className="space-y-6">
           {/* Customer Information */}
           <div>
-            <h4 className="font-medium text-gray-900 mb-4">Customer Information</h4>
+            <h4 className={`font-medium text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('quoteRequests.createModal.customerInformation')}
+            </h4>
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Customer Name *"
+                label={t('quoteRequests.createModal.customerName')}
                 {...registerCreate('customer_name', {
-                  required: 'Customer name is required'
+                  required: t('quoteRequests.validation.customerNameRequired')
                 })}
                 error={errorsCreate.customer_name?.message}
-                placeholder="John Doe"
+                placeholder={t('quoteRequests.createModal.customerNamePlaceholder')}
               />
 
               <Input
-                label="Customer Email *"
+                label={t('quoteRequests.createModal.customerEmail')}
                 type="email"
                 {...registerCreate('customer_email', {
-                  required: 'Customer email is required',
+                  required: t('quoteRequests.validation.customerEmailRequired'),
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: 'Please enter a valid email address'
+                    message: t('quoteRequests.validation.invalidEmail')
                   }
                 })}
                 error={errorsCreate.customer_email?.message}
-                placeholder="john@example.com"
+                placeholder={t('quoteRequests.createModal.customerEmailPlaceholder')}
               />
 
               <Input
-                label="Customer Phone *"
+                label={t('quoteRequests.createModal.customerPhone')}
                 {...registerCreate('customer_phone', {
-                  required: 'Customer phone is required'
+                  required: t('quoteRequests.validation.customerPhoneRequired')
                 })}
                 error={errorsCreate.customer_phone?.message}
-                placeholder="+966 50 123 4567"
+                placeholder={t('quoteRequests.createModal.customerPhonePlaceholder')}
               />
 
               <Input
-                label="Company Name"
+                label={t('quoteRequests.createModal.companyName')}
                 {...registerCreate('customer_company')}
-                placeholder="ABC Construction"
+                placeholder={t('quoteRequests.createModal.companyNamePlaceholder')}
               />
 
               <Input
-                label="Project Name"
+                label={t('quoteRequests.createModal.projectName')}
                 {...registerCreate('project_name')}
-                placeholder="Building Construction Project"
+                placeholder={t('quoteRequests.createModal.projectNamePlaceholder')}
                 className="col-span-2"
               />
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Notes
+              <label className={`block text-sm font-medium text-gray-700 mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('quoteRequests.createModal.additionalNotes')}
               </label>
               <textarea
                 {...registerCreate('notes')}
                 rows={3}
-                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                placeholder="Any additional information or requirements..."
+                className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}
+                placeholder={t('quoteRequests.createModal.additionalNotesPlaceholder')}
+                dir={isRTL ? 'rtl' : 'ltr'}
               />
             </div>
           </div>
 
           {/* Quote Items */}
           <div>
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="font-medium text-gray-900">Quote Items</h4>
+            <div className={`flex ${isRTL ? 'flex-row-reverse' : 'flex-row'} justify-between items-center mb-4`}>
+              <h4 className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('quoteRequests.createModal.quoteItems')}
+              </h4>
               <Button
                 type="button"
                 variant="secondary"
@@ -763,15 +784,17 @@ const isRTL = i18n.language === 'ar';
                 icon={<Plus className="h-4 w-4" />}
                 onClick={addQuoteItem}
               >
-                Add Item
+                {t('quoteRequests.createModal.addItem')}
               </Button>
             </div>
 
             <div className="space-y-4">
               {itemFields.map((field, index) => (
                 <div key={field.id} className="p-4 border border-gray-200 rounded-lg">
-                  <div className="flex justify-between items-start mb-4">
-                    <h5 className="font-medium text-gray-700">Item {index + 1}</h5>
+                  <div className={`flex ${isRTL ? 'flex-row-reverse' : 'flex-row'} justify-between items-start mb-4`}>
+                    <h5 className={`font-medium text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {t('quoteRequests.createModal.item')} {index + 1}
+                    </h5>
                     {itemFields.length > 1 && (
                       <Button
                         type="button"
@@ -781,32 +804,32 @@ const isRTL = i18n.language === 'ar';
                         onClick={() => removeQuoteItem(index)}
                         className="text-red-600 hover:text-red-700"
                       >
-                        Remove
+                        {t('common.remove')}
                       </Button>
                     )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <Select
-                      label="Product *"
+                      label={t('quoteRequests.createModal.product')}
                       {...registerCreate(`quote_items.${index}.product_id` as const, {
-                        required: 'Product selection is required'
+                        required: t('quoteRequests.validation.productRequired')
                       })}
                       error={errorsCreate.quote_items?.[index]?.product_id?.message}
                       options={products?.map(product => ({
                         value: product.id,
                         label: product.name
                       })) || []}
-                      placeholder="Select a product"
+                      placeholder={t('quoteRequests.createModal.selectProduct')}
                     />
 
                     <Input
-                      label="Quantity *"
+                      label={t('quoteRequests.createModal.quantity')}
                       type="number"
                       min="1"
                       {...registerCreate(`quote_items.${index}.quantity` as const, {
-                        required: 'Quantity is required',
-                        min: { value: 1, message: 'Quantity must be at least 1' }
+                        required: t('quoteRequests.validation.quantityRequired'),
+                        min: { value: 1, message: t('quoteRequests.validation.quantityMinimum') }
                       })}
                       error={errorsCreate.quote_items?.[index]?.quantity?.message}
                       placeholder="1"
@@ -825,14 +848,15 @@ const isRTL = i18n.language === 'ar';
                   )}
 
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Item Notes
+                    <label className={`block text-sm font-medium text-gray-700 mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {t('quoteRequests.createModal.itemNotes')}
                     </label>
                     <textarea
                       {...registerCreate(`quote_items.${index}.notes` as const)}
                       rows={2}
-                      className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      placeholder="Specific requirements for this item..."
+                      className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}
+                      placeholder={t('quoteRequests.createModal.itemNotesPlaceholder')}
+                      dir={isRTL ? 'rtl' : 'ltr'}
                     />
                   </div>
                 </div>
@@ -840,16 +864,16 @@ const isRTL = i18n.language === 'ar';
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t">
+          <div className={`flex ${isRTL ? 'justify-start' : 'justify-end'} space-x-3 pt-4 border-t ${isRTL ? 'space-x-reverse' : ''}`}>
             <Button variant="secondary" onClick={closeCreateModal}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               className='bg-[#23b478] hover:bg-[#1e8f66]'
               type="submit"
               loading={createRequestMutation.isPending}
             >
-              Create Quote Request
+              {t('quoteRequests.createModal.createRequest')}
             </Button>
           </div>
         </form>

@@ -48,7 +48,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="lg:pl-64" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="lg:pl-64 rtl:pr-64" dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">

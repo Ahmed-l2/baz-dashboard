@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.dir() === 'rtl'; // use direction instead of language === 'ar'
+  const isRTL = i18n.language === 'ar'; // use direction instead of language === 'ar'
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
 
   return (
-    <div className={`lg:pl-64 ${isRTL ? 'lg:pr-64 lg:pl-0' : ''}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={` ${isRTL ? 'lg:pr-64' : 'lg:pl-64'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="sticky top-0 z-40 flex h-16 flex-shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white backdrop-blur-lg px-4 sm:gap-x-6 sm:px-6 lg:px-8">
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
           {/* Search box */}

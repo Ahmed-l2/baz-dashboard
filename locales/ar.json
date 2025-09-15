@@ -10,7 +10,7 @@
     "banners": "اللافتات",
     "quoteRequests": "طلبات التسعير",
     "users": "المستخدمون",
-    "pushNotifications": "إشعارات الدفع",
+    "pushNotifications": "الحملات الترويجية",
     "employements": "التوظيف"
   },
   "header": {
@@ -58,5 +58,264 @@
       "image_url": "رابط الصورة",
       "image_helper": "أدخل رابط صورة صحيح أو ارفعها إلى Supabase"
     }
+  },
+   "metalPrices": {
+    "title": "أسعار المعادن",
+    "description": "إدارة أسعار المعادن المباشرة التي تظهر في شريط أخبار تطبيق الهاتف المحمول",
+    "addButton": "إضافة سعر معدن",
+    "tickerPreview": "معاينة الشريط",
+    "deleteConfirm": "هل أنت متأكد من أنك تريد حذف سعر هذا المعدن؟",
+    "table": {
+      "metalType": "نوع المعدن",
+      "price": "السعر",
+      "change": "التغيير",
+      "unit": "الوحدة",
+      "created": "تاريخ الإنشاء"
+    },
+    "units": {
+      "oz": "أونصة (oz)",
+      "lb": "باوند (lb)",
+      "kg": "كيلوغرام (kg)",
+      "g": "غرام (g)",
+      "ton": "طن",
+      "tonne": "طن متري"
+    },
+    "empty": {
+      "title": "لا توجد أسعار معادن",
+      "description": "ابدأ بإنشاء سعر المعدن الأول."
+    },
+    "modal": {
+      "addTitle": "إضافة سعر معدن",
+      "editTitle": "تعديل سعر المعدن"
+    },
+    "form": {
+      "metalType": {
+        "label": "نوع المعدن",
+        "placeholder": "مثلاً، الذهب، الفضة، النحاس، الألمنيوم",
+        "required": "نوع المعدن مطلوب"
+      },
+      "price": {
+        "label": "السعر",
+        "required": "السعر مطلوب",
+        "minError": "يجب أن يكون السعر موجباً"
+      },
+      "change": {
+        "label": "التغيير",
+        "required": "قيمة التغيير مطلوبة",
+        "helperText": "استخدم قيماً سالبة لانخفاض الأسعار"
+      },
+      "unit": {
+        "label": "الوحدة",
+        "placeholder": "اختر الوحدة",
+        "required": "الوحدة مطلوبة"
+      }
+    }
+  },
+   "common": {
+    "actions": "الإجراءات",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "notProvided": "غير متوفر",
+    "remove": "حذف"
+  },
+
+   "banners": {
+    "title": "بانرات الصفحة الرئيسية",
+    "description": "إدارة البانرات الترويجية التي تظهر في الصفحة الرئيسية لتطبيق الهاتف المحمول",
+    "addButton": "إضافة بانر",
+    "deleteConfirm": "هل أنت متأكد من أنك تريد حذف هذا البانر؟",
+    "table": {
+      "banner": "البانر",
+      "title": "العنوان",
+      "link": "الرابط",
+      "bannerAlt": "بانر",
+      "noTitle": "لا يوجد عنوان",
+      "noLink": "لا يوجد رابط"
+    },
+    "empty": {
+      "title": "لا توجد بانرات",
+      "description": "ابدأ بإنشاء أول بانر للصفحة الرئيسية."
+    },
+    "modal": {
+      "addTitle": "إضافة بانر",
+      "editTitle": "تعديل البانر"
+    },
+    "form": {
+      "title": {
+        "label": "العنوان",
+        "placeholder": "عنوان البانر"
+      },
+      "subtitle": {
+        "label": "العنوان الفرعي",
+        "placeholder": "العنوان الفرعي للبانر"
+      },
+      "imageUrl": {
+        "label": "رابط الصورة",
+        "placeholder": "https://example.com/banner.jpg",
+        "helperText": "أدخل رابط صورة صالح أو ارفعها إلى تخزين Supabase"
+      },
+      "linkUrl": {
+        "label": "رابط الصفحة",
+        "placeholder": "https://example.com/page",
+        "helperText": "المكان الذي سينتقل إليه المستخدمون عند النقر على البانر"
+      }
+    }
+  },
+    "quoteRequests": {
+    "title": "طلبات عروض الأسعار",
+    "description": "إدارة طلبات عروض الأسعار الواردة من مستخدمي التطبيق",
+    "createRequest": "إنشاء طلب عرض سعر",
+    "anonymous": "مجهول",
+    "itemsCount": "{{count}} عنصر",
+    "unknownProduct": "منتج غير معروف",
+    "type": "النوع",
+    "noSpecifications": "لا توجد مواصفات",
+    "notSet": "غير محدد",
+    "notCalculated": "غير محسوب",
+    "table": {
+      "customer": "العميل",
+      "items": "العناصر",
+      "status": "الحالة",
+      "created": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "draft": "مسودة",
+      "submitted": "مُرسل",
+      "quoted": "تم إرسال السعر",
+      "accepted": "مقبول",
+      "rejected": "مرفوض",
+      "pending": "قيد الانتظار",
+      "responded": "تم الرد"
+    },
+    "actions": {
+      "view": "عرض",
+      "respond": "رد",
+      "downloadPDF": "تحميل PDF",
+      "previewPDF": "معاينة PDF"
+    },
+    "empty": {
+      "title": "لا توجد طلبات عروض أسعار",
+      "description": "ستظهر طلبات عروض الأسعار من التطبيق هنا."
+    },
+    "detailModal": {
+      "title": "تفاصيل طلب عرض السعر",
+      "customerInformation": "معلومات العميل",
+      "requestInformation": "معلومات الطلب",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "status": "الحالة",
+      "created": "تاريخ الإنشاء",
+      "items": "العناصر",
+      "notes": "الملاحظات",
+      "quoteItems": "عناصر عرض السعر",
+      "product": "المنتج",
+      "dimensions": "الأبعاد",
+      "quantity": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "total": "المجموع",
+      "itemNotes": "ملاحظات العنصر",
+      "quoteResponse": "رد عرض السعر",
+      "totalAmount": "المبلغ الإجمالي",
+      "validFor": "صالح لمدة",
+      "validityDays": "{{days}} أيام"
+    },
+    "responseModal": {
+      "title": "إنشاء رد عرض السعر",
+      "itemsPricing": "عناصر عرض السعر والتسعير",
+      "product": "المنتج",
+      "dimensions": "الأبعاد",
+      "qty": "الكمية",
+      "unitPrice": "سعر الوحدة (ريال)",
+      "total": "المجموع (ريال)",
+      "totalQuoteAmount": "إجمالي مبلغ عرض السعر",
+      "validityPeriod": "فترة الصلاحية (أيام)",
+      "validityHelperText": "سينتهي عرض السعر بعد هذا العدد من الأيام من تاريخ الإنشاء",
+      "responseNotes": "ملاحظات الرد (اختياري)",
+      "notesPlaceholder": "ملاحظات إضافية أو شروط أو أحكام...",
+      "sendResponse": "إرسال رد عرض السعر"
+    },
+    "createModal": {
+      "title": "إنشاء طلب عرض سعر جديد",
+      "customerInformation": "معلومات العميل",
+      "customerName": "اسم العميل *",
+      "customerNamePlaceholder": "أحمد محمد",
+      "customerEmail": "بريد العميل الإلكتروني *",
+      "customerEmailPlaceholder": "ahmed@example.com",
+      "customerPhone": "هاتف العميل *",
+      "customerPhonePlaceholder": "+966 50 123 4567",
+      "companyName": "اسم الشركة",
+      "companyNamePlaceholder": "شركة الإنشاءات المتقدمة",
+      "projectName": "اسم المشروع",
+      "projectNamePlaceholder": "مشروع بناء سكني",
+      "additionalNotes": "ملاحظات إضافية",
+      "additionalNotesPlaceholder": "أي معلومات أو متطلبات إضافية...",
+      "quoteItems": "عناصر عرض السعر",
+      "addItem": "إضافة عنصر",
+      "item": "العنصر",
+      "product": "المنتج *",
+      "selectProduct": "اختر منتج",
+      "quantity": "الكمية *",
+      "itemNotes": "ملاحظات العنصر",
+      "itemNotesPlaceholder": "متطلبات خاصة لهذا العنصر...",
+      "createRequest": "إنشاء طلب عرض السعر"
+    },
+    "validation": {
+      "unitPriceRequired": "سعر الوحدة مطلوب",
+      "pricePositive": "يجب أن يكون السعر موجباً",
+      "validityRequired": "فترة الصلاحية مطلوبة",
+      "validityMinimum": "يجب أن تكون يوم واحد على الأقل",
+      "customerNameRequired": "اسم العميل مطلوب",
+      "customerEmailRequired": "بريد العميل الإلكتروني مطلوب",
+      "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "customerPhoneRequired": "هاتف العميل مطلوب",
+      "productRequired": "اختيار المنتج مطلوب",
+      "quantityRequired": "الكمية مطلوبة",
+      "quantityMinimum": "يجب أن تكون الكمية واحد على الأقل"
+    }
+  },
+
+   "users": {
+    "title": "إدارة المستخدمين",
+    "description": "إدارة المستخدمين المسجلين وصلاحياتهم",
+    "managementTitle": "إدارة المستخدمين",
+    "managementDescription": "تتم إدارة المستخدمين من خلال Clerk. قم بزيارة لوحة تحكم Clerk الخاصة بك لإدارة المستخدمين والأدوار والصلاحيات.",
+    "openClerkDashboard": "فتح لوحة تحكم Clerk"
+  },
+
+  "employmentApplications": {
+    "title": "طلبات التوظيف",
+    "description": "إدارة طلبات التوظيف ومعلومات المرشحين",
+    "confirmDelete": "هل أنت متأكد من أنك تريد حذف هذا الطلب؟",
+    "table": {
+      "applicantName": "اسم المتقدم",
+      "contact": "معلومات الاتصال",
+      "fieldOfWork": "مجال العمل",
+      "appliedDate": "تاريخ التقديم",
+      "details": "التفاصيل",
+      "actions": "الإجراءات"
+    },
+    "actions": {
+      "view": "عرض",
+      "hide": "إخفاء",
+      "delete": "حذف"
+    },
+    "details": {
+      "title": "تفاصيل الطلب",
+      "fullName": "الاسم الكامل",
+      "fieldOfWork": "مجال العمل",
+      "emailAddress": "عنوان البريد الإلكتروني",
+      "phoneNumber": "رقم الهاتف",
+      "applicationDate": "تاريخ التقديم"
+    },
+    "empty": {
+      "title": "لا توجد طلبات",
+      "description": "لم يتم تقديم أي طلبات توظيف بعد."
+    }
   }
+
 }

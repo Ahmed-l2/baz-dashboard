@@ -121,7 +121,7 @@ export default function Products() {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="lg:pl-64 " dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={` ${isRTL ? 'lg:pr-64' : 'lg:pl-64'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">

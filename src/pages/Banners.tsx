@@ -8,6 +8,7 @@ import Input from '../components/ui/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import { Loader } from '../components/loader';
 import i18n from '../i18n';
+import { useTranslation } from 'react-i18next';
 
 interface BannerForm {
   title: string;
@@ -17,6 +18,7 @@ interface BannerForm {
 }
 
 export default function Banners() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<any>(null);
 
@@ -77,7 +79,7 @@ export default function Banners() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this banner?')) {
+    if (window.confirm(t('banners.deleteConfirm'))) {
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -87,36 +89,38 @@ export default function Banners() {
       <Loader />
     );
   }
-const isRTL = i18n.language === 'ar';
+
+  const isRTL = i18n.language === 'ar';
+
   return (
-    <div className="lg:pl-64 "  dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={` ${isRTL ? 'lg:pr-64' : 'lg:pl-64'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
               <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">
-                Homepage Banners
+                {t('banners.title')}
               </h1>
               <p className="mt-2 text-sm text-gray-700">
-                Manage promotional banners that appear on the mobile app homepage
+                {t('banners.description')}
               </p>
             </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <div className={`mt-4 sm:mt-0 sm:flex-none ${isRTL ? 'sm:mr-16' : 'sm:ml-16'}`}>
               <Button
                 icon={<Plus className="h-4 w-4" />}
                 onClick={() => openModal()}
               >
-                Add Banner
+                {t('banners.addButton')}
               </Button>
             </div>
           </div>
 
           <Table>
             <TableHeader>
-              <TableHead>Banner</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Link</TableHead>
-              <TableHead className="relative"><span className="sr-only">Actions</span></TableHead>
+              <TableHead>{t('banners.table.banner')}</TableHead>
+              <TableHead>{t('banners.table.title')}</TableHead>
+              <TableHead>{t('banners.table.link')}</TableHead>
+              <TableHead className="relative"><span className="sr-only">{t('common.actions')}</span></TableHead>
             </TableHeader>
             <TableBody>
               {banners?.map((banner) => (
@@ -125,7 +129,7 @@ const isRTL = i18n.language === 'ar';
                     {banner.image_url ? (
                       <img 
                         src={banner.image_url} 
-                        alt={banner.title || 'Banner'}
+                        alt={banner.title || t('banners.table.bannerAlt')}
                         className="h-16 w-24 rounded object-cover"
                       />
                     ) : (
@@ -136,7 +140,7 @@ const isRTL = i18n.language === 'ar';
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium text-gray-900">{banner.title || 'No title'}</div>
+                      <div className="font-medium text-gray-900">{banner.title || t('banners.table.noTitle')}</div>
                       <div className="text-gray-500 text-sm">{banner.subtitle}</div>
                     </div>
                   </TableCell>
@@ -151,17 +155,17 @@ const isRTL = i18n.language === 'ar';
                         {banner.link_url}
                       </a>
                     ) : (
-                      'No link'
+                      t('banners.table.noLink')
                     )}
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
+                  <TableCell className={`space-x-2 ${isRTL ? 'text-left' : 'text-right'}`}>
                     <Button
                       variant="ghost"
                       size="sm"
                       icon={<Edit className="h-4 w-4" />}
                       onClick={() => openModal(banner)}
                     >
-                      Edit
+                      {t('common.edit')}
                     </Button>
                     <Button
                       variant="ghost"
@@ -170,7 +174,7 @@ const isRTL = i18n.language === 'ar';
                       onClick={() => handleDelete(banner.id)}
                       loading={deleteMutation.isPending}
                     >
-                      Delete
+                      {t('common.delete')}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -181,12 +185,12 @@ const isRTL = i18n.language === 'ar';
           {banners?.length === 0 && (
             <div className="text-center py-12">
               <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No banners</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">{t('banners.empty.title')}</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Get started by creating your first homepage banner.
+                {t('banners.empty.description')}
               </p>
               <div className="mt-6">
-                <Button onClick={() => openModal()}>Add Banner</Button>
+                <Button onClick={() => openModal()}>{t('banners.addButton')}</Button>
               </div>
             </div>
           )}
@@ -196,49 +200,49 @@ const isRTL = i18n.language === 'ar';
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingBanner ? 'Edit Banner' : 'Add Banner'}
+        title={editingBanner ? t('banners.modal.editTitle') : t('banners.modal.addTitle')}
         maxWidth="lg"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            label="Title"
+            label={t('banners.form.title.label')}
             {...register('title')}
             error={errors.title?.message}
-            placeholder="Banner title"
+            placeholder={t('banners.form.title.placeholder')}
           />
           
           <Input
-            label="Subtitle"
+            label={t('banners.form.subtitle.label')}
             {...register('subtitle')}
             error={errors.subtitle?.message}
-            placeholder="Banner subtitle"
+            placeholder={t('banners.form.subtitle.placeholder')}
           />
           
           <Input
-            label="Image URL"
+            label={t('banners.form.imageUrl.label')}
             {...register('image_url')}
             error={errors.image_url?.message}
-            placeholder="https://example.com/banner.jpg"
-            helperText="Enter a valid image URL or upload to Supabase storage"
+            placeholder={t('banners.form.imageUrl.placeholder')}
+            helperText={t('banners.form.imageUrl.helperText')}
           />
           
           <Input
-            label="Link URL"
+            label={t('banners.form.linkUrl.label')}
             {...register('link_url')}
             error={errors.link_url?.message}
-            placeholder="https://example.com/page"
-            helperText="Where users will navigate when tapping the banner"
+            placeholder={t('banners.form.linkUrl.placeholder')}
+            helperText={t('banners.form.linkUrl.helperText')}
           />
           
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className={`flex justify-end space-x-3 pt-4 ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <Button variant="secondary" onClick={closeModal}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               loading={createMutation.isPending || updateMutation.isPending}
             >
-              {editingBanner ? 'Update' : 'Create'}
+              {editingBanner ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>

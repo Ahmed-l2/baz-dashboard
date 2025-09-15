@@ -31,7 +31,7 @@ export default function Sidebar() {
   return (
     <div dir={isRTL ? 'rtl' : 'ltr'}>
     <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0" >
-      <div className="flex flex-col flex-grow shadow-2xl bg-gradient-to-b from-white via-amber-300/5 to-amber-500/10 backdrop-blur-lg rounded-br-3xl pt-5 pb-4 overflow-y-auto">
+      <div className="flex flex-col flex-grow shadow-2xl bg-gradient-to-b from-white via-baz/5 to-baz/10 backdrop-blur-lg rounded-br-3xl pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4">
           <div className="flex items-center w-full">
             <img src="./assets/logo/baz-logo-nobg.svg" className="w-10 h-auto" />
