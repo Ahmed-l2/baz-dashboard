@@ -317,6 +317,109 @@
       "title": "No applications",
       "description": "No employment applications have been submitted yet."
     }
+  },
+   "promotions": {
+    "title": "Baz Steel - Promotional Campaigns",
+    "stats": {
+      "totalSent": "Total Sent",
+      "totalRecipients": "Total Recipients",
+      "thisMonth": "This Month",
+      "templates": "Templates"
+    },
+    "form": {
+      "title": "Send Promotional Notification to All Steel App Users",
+      "description": "This notification will be sent to all subscribed steel app users",
+      "templateLabel": "Choose Template or Create Custom Message",
+      "templateSelect": "Select a template or create custom message",
+      "customMessage": "Custom Message",
+      "titleLabel": "Notification Title *",
+      "titlePlaceholder": "Example: Special Offer on Steel Products - 20% Discount",
+      "messageLabel": "Message Content *",
+      "messagePlaceholder": "Example: Get 20% off all steel products for a limited time. Perfect for construction and industrial needs!",
+      "imageLabel": "Notification Image URL (Optional)",
+      "imagePlaceholder": "https://example.com/image.jpg",
+      "imageHint": "Add an image URL to make your notification more engaging (JPG, PNG, WebP)",
+      "previewLabel": "Notification Preview",
+      "sendButton": "Send to All Steel App Users",
+      "sending": "Sending...",
+      "now": "now"
+    },
+    "tips": {
+      "title": "Tips for Effective Steel Industry Notifications",
+      "titleTips": "Title Tips:",
+      "titleTipsList": [
+        "Include discount percentages or bulk offers",
+        "Use industry-specific terms like \"premium grade\"",
+        "Add compelling call-to-action phrases",
+        "Keep titles under 50 characters for mobile"
+      ],
+      "messageTips": "Message Tips:",
+      "messageTipsList": [
+        "Highlight quality and durability benefits",
+        "Mention construction and industrial applications",
+        "Include delivery options and timeline",
+        "Add high-quality product images when possible"
+      ],
+      "exampleTitle": "Example of an effective steel industry notification:",
+      "exampleTitleLabel": "Title:",
+      "exampleTitleText": "Special Offer on Steel Products - 20% Discount",
+      "exampleMessageLabel": "Message:",
+      "exampleMessageText": "High-quality steel products at unbeatable prices. Perfect for construction projects with same-day delivery service!",
+      "exampleImageLabel": "Image:",
+      "exampleImageText": "Product photo or company logo for better engagement"
+    },
+    "notifications": {
+      "fillBothFields": "Please fill in both title and message",
+      "sentSuccessfully": "Promotional notification sent successfully to all subscribers!",
+      "sendError": "Failed to send notification. Please try again.",
+      "generalError": "An error occurred while sending the notification.",
+      "updatedSuccessfully": "Notification updated successfully!",
+      "updateError": "Error updating notification. Please try again.",
+      "deletedSuccessfully": "Notification deleted successfully!",
+      "deleteError": "Error deleting notification. Please try again."
+    },
+    "modals": {
+      "view": {
+        "title": "Notification Details",
+        "titleLabel": "Title",
+        "messageLabel": "Message",
+        "recipientsLabel": "Recipients",
+        "sentDateLabel": "Sent Date",
+        "closeButton": "Close"
+      },
+      "edit": {
+        "title": "Edit Notification",
+        "titleLabel": "Title *",
+        "messageLabel": "Message *",
+        "cancelButton": "Cancel",
+        "updateButton": "Update",
+        "updating": "Updating..."
+      },
+      "delete": {
+        "title": "Delete Notification",
+        "confirmMessage": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone.",
+        "cancelButton": "Cancel",
+        "deleteButton": "Delete"
+      }
+    },
+    "mockData": {
+      "notification1": {
+        "title": "Special Offer on Steel Products - 15% Discount",
+        "message": "Get high-quality steel products at unbeatable prices this week!"
+      },
+      "notification2": {
+        "title": "New Product - High-Grade Steel",
+        "message": "High-strength steel grades now available for advanced industrial applications."
+      },
+      "notification3": {
+        "title": "Fast Delivery Service",
+        "message": "Same-day delivery service now available for urgent orders."
+      }
+    },
+    "common": {
+      "notAvailable": "Not Available",
+      "invalidDate": "Invalid Date"
+    }
   }
  
   
