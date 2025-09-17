@@ -50,14 +50,56 @@
     "show": "عرض",
     "product_specifications": "مواصفات المنتج",
     "form": {
-      "name": "اسم المنتج",
+      "name": "اسم المنتج (إنجليزي)",
+      "arabic_name": "اسم المنتج (عربي)",
+      "arabic_name_placeholder": "اسم المنتج بالعربية",
       "name_required": "اسم المنتج مطلوب",
       "types": "أنواع المنتج",
       "types_placeholder": "مثل: مدرفل على الساخن، مدرفل على البارد",
       "types_helper": "أدخل أنواعًا متعددة مفصولة بفواصل",
       "image_url": "رابط الصورة",
       "image_helper": "أدخل رابط صورة صحيح أو ارفعها إلى Supabase"
-    }
+    },
+    "add_spec": "إضافة مواصفة",
+    "no_specifications_yet": "لا توجد مواصفات بعد. أضف بعضها لتحديد قيود المنتج.",
+    "add_first_specification": "إضافة المواصفة الأولى",
+    "specification_name": "اسم المواصفة",
+    "spec_name_placeholder": "اختر نوع المواصفة",
+    "unit": "الوحدة",
+    "unit_placeholder": "اختر الوحدة",
+    "min_value": "القيمة الدنيا",
+    "min_placeholder": "الأدنى",
+    "max_value": "القيمة العليا",
+    "max_placeholder": "الأعلى",
+    "notes": "ملاحظات",
+    "notes_placeholder": "ملاحظات اختيارية",
+    "remove": "حذف",
+    "tip": "نصيحة",
+    "specifications_tip": "المواصفات تحدد قيود منتجاتك. على سبيل المثال:",
+    "thickness": "السماكة",
+    "thickness_example": "0.58 - 5 mm",
+    "length": "الطول",
+    "length_example": "Standard 6000 mm, custom on request",
+    "diameter": "القطر",
+    "diameter_example": "15 - 187.5 mm"
+  },
+  "specs": {
+    "thickness": "السماكة",
+    "width": "العرض",
+    "length": "الطول",
+    "height": "الارتفاع",
+    "weight": "الوزن",
+    "diameter": "القطر"
+  },
+  "units": {
+    "mm": "مم (ميليمتر)",
+    "cm": "سم (سنتيمتر)",
+    "m": "م (متر)",
+    "in": "بوصة",
+    "ft": "قدم",
+    "g": "جم (جرام)",
+    "kg": "كجم (كيلوجرام)",
+    "ton": "طن"
   },
    "metalPrices": {
     "title": "أسعار المعادن",
@@ -119,7 +161,18 @@
     "create": "إنشاء",
     "update": "تحديث",
     "notProvided": "غير متوفر",
-    "remove": "حذف"
+    "remove": "حذف",
+    "confirm_delete": "هل أنت متأكد من أنك تريد حذف هذا العنصر؟",
+    "uncategorized": "غير مصنف",
+    "select_category": "اختر فئة",
+    "create_new_category": "إنشاء فئة جديدة",
+    "icon": "الأيقونة",
+    "category_name": "اسم الفئة (إنجليزي)",
+    "arabic_category_name": "اسم الفئة (عربي)",
+    "category_placeholder": "مثال: الأنابيب الملحومة",
+    "arabic_category_placeholder": "مثال: الأنابيب الملحومة",
+    "description_optional": "الوصف (اختياري)",
+    "description_placeholder": "وصف مختصر لهذه الفئة"
   },
 
    "banners": {

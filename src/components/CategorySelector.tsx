@@ -1,18 +1,24 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Check, X } from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import { useCreateCategory, Category } from '../hooks/useCategories';
+import i18n from '../i18n';
 
 interface CategorySelectorProps {
   categories: Category[];
   selectedCategoryId: string;
   onCategoryChange: (categoryId: string) => void;
+  isRTL?: boolean;
 }
 
-export default function CategorySelector({ categories, selectedCategoryId, onCategoryChange }: CategorySelectorProps) {
+export default function CategorySelector({ categories, selectedCategoryId, onCategoryChange, isRTL = false }: CategorySelectorProps) {
+  const { t } = useTranslation();
+  const isRTLLang = isRTL || i18n.dir() === 'rtl';
   const [isCreating, setIsCreating] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryArabicName, setNewCategoryArabicName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
   const [newCategoryIcon, setNewCategoryIcon] = useState('📦');
 
@@ -24,6 +30,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
     try {
       const newCategory = await createCategoryMutation.mutateAsync({
         name: newCategoryName,
+        arabic_name: newCategoryArabicName || undefined,
         icon: newCategoryIcon,
         description: newCategoryDescription || undefined
       });
@@ -33,6 +40,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
 
       // Reset form
       setNewCategoryName('');
+      setNewCategoryArabicName('');
       setNewCategoryDescription('');
       setNewCategoryIcon('📦');
       setIsCreating(false);
@@ -43,29 +51,33 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
 
   const cancelCreate = () => {
     setNewCategoryName('');
+    setNewCategoryArabicName('');
     setNewCategoryDescription('');
     setNewCategoryIcon('📦');
     setIsCreating(false);
   };
 
   return (
-    <div className="space-y-3">
-      <label className="block text-sm font-medium text-gray-700">
-        Category
+    <div className="space-y-3" dir={isRTL ? 'rtl' : 'ltr'}>
+      <label className={`block text-sm font-medium text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+        {t('products.category')}
       </label>
 
       {/* Existing categories dropdown */}
       <select
         value={selectedCategoryId}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}
       >
-        <option value="">Select a category</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.icon} {category.name}
-          </option>
-        ))}
+        <option value="">{t('common.select_category')}</option>
+        {categories.map((category) => {
+          const displayName = isRTLLang && category.arabic_name ? category.arabic_name : category.name;
+          return (
+            <option key={category.id} value={category.id}>
+              {displayName}
+            </option>
+          );
+        })}
       </select>
 
       {/* Create new category section */}
@@ -78,7 +90,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
           onClick={() => setIsCreating(true)}
           className="w-full"
         >
-          Create New Category
+          {t('common.create_new_category')}
         </Button>
       ) : (
         <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
@@ -86,30 +98,41 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-1">
                 <Input
-                  label="Icon"
+                  label={t('common.icon')}
                   value={newCategoryIcon}
                   onChange={(e) => setNewCategoryIcon(e.target.value)}
                   placeholder="📦"
+                  isRTL={isRTL}
                 />
               </div>
               <div className="col-span-3">
                 <Input
-                  label="Category Name"
+                  label={t('common.category_name')}
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder="e.g. Welded Pipes"
+                  placeholder={t('common.category_placeholder')}
+                  isRTL={isRTL}
                 />
               </div>
             </div>
 
             <Input
-              label="Description (optional)"
-              value={newCategoryDescription}
-              onChange={(e) => setNewCategoryDescription(e.target.value)}
-              placeholder="Brief description of this category"
+              label={t('common.arabic_category_name')}
+              value={newCategoryArabicName}
+              onChange={(e) => setNewCategoryArabicName(e.target.value)}
+              placeholder={t('common.arabic_category_placeholder')}
+              isRTL={isRTL}
             />
 
-            <div className="flex gap-2">
+            <Input
+              label={t('common.description_optional')}
+              value={newCategoryDescription}
+              onChange={(e) => setNewCategoryDescription(e.target.value)}
+              placeholder={t('common.description_placeholder')}
+              isRTL={isRTL}
+            />
+
+            <div className={`flex gap-2 ${isRTL ? 'justify-start' : 'justify-start'}`}>
               <Button
                 type="button"
                 size="sm"
@@ -118,7 +141,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
                 loading={createCategoryMutation.isPending}
                 disabled={!newCategoryName.trim()}
               >
-                Create
+                {t('common.create')}
               </Button>
               <Button
                 type="button"
@@ -127,7 +150,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
                 icon={<X className="h-4 w-4" />}
                 onClick={cancelCreate}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </div>
           </div>

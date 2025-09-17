@@ -5,6 +5,7 @@ import { useSupabaseWithClerk } from '../lib/supabase';
 export type Category = {
   id: string;
   name: string;
+  arabic_name?: string;
   icon: string;
   image_url: string | null;
   description: string | null;
@@ -31,11 +32,12 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { name: string; icon?: string; image_url?: string; description?: string }) => {
+    mutationFn: async (data: { name: string; arabic_name?: string; icon?: string; image_url?: string; description?: string }) => {
       const { data: categoryData, error } = await supabase
         .from('categories')
         .insert([{
           name: data.name,
+          arabic_name: data.arabic_name || null,
           icon: data.icon || '📦',
           image_url: data.image_url || null,
           description: data.description || null
@@ -64,6 +66,7 @@ export const useUpdateCategory = () => {
     mutationFn: async ({ id, ...data }: {
       id: string;
       name?: string;
+      arabic_name?: string;
       icon?: string;
       image_url?: string;
       description?: string

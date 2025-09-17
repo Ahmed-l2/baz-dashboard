@@ -33,6 +33,7 @@ interface ProductSpec {
 
 interface ProductForm {
   name: string;
+  arabic_name: string;
   type: string;
   category_id: string;
   image_url: string;
@@ -41,7 +42,7 @@ interface ProductForm {
 
 export default function Products() {
   const { t } = useTranslation();
-  const isRTL = i18n.dir() === 'rtl'; 
+  const isRTL = i18n.dir() === 'rtl';
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [currentSpecs, setCurrentSpecs] = useState<ProductSpec[]>([]);
@@ -60,6 +61,7 @@ export default function Products() {
     try {
       const payload = {
         name: data.name,
+        arabic_name: data.arabic_name || undefined,
         type: data.type?.trim()
           ? data.type.split(',').map(t => t.trim()).filter(Boolean)
           : undefined,
@@ -83,6 +85,7 @@ export default function Products() {
     if (product) {
       reset({
         name: product.name,
+        arabic_name: product.arabic_name || '',
         type: Array.isArray(product.type) ? product.type.join(', ') : (product.type || ''),
         category_id: product.category_id || '',
         image_url: product.image_url || '',
@@ -91,7 +94,7 @@ export default function Products() {
       setCurrentCategoryId(product.category_id || '');
       setCurrentSpecs(product.product_specs || []);
     } else {
-      reset({ name: '', type: '', category_id: '', image_url: '', specs: [] });
+      reset({ name: '', arabic_name: '', type: '', category_id: '', image_url: '', specs: [] });
       setCurrentCategoryId('');
       setCurrentSpecs([]);
     }
@@ -113,7 +116,7 @@ export default function Products() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm(t('common:confirm_delete'))) {
+    if (window.confirm(t('common.confirm_delete'))) {
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -156,7 +159,7 @@ export default function Products() {
                 <>
                   <TableRow key={p.id}>
                     <TableCell className="font-medium"> {isRTL && p.arabic_name ? p.arabic_name : p.name}</TableCell>
-                    <TableCell>{isRTL && p.arabic_type ? p.arabic_type : p.type || t('common:uncategorized')}</TableCell>
+                    <TableCell>{isRTL && p.arabic_type ? p.arabic_type : p.type || t('common.uncategorized')}</TableCell>
                     <TableCell>
                       {Array.isArray(p.type) && p.type.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
@@ -265,51 +268,66 @@ export default function Products() {
         onClose={closeModal}
         title={editingProduct ? t('products.edit') : t('products.add')}
         maxWidth="2xl"
+        isRTL={isRTL}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Input
-            label={t('products.form.name')}
-            {...register('name', { required: t('products.form.name_required') })}
-            error={errors.name?.message}
-            placeholder={t('products.form.name')}
-          />
+        <div dir={isRTL ? 'rtl' : 'ltr'}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label={t('products.form.name')}
+                {...register('name', { required: t('products.form.name_required') })}
+                error={errors.name?.message}
+                placeholder={t('products.form.name')}
+                isRTL={isRTL}
+              />
+              <Input
+                label={t('products.form.arabic_name')}
+                {...register('arabic_name')}
+                placeholder={t('products.form.arabic_name_placeholder')}
+                isRTL={isRTL}
+              />
+            </div>
 
-          <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4">
+              <Input
+                label={t('products.form.types')}
+                {...register('type')}
+                placeholder={t('products.form.types_placeholder')}
+                helperText={t('products.form.types_helper')}
+                isRTL={isRTL}
+              />
+
+              <CategorySelector
+                categories={categories || []}
+                selectedCategoryId={currentCategoryId}
+                onCategoryChange={setCurrentCategoryId}
+                isRTL={isRTL}
+              />
+            </div>
+
             <Input
-              label={t('products.form.types')}
-              {...register('type')}
-              placeholder={t('products.form.types_placeholder')}
-              helperText={t('products.form.types_helper')}
+              label={t('products.form.image_url')}
+              {...register('image_url')}
+              placeholder="https://example.com/image.jpg"
+              helperText={t('products.form.image_helper')}
+              isRTL={isRTL}
             />
 
-            <CategorySelector
-              categories={categories || []}
-              selectedCategoryId={currentCategoryId}
-              onCategoryChange={setCurrentCategoryId}
-            />
-          </div>
+            <ProductSpecsManager specs={currentSpecs} onChange={setCurrentSpecs} isRTL={isRTL} />
 
-          <Input
-            label={t('products.form.image_url')}
-            {...register('image_url')}
-            placeholder="https://example.com/image.jpg"
-            helperText={t('products.form.image_helper')}
-          />
-
-          <ProductSpecsManager specs={currentSpecs} onChange={setCurrentSpecs} />
-
-          <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-4">
-            <Button variant="secondary" onClick={closeModal}>
-              {t('products.cancel')}
-            </Button>
-            <Button
-              type="submit"
-              loading={createMutation.isPending || updateMutation.isPending}
-            >
-              {editingProduct ? t('products.update') : t('products.create')}
-            </Button>
-          </div>
-        </form>
+            <div className={`flex pt-4 gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>
+              <Button variant="secondary" onClick={closeModal}>
+                {t('products.cancel')}
+              </Button>
+              <Button
+                type="submit"
+                loading={createMutation.isPending || updateMutation.isPending}
+              >
+                {editingProduct ? t('products.update') : t('products.create')}
+              </Button>
+            </div>
+          </form>
+        </div>
       </Modal>
     </div>
   );

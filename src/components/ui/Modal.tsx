@@ -8,9 +8,10 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  isRTL?: boolean;
 }
 
-export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md' }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md', isRTL = false }: ModalProps) {
   const maxWidthClasses = {
     sm: 'sm:max-w-sm',
     md: 'sm:max-w-md',
@@ -34,7 +35,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
           <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto">
+        <div className="fixed inset-0 overflow-y-auto" dir={isRTL ? 'rtl' : 'ltr'}>
           <div className="flex min-h-full items-center justify-center p-4 text-center">
             <Transition.Child
               as={Fragment}
@@ -46,7 +47,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className={`w-full ${maxWidthClasses[maxWidth]} transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
-                <div className="flex items-center justify-between mb-4">
+                <div className={`flex items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
                     {title}
                   </Dialog.Title>
