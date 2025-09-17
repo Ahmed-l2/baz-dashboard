@@ -327,8 +327,8 @@
       "templates": "Templates"
     },
     "form": {
-      "title": "Send Promotional Notification to All Steel App Users",
-      "description": "This notification will be sent to all subscribed steel app users",
+      "title": "Send Promotional Notification to All baz App Users",
+      "description": "This notification will be sent to all subscribed baz app users",
       "templateLabel": "Choose Template or Create Custom Message",
       "templateSelect": "Select a template or create custom message",
       "customMessage": "Custom Message",
@@ -345,7 +345,7 @@
       "now": "now"
     },
     "tips": {
-      "title": "Tips for Effective Steel Industry Notifications",
+      "title": "Tips for Effective baz steel Notifications",
       "titleTips": "Title Tips:",
       "titleTipsList": [
         "Include discount percentages or bulk offers",

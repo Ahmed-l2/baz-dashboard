@@ -117,10 +117,10 @@ export default function Banners() {
 
           <Table>
             <TableHeader>
-              <TableHead>{t('banners.table.banner')}</TableHead>
-              <TableHead>{t('banners.table.title')}</TableHead>
-              <TableHead>{t('banners.table.link')}</TableHead>
-              <TableHead className="relative"><span className="sr-only">{t('common.actions')}</span></TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('banners.table.banner')}</TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('banners.table.title')}</TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('banners.table.link')}</TableHead>
+              <TableHead className='text-left rtl:text-right' className="relative"><span className="sr-only">{t('common.actions')}</span></TableHead>
             </TableHeader>
             <TableBody>
               {banners?.map((banner) => (

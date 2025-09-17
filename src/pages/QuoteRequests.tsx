@@ -318,11 +318,11 @@ export default function QuoteRequests() {
 
           <Table>
             <TableHeader>
-              <TableHead>{t('quoteRequests.table.customer')}</TableHead>
-              <TableHead>{t('quoteRequests.table.items')}</TableHead>
-              <TableHead>{t('quoteRequests.table.status')}</TableHead>
-              <TableHead>{t('quoteRequests.table.created')}</TableHead>
-              <TableHead className="relative"><span className="sr-only">{t('quoteRequests.table.actions')}</span></TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('quoteRequests.table.customer')}</TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('quoteRequests.table.items')}</TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('quoteRequests.table.status')}</TableHead>
+              <TableHead className='text-left rtl:text-right'>{t('quoteRequests.table.created')}</TableHead>
+              <TableHead className="relative text-left rtl:text-right"><span className="sr-only">{t('quoteRequests.table.actions')}</span></TableHead>
             </TableHeader>
             <TableBody>
               {quoteRequests?.map((request) => (
@@ -451,7 +451,7 @@ export default function QuoteRequests() {
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {t('quoteRequests.detailModal.product')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
