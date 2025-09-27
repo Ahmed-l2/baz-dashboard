@@ -11,11 +11,12 @@ import MetalPrices from './pages/MetalPrices';
 import Products from './pages/Products';
 import Banners from './pages/Banners';
 import QuoteRequests from './pages/QuoteRequests';
-import Users from './pages/Users';
+
 import Promotions from './pages/Promotions';
 import Employements from './pages/Employementes';
 import './i18n';
 import i18n from './i18n';
+import { Users } from './pages/Users';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
