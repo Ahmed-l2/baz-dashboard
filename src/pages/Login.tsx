@@ -14,22 +14,20 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-baz" dir="rtl">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-t from-baz via-baz/95 to-baz" dir="rtl">
       <div className="w-full max-w-md border-4 bg-white rounded-2xl shadow-xl overflow-hidden">
         {/* رأس مع الشعار */}
-        <div className="bg-baz text-white py-8 px-6 text-center flex flex-col items-center">
+        <div className="bg-baz rounded-b-3xl text-white py-3 px-6 text-center flex flex-col items-center">
           <img
             src="/assets/logo/image.png"
             alt="شعار باز"
-            className="w-16 h-16 mb-3 rounded-xl"
+            className="w-1/3 h-auto  rounded-xl"
           />
-          <h1 className="text-2xl font-bold tracking-wide">
-            شركة باز العالمية للصناعة
-          </h1>
+       
         </div>
 
         {/* النموذج */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6  space-y-4">
           {error && (
             <p className="text-red-500 text-sm bg-red-50 border border-red-200 rounded px-3 py-2">
               {error}
