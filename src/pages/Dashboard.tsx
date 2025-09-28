@@ -48,31 +48,33 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="lg:pl-64 rtl:pr-64" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-amber-100/20 ${
+      isRTL ? 'lg:pr-64' : 'lg:pl-64'
+    }`} dir={isRTL ? 'rtl' : 'ltr'}>
       <main className="py-10">
         <div className="px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-500">
+          <h1 className="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-gray-500 text-center sm:text-start">
             {t('dashboard.title')}
           </h1>
 
           {/* Stats */}
-          <div className="mt-8">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 sm:mt-8">
+            <div className="grid grid-cols-1 gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat) => (
-                <div key={stat.name} className="bg-white overflow-hidden shadow rounded-lg">
-                  <div className="p-5">
+                <div key={stat.name} className="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-200">
+                  <div className="p-4 sm:p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className={`${stat.color} rounded-md p-3`}>
-                          <stat.icon className="h-6 w-6 text-white" />
+                        <div className={`${stat.color} rounded-md p-2 sm:p-3`}>
+                          <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                         </div>
                       </div>
-                      <div className={`w-0 flex-1 ${isRTL ? 'mr-5 text-right' : 'ml-5'}`}>
+                      <div className={`w-0 flex-1 ${isRTL ? 'mr-3 sm:mr-5 text-right' : 'ml-3 sm:ml-5'}`}>
                         <dl>
-                          <dt className="text-sm font-medium text-gray-500 truncate">
+                          <dt className="text-xs sm:text-sm font-medium text-gray-500 truncate">
                             {stat.name}
                           </dt>
-                          <dd className="text-2xl font-semibold text-gray-900">
+                          <dd className="text-xl sm:text-2xl font-semibold text-gray-900">
                             {stat.value}
                           </dd>
                         </dl>
@@ -86,29 +88,31 @@ export default function Dashboard() {
 
           {/* Recent Quote Requests */}
           {quoteRequests && quoteRequests.length > 0 && (
-            <div className="mt-8">
-              <div className="bg-white shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
+            <div className="mt-6 sm:mt-8">
+              <div className="bg-white shadow rounded-lg overflow-hidden">
+                <div className="px-4 py-4 sm:px-6 sm:py-5">
+                  <h3 className="text-base sm:text-lg font-medium leading-6 text-gray-900 mb-3 sm:mb-4">
                     {t('dashboard.recentQuotes')}
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {quoteRequests.slice(0, 5).map((request) => (
                       <div
                         key={request.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2 sm:gap-0"
                       >
-                        <div className={isRTL ? 'text-right' : 'text-left'}>
-                          <p className="font-medium text-gray-900">
+                        <div className={`flex-1 ${isRTL ? 'sm:text-right' : 'sm:text-left'}`}>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">
                             {request.customer_name || t('dashboard.anonymous')}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-xs sm:text-sm text-gray-500 mt-1">
                             {request.customer_email}
                           </p>
                         </div>
-                        <div className="text-right">
+                        <div className={`flex items-center justify-between sm:justify-end gap-2 ${
+                          isRTL ? 'sm:flex-row-reverse' : 'sm:flex-row'
+                        }`}>
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            className={`inline-flex items-center px-2 py-1 sm:px-2.5 sm:py-0.5 rounded-full text-xs font-medium ${
                               request.status === 'pending'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : request.status === 'responded'
@@ -118,7 +122,7 @@ export default function Dashboard() {
                           >
                             {request.status || 'pending'}
                           </span>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-gray-500 whitespace-nowrap">
                             {safeFormatDate(request.created_at, 'MMM d, yyyy')}
                           </p>
                         </div>
@@ -126,6 +130,16 @@ export default function Dashboard() {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {(!quoteRequests || quoteRequests.length === 0) && (
+            <div className="mt-6 sm:mt-8">
+              <div className="bg-white shadow rounded-lg p-6 sm:p-8 text-center">
+                <FileText className="mx-auto h-12 w-12 text-gray-400" />
+
               </div>
             </div>
           )}

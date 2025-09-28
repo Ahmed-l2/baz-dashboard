@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useSupabaseWithClerk } from '../lib/supabase';
+import { useSupabase } from '../lib/supabase';
 
 export type QuoteRequest = {
   id: string;
@@ -62,7 +62,7 @@ export type QuoteResponse = {
 };
 
 export const useQuoteRequests = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   return useQuery({
     queryKey: ['quote-requests-new'],
     queryFn: async () => {
@@ -100,7 +100,7 @@ export const useQuoteRequests = () => {
 
 export const useCreateQuoteResponse = () => {
   const queryClient = useQueryClient();
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
 
   return useMutation({
     mutationFn: async (data: {
@@ -172,7 +172,7 @@ export const useCreateQuoteResponse = () => {
 };
 
 export const useCreateQuoteRequest = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -241,7 +241,7 @@ export const useCreateQuoteRequest = () => {
 };
 
 export const useUpdateQuoteItemPrice = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -1,8 +1,6 @@
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { clerkPublishableKey } from './lib/clerk';
 
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
@@ -11,12 +9,17 @@ import MetalPrices from './pages/MetalPrices';
 import Products from './pages/Products';
 import Banners from './pages/Banners';
 import QuoteRequests from './pages/QuoteRequests';
-
 import Promotions from './pages/Promotions';
 import Employements from './pages/Employementes';
+import  Users  from './pages/Users';
+
 import './i18n';
 import i18n from './i18n';
-import { Users } from './pages/Users';
+
+import { useState } from 'react';
+import { AuthProvider } from "./lib/contexts/AuthContext";
+import RequireAuth from './lib/contexts/RequireAuth';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -27,13 +30,24 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <>
-      <SignedIn>
-      <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}  className="min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-amber-100/20">
-          <Sidebar />
-          <Header />
-          
+    <div
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+      className="min-h-screen bg-gradient-to-r from-gray-100 via-baz/15 to-amber-100/20"
+    >
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+      {/* Main content */}
+      <main
+        className={`
+          min-h-screen pt-16 transition-all duration-300
+          ${i18n.language === 'ar' ? 'lg:pr-16 lg:pr-64' : 'lg:pl-16 lg:pl-64'}
+        `}
+      >
+        <div className="p-4 sm:p-6 lg:p-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/metal-prices" element={<MetalPrices />} />
@@ -46,21 +60,19 @@ function AppContent() {
             <Route path="/settings" element={<Dashboard />} />
           </Routes>
         </div>
-      </SignedIn>
-      
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </>
+      </main>
+    </div>
   );
 }
 
 function App() {
   return (
-    <ClerkProvider publishableKey={clerkPublishableKey}>
+    <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AppContent />
+          <RequireAuth>
+            <AppContent />
+          </RequireAuth>
           <Toaster
             position="top-right"
             toastOptions={{
@@ -85,7 +97,7 @@ function App() {
           />
         </Router>
       </QueryClientProvider>
-    </ClerkProvider>
+    </AuthProvider>
   );
 }
 

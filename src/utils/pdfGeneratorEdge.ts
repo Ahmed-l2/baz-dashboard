@@ -18,7 +18,7 @@ export const generateQuotePDFEdge = async (
         // Validate language parameter
         const validLang = lang === 'ar' ? 'ar' : 'en';
         
-        console.log('Generating PDF for quote:', request.id, 'Language:', validLang);
+
         
         // Call the Supabase edge function with language parameter
         const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-quote-pdf`, {

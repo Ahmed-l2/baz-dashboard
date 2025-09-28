@@ -1,32 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
-import { useSession } from '@clerk/clerk-react'; // or '@clerk/nextjs' if in Next.js
 
-export function useSupabaseWithClerk() {
-  const { session } = useSession();
+// Create a single Supabase client that will manage its own session
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL!,
+  import.meta.env.VITE_SUPABASE_ANON_KEY!
+);
 
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL!,
-    import.meta.env.VITE_SUPABASE_ANON_KEY!,
-    {
-      auth: {
-        persistSession: false, // since Clerk manages auth
-      },
-      global: {
-        fetch: async (url, options) => {
-          const token = await session?.getToken({ template: 'supabase' });
-          const headers = new Headers(options?.headers);
-          if (token) {
-            headers.set('Authorization', `Bearer ${token}`);
-          }
-          return fetch(url, { ...options, headers });
-        },
-      },
-    }
-  );
-
+// Hook replacement for old useSupabaseWithClerk
+export function useSupabase() {
   return supabase;
 }
-
 
 export type Database = {
   public: {
@@ -187,3 +170,6 @@ export type Database = {
     };
   };
 };
+
+// Optional typed client
+export type SupabaseClient = typeof supabase;

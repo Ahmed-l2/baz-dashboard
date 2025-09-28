@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useSupabaseWithClerk } from '../lib/supabase';
+import { useSupabase } from '../lib/supabase';
 
 export type Category = {
   id: string;
@@ -12,7 +12,7 @@ export type Category = {
   created_at: string;
 };
 export const useCategories = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   return useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -28,7 +28,7 @@ export const useCategories = () => {
 };
 
 export const useCreateCategory = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -59,7 +59,7 @@ export const useCreateCategory = () => {
 };
 
 export const useUpdateCategory = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -89,7 +89,7 @@ export const useUpdateCategory = () => {
 };
 
 export const useDeleteCategory = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({

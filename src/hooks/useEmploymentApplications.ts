@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useSupabaseWithClerk } from '../lib/supabase';
+import { useSupabase } from '../lib/supabase';
 
 export type EmploymentApplication = {
   id: string;
@@ -12,7 +12,7 @@ export type EmploymentApplication = {
 };
 
 export const useEmploymentApplications = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   return useQuery({
     queryKey: ['employment_applications'],
     queryFn: async () => {
@@ -28,7 +28,7 @@ export const useEmploymentApplications = () => {
 };
 
 export const useDeleteEmploymentApplication = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -52,7 +52,7 @@ export const useDeleteEmploymentApplication = () => {
 
 // Optional: If you want to add functionality to create applications from the admin panel
 export const useCreateEmploymentApplication = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -80,7 +80,7 @@ export const useCreateEmploymentApplication = () => {
 
 // Optional: If you want to update applications (though this might not be common)
 export const useUpdateEmploymentApplication = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({

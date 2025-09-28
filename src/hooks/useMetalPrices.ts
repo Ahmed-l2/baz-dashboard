@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useSupabaseWithClerk } from '../lib/supabase';
+import { useSupabase } from '../lib/supabase';
 
 export type MetalPrice = {
   id: string;
@@ -12,7 +12,7 @@ export type MetalPrice = {
 };
 
 export const useMetalPrices = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
 
   return useQuery({
     queryKey: ['metal-prices'],
@@ -40,7 +40,7 @@ export const useMetalPrices = () => {
 };
 
 export const useCreateMetalPrice = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -68,7 +68,7 @@ export const useCreateMetalPrice = () => {
 };
 
 export const useUpdateMetalPrice = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -97,7 +97,7 @@ export const useUpdateMetalPrice = () => {
 };
 
 export const useDeleteMetalPrice = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({

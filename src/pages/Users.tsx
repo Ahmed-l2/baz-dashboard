@@ -55,7 +55,7 @@ interface StatsData {
   online: number;
 }
 
-export function Users() {
+export default function Users() {
   const [users, setUsers] = useState<ClerkUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [statsLoading, setStatsLoading] = useState(true);

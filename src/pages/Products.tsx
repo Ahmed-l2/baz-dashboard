@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Plus, Edit, Trash2, Package,
-  ChevronDown, ChevronRight
+  ChevronDown, ChevronRight, Upload, X
 } from 'lucide-react';
 import {
   useProducts, useCreateProduct,
   useUpdateProduct, useDeleteProduct
 } from '../hooks/useProducts';
 import { useCategories } from '../hooks/useCategories';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -22,6 +22,7 @@ import CategorySelector from '../components/CategorySelector';
 import SpecificationsDisplay from '../components/SpecificationsDisplay';
 import { Loader } from '../components/loader';
 import i18n from '../i18n';
+import { supabase } from '../lib/supabase';
 
 interface ProductSpec {
   spec_name: string;
@@ -40,6 +41,215 @@ interface ProductForm {
   specs: ProductSpec[];
 }
 
+// Upload helper functions for products
+const uploadProductImage = async (file: File): Promise<{ success: boolean; url?: string; error?: string }> => {
+  try {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return { success: false, error: 'Please select an image file' };
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      return { success: false, error: 'File size must be less than 5MB' };
+    }
+
+    // Generate unique filename
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+    // Upload file to Supabase storage
+    const { data, error } = await supabase.storage
+      .from('products')
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Upload error:', error);
+      return { success: false, error: error.message };
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('products')
+      .getPublicUrl(data.path);
+
+    return { success: true, url: publicUrl };
+  } catch (error) {
+    console.error('Upload error:', error);
+    return { success: false, error: 'Failed to upload image' };
+  }
+};
+
+const deleteProductImage = async (imageUrl: string): Promise<boolean> => {
+  try {
+    // Extract filename from URL
+    const urlParts = imageUrl.split('/');
+    const fileName = urlParts[urlParts.length - 1];
+
+    const { error } = await supabase.storage
+      .from('products')
+      .remove([fileName]);
+
+    if (error) {
+      console.error('Delete error:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Delete error:', error);
+    return false;
+  }
+};
+
+// FileUpload component for products
+interface FileUploadProps {
+  value?: string;
+  onChange: (url: string) => void;
+  onRemove: () => void;
+  loading?: boolean;
+  error?: string;
+  label?: string;
+  helperText?: string;
+}
+
+function ProductFileUpload({
+  value,
+  onChange,
+  onRemove,
+  loading = false,
+  error,
+  label,
+  helperText
+}: FileUploadProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFile = async (file: File) => {
+    setUploadLoading(true);
+    setUploadError('');
+    
+    const result = await uploadProductImage(file);
+    
+    if (result.success && result.url) {
+      onChange(result.url);
+    } else if (result.error) {
+      setUploadError(result.error);
+    }
+    
+    setUploadLoading(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {label && (
+        <label className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+      )}
+      
+      {value ? (
+        <div className="relative inline-block">
+          <img
+            src={value}
+            alt="Product preview"
+            className="h-32 w-32 rounded-lg object-cover border border-gray-300"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+            onClick={onRemove}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <div
+          className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
+            dragActive
+              ? 'border-blue-400 bg-blue-50'
+              : 'border-gray-300 hover:border-gray-400'
+          } ${uploadLoading ? 'opacity-50 pointer-events-none' : ''}`}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
+          <div className="text-center">
+            <Package className="mx-auto h-12 w-12 text-gray-400" />
+            <div className="mt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => fileInputRef.current?.click()}
+                loading={uploadLoading}
+                icon={<Upload className="h-4 w-4" />}
+              >
+                Upload Image
+              </Button>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">
+              or drag and drop your image here
+            </p>
+            <p className="text-xs text-gray-400">
+              PNG, JPG, GIF up to 5MB
+            </p>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={handleInputChange}
+          />
+        </div>
+      )}
+      
+      {(uploadError || error) && (
+        <p className="text-sm text-red-600">{uploadError || error}</p>
+      )}
+      
+      {helperText && !uploadError && !error && (
+        <p className="text-sm text-gray-500">{helperText}</p>
+      )}
+    </div>
+  );
+}
+
 export default function Products() {
   const { t } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
@@ -48,6 +258,7 @@ export default function Products() {
   const [currentSpecs, setCurrentSpecs] = useState<ProductSpec[]>([]);
   const [currentCategoryId, setCurrentCategoryId] = useState('');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [uploadError, setUploadError] = useState<string>('');
 
   const { data: products, isLoading } = useProducts();
   const { data: categories } = useCategories();
@@ -55,7 +266,9 @@ export default function Products() {
   const updateMutation = useUpdateProduct();
   const deleteMutation = useDeleteProduct();
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductForm>();
+  const { register, handleSubmit, reset, control, setValue, watch, formState: { errors } } = useForm<ProductForm>();
+  
+  const watchedImageUrl = watch('image_url');
 
   const onSubmit = async (data: ProductForm) => {
     try {
@@ -82,6 +295,7 @@ export default function Products() {
 
   const openModal = (product?: any) => {
     setEditingProduct(product || null);
+    setUploadError('');
     if (product) {
       reset({
         name: product.name,
@@ -106,6 +320,7 @@ export default function Products() {
     setEditingProduct(null);
     setCurrentSpecs([]);
     setCurrentCategoryId('');
+    setUploadError('');
     reset();
   };
 
@@ -117,8 +332,36 @@ export default function Products() {
 
   const handleDelete = async (id: string) => {
     if (window.confirm(t('common.confirm_delete'))) {
+      const product = products?.find(p => p.id === id);
+      
+      // Delete the image from storage if it exists and is from our storage
+      if (product?.image_url && product.image_url.includes('supabase')) {
+        try {
+          await deleteProductImage(product.image_url);
+        } catch (error) {
+          console.error('Failed to delete image from storage:', error);
+        }
+      }
+      
       await deleteMutation.mutateAsync(id);
     }
+  };
+
+  const handleImageUpload = async (url: string) => {
+    setValue('image_url', url);
+    setUploadError('');
+  };
+
+  const handleImageRemove = async () => {
+    const currentUrl = watchedImageUrl;
+    if (currentUrl) {
+      try {
+        await deleteProductImage(currentUrl);
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+      }
+    }
+    setValue('image_url', '');
   };
 
   if (isLoading) return <Loader />;
@@ -150,7 +393,7 @@ export default function Products() {
               <TableHead className='rtl:text-right'>{t('products.type')}</TableHead>
               <TableHead className='rtl:text-right'>{t('products.specifications')}</TableHead>
               <TableHead className='rtl:text-right'>{t('products.image')}</TableHead>
-              <TableHead  className="relative rtl:text-right">
+              <TableHead className="relative rtl:text-right">
                 <span className="sr-only">{t('products.actions')}</span>
               </TableHead>
             </TableHeader>
@@ -305,12 +548,19 @@ export default function Products() {
               />
             </div>
 
-            <Input
-              label={t('products.form.image_url')}
-              {...register('image_url')}
-              placeholder="https://example.com/image.jpg"
-              helperText={t('products.form.image_helper')}
-              isRTL={isRTL}
+            <Controller
+              name="image_url"
+              control={control}
+              render={({ field }) => (
+                <ProductFileUpload
+                  label={t('products.form.image_url')}
+                  value={field.value}
+                  onChange={handleImageUpload}
+                  onRemove={handleImageRemove}
+                  error={errors.image_url?.message}
+                  helperText={t('products.form.image_helper')}
+                />
+              )}
             />
 
             <ProductSpecsManager specs={currentSpecs} onChange={setCurrentSpecs} isRTL={isRTL} />

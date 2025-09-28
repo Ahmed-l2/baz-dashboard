@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useSupabaseWithClerk } from '../lib/supabase';
+import { useSupabase } from '../lib/supabase';
 
 export type Banner = {
+  url: string | undefined;
   id: string;
   title: string | null;
   subtitle: string | null;
@@ -13,7 +14,7 @@ export type Banner = {
 };
 
 export const useBanners = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   return useQuery({
     queryKey: ['banners'],
     queryFn: async () => {
@@ -29,7 +30,7 @@ export const useBanners = () => {
 };
 
 export const useCreateBanner = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -51,7 +52,7 @@ export const useCreateBanner = () => {
 };
 
 export const useUpdateBanner = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,7 +75,7 @@ export const useUpdateBanner = () => {
 };
 
 export const useDeleteBanner = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({

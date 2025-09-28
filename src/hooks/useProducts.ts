@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useSupabaseWithClerk } from '../lib/supabase';
+import { useSupabase } from '../lib/supabase';
 
 export type ProductSpec = {
   id: string;
@@ -29,7 +29,7 @@ export type Product = {
 };
 
 export const useProducts = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   return useQuery({
     queryKey: ['products'],
     queryFn: async () => {
@@ -49,7 +49,7 @@ export const useProducts = () => {
 };
 
 export const useProductSpecs = (productId: string) => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   return useQuery({
     queryKey: ['product-specs', productId],
     queryFn: async () => {
@@ -90,7 +90,7 @@ export const validateProductSpecs = (specs: ProductSpec[], userValues: Record<st
 
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
 
   return useMutation({
     mutationFn: async (data: {
@@ -145,7 +145,7 @@ export const useCreateProduct = () => {
 };
 
 export const useUpdateProduct = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -211,7 +211,7 @@ export const useUpdateProduct = () => {
 };
 
 export const useDeleteProduct = () => {
-  const supabase = useSupabaseWithClerk();
+  const supabase = useSupabase();
   const queryClient = useQueryClient();
 
   return useMutation({

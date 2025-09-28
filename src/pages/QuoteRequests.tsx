@@ -818,7 +818,7 @@ export default function QuoteRequests() {
                       error={errorsCreate.quote_items?.[index]?.product_id?.message}
                       options={products?.map(product => ({
                         value: product.id,
-                        label: product.name
+                        label: isRTL? product.arabic_name : product.name
                       })) || []}
                       placeholder={t('quoteRequests.createModal.selectProduct')}
                     />
