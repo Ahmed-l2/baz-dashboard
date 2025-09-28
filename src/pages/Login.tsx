@@ -19,7 +19,7 @@ export default function Login() {
         {/* رأس مع الشعار */}
         <div className="bg-baz text-white py-8 px-6 text-center flex flex-col items-center">
           <img
-            src="/assets/logo/baz-logo-bg.jpg"
+            src="/assets/logo/image.png"
             alt="شعار باز"
             className="w-16 h-16 mb-3 rounded-xl"
           />

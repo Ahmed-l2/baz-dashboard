@@ -11,7 +11,7 @@ import Banners from './pages/Banners';
 import QuoteRequests from './pages/QuoteRequests';
 import Promotions from './pages/Promotions';
 import Employements from './pages/Employementes';
-import  Users  from './pages/Users';
+import Users from './pages/Users';
 
 import './i18n';
 import i18n from './i18n';
@@ -41,13 +41,8 @@ function AppContent() {
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Main content */}
-      <main
-        className={`
-          min-h-screen pt-16 transition-all duration-300
-          ${i18n.language === 'ar' ? 'lg:pr-16 lg:pr-64' : 'lg:pl-16 lg:pl-64'}
-        `}
-      >
-        <div className="p-4 sm:p-6 lg:p-8">
+      <main className="min-h-screen  transition-all duration-300">
+        <div className="">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/metal-prices" element={<MetalPrices />} />
