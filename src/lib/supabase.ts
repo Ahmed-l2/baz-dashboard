@@ -3,7 +3,20 @@ import { createClient } from '@supabase/supabase-js';
 // Create a single Supabase client that will manage its own session
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!
+  import.meta.env.VITE_SUPABASE_SERVICE_KEY!, // Make sure this is the service_role key
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+      detectSessionInUrl: false
+    },
+    global: {
+      headers: {
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_SERVICE_KEY}`,
+        'apikey': import.meta.env.VITE_SUPABASE_SERVICE_KEY
+      }
+    }
+  }
 );
 
 // Hook replacement for old useSupabaseWithClerk
