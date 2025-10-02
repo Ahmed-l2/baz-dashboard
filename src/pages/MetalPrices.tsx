@@ -254,7 +254,7 @@ export default function MetalPrices() {
         isOpen={isModalOpen}
         onClose={closeModal}
         title={editingPrice ? t('metalPrices.modal.editTitle') : t('metalPrices.modal.addTitle')}
-        
+        isRTL={isRTL}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
           <Input
@@ -262,39 +262,42 @@ export default function MetalPrices() {
             {...register('type', { required: t('metalPrices.form.metalType.required') })}
             error={errors.type?.message}
             placeholder={t('metalPrices.form.metalType.placeholder')}
+            isRTL={isRTL}
           />
-          
+
           <Input
             label={t('metalPrices.form.price.label')}
             type="number"
             step="0.01"
-            {...register('price', { 
+            {...register('price', {
               required: t('metalPrices.form.price.required'),
               min: { value: 0, message: t('metalPrices.form.price.minError') },
               valueAsNumber: true
             })}
             error={errors.price?.message}
             placeholder="0.00"
+            isRTL={isRTL}
           />
-          
+
           <Input
             label={t('metalPrices.form.change.label')}
             type="number"
             step="0.01"
-            {...register('change', { 
+            {...register('change', {
               required: t('metalPrices.form.change.required'),
               valueAsNumber: true
             })}
             error={errors.change?.message}
             placeholder="0.00"
             helperText={t('metalPrices.form.change.helperText')}
+            isRTL={isRTL}
           />
-          
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">{t('metalPrices.form.unit.label')}</label>
+
+          <div className="space-y-1" dir={isRTL ? 'rtl' : 'ltr'}>
+            <label className={`block text-sm font-medium text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{t('metalPrices.form.unit.label')}</label>
             <select
               {...register('unit', { required: t('metalPrices.form.unit.required') })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : 'text-left'}`}
             >
               <option value="">{t('metalPrices.form.unit.placeholder')}</option>
               {getUnitOptions().map((option) => (
@@ -303,9 +306,9 @@ export default function MetalPrices() {
                 </option>
               ))}
             </select>
-            {errors.unit && <p className="text-sm text-red-600">{errors.unit.message}</p>}
+            {errors.unit && <p className={`text-sm text-red-600 ${isRTL ? 'text-right' : 'text-left'}`}>{errors.unit.message}</p>}
           </div>
-          
+
           <div className={`flex justify-end space-x-3 pt-4 ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <Button variant="secondary" onClick={closeModal}>
               {t('common.cancel')}

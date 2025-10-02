@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Plus, Check, X } from 'lucide-react';
 import Button from './ui/Button';
 import Input from './ui/Input';
+import IconPicker from './IconPicker';
 import { useCreateCategory, Category } from '../hooks/useCategories';
 import i18n from '../i18n';
 
@@ -13,14 +14,15 @@ interface CategorySelectorProps {
   isRTL?: boolean;
 }
 
-export default function CategorySelector({ categories, selectedCategoryId, onCategoryChange, isRTL = false }: CategorySelectorProps) {
+export default function CategorySelector({ categories, selectedCategoryId, onCategoryChange, isRTL }: CategorySelectorProps) {
   const { t } = useTranslation();
-  const isRTLLang = isRTL || i18n.dir() === 'rtl';
+  const isRTLDir = isRTL ?? i18n.dir() === 'rtl';
+  const isRTLLang = isRTLDir;
   const [isCreating, setIsCreating] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryArabicName, setNewCategoryArabicName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
-  const [newCategoryIcon, setNewCategoryIcon] = useState('📦');
+  const [newCategoryIcon, setNewCategoryIcon] = useState('package-variant');
 
   const createCategoryMutation = useCreateCategory();
 
@@ -42,7 +44,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
       setNewCategoryName('');
       setNewCategoryArabicName('');
       setNewCategoryDescription('');
-      setNewCategoryIcon('📦');
+      setNewCategoryIcon('package-variant');
       setIsCreating(false);
     } catch (error) {
       // Error is handled by the mutation
@@ -53,13 +55,13 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
     setNewCategoryName('');
     setNewCategoryArabicName('');
     setNewCategoryDescription('');
-    setNewCategoryIcon('📦');
+    setNewCategoryIcon('package-variant');
     setIsCreating(false);
   };
 
   return (
-    <div className="space-y-3" dir={isRTL ? 'rtl' : 'ltr'}>
-      <label className={`block text-sm font-medium text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+    <div className="space-y-3" dir={isRTLDir ? 'rtl' : 'ltr'}>
+      <label className={`block text-sm font-medium text-gray-700 ${isRTLDir ? 'text-right' : 'text-left'}`}>
         {t('products.category')}
       </label>
 
@@ -67,7 +69,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
       <select
         value={selectedCategoryId}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}
+        className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${isRTLDir ? 'text-right' : 'text-left'}`}
       >
         <option value="">{t('common.select_category')}</option>
         {categories.map((category) => {
@@ -95,33 +97,27 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
       ) : (
         <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
           <div className="space-y-3">
-            <div className="grid grid-cols-4 gap-2">
-              <div className="col-span-1">
-                <Input
-                  label={t('common.icon')}
-                  value={newCategoryIcon}
-                  onChange={(e) => setNewCategoryIcon(e.target.value)}
-                  placeholder="📦"
-                  isRTL={isRTL}
-                />
-              </div>
-              <div className="col-span-3">
-                <Input
-                  label={t('common.category_name')}
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder={t('common.category_placeholder')}
-                  isRTL={isRTL}
-                />
-              </div>
-            </div>
+            <Input
+              label={t('common.category_name')}
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder={t('common.category_placeholder')}
+              isRTL={isRTLDir}
+            />
 
             <Input
               label={t('common.arabic_category_name')}
               value={newCategoryArabicName}
               onChange={(e) => setNewCategoryArabicName(e.target.value)}
               placeholder={t('common.arabic_category_placeholder')}
-              isRTL={isRTL}
+              isRTL={isRTLDir}
+            />
+
+            <IconPicker
+              label={t('common.icon')}
+              value={newCategoryIcon}
+              onChange={setNewCategoryIcon}
+              isRTL={isRTLDir}
             />
 
             <Input
@@ -129,10 +125,10 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
               value={newCategoryDescription}
               onChange={(e) => setNewCategoryDescription(e.target.value)}
               placeholder={t('common.description_placeholder')}
-              isRTL={isRTL}
+              isRTL={isRTLDir}
             />
 
-            <div className={`flex gap-2 ${isRTL ? 'justify-start' : 'justify-start'}`}>
+            <div className={`flex gap-2 ${isRTLDir ? 'justify-start' : 'justify-start'}`}>
               <Button
                 type="button"
                 size="sm"

@@ -145,7 +145,7 @@ function ProductFileUpload({
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
@@ -154,15 +154,15 @@ function ProductFileUpload({
   const handleFile = async (file: File) => {
     setUploadLoading(true);
     setUploadError('');
-    
+
     const result = await uploadProductImage(file);
-    
+
     if (result.success && result.url) {
       onChange(result.url);
     } else if (result.error) {
       setUploadError(result.error);
     }
-    
+
     setUploadLoading(false);
   };
 
@@ -179,7 +179,7 @@ function ProductFileUpload({
           {label}
         </label>
       )}
-      
+
       {value ? (
         <div className="relative inline-block">
           <img
@@ -238,11 +238,11 @@ function ProductFileUpload({
           />
         </div>
       )}
-      
+
       {(uploadError || error) && (
         <p className="text-sm text-red-600">{uploadError || error}</p>
       )}
-      
+
       {helperText && !uploadError && !error && (
         <p className="text-sm text-gray-500">{helperText}</p>
       )}
@@ -267,7 +267,7 @@ export default function Products() {
   const deleteMutation = useDeleteProduct();
 
   const { register, handleSubmit, reset, control, setValue, watch, formState: { errors } } = useForm<ProductForm>();
-  
+
   const watchedImageUrl = watch('image_url');
 
   const onSubmit = async (data: ProductForm) => {
@@ -297,10 +297,25 @@ export default function Products() {
     setEditingProduct(product || null);
     setUploadError('');
     if (product) {
+      // Parse types for display in the form
+      let typeString = '';
+      if (typeof product.type === 'string' && product.type) {
+        try {
+          // Try to parse if it's a JSON string
+          const parsed = JSON.parse(product.type);
+          typeString = Array.isArray(parsed) ? parsed.join(', ') : product.type;
+        } catch {
+          // If not JSON, use as is
+          typeString = product.type;
+        }
+      } else if (Array.isArray(product.type)) {
+        typeString = product.type.join(', ');
+      }
+
       reset({
         name: product.name,
         arabic_name: product.arabic_name || '',
-        type: Array.isArray(product.type) ? product.type.join(', ') : (product.type || ''),
+        type: typeString,
         category_id: product.category_id || '',
         image_url: product.image_url || '',
         specs: []
@@ -333,7 +348,7 @@ export default function Products() {
   const handleDelete = async (id: string) => {
     if (window.confirm(t('common.confirm_delete'))) {
       const product = products?.find(p => p.id === id);
-      
+
       // Delete the image from storage if it exists and is from our storage
       if (product?.image_url && product.image_url.includes('supabase')) {
         try {
@@ -342,7 +357,7 @@ export default function Products() {
           console.error('Failed to delete image from storage:', error);
         }
       }
-      
+
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -402,22 +417,41 @@ export default function Products() {
                 <>
                   <TableRow key={p.id}>
                     <TableCell className="font-medium"> {isRTL && p.arabic_name ? p.arabic_name : p.name}</TableCell>
-                    <TableCell>{isRTL && p.arabic_type ? p.arabic_type : p.type || t('common.uncategorized')}</TableCell>
                     <TableCell>
-                      {Array.isArray(p.type) && p.type.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {p.type.map((ty, i) => (
-                            <span
-                              key={i}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                            >
-                              {ty}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-gray-500">{t('products.no_types')}</span>
-                      )}
+                      {(() => {
+                        // Parse types - handle both array and string (JSON string) formats
+                        let types: string[] = [];
+
+                        if (typeof p.type === 'string' && p.type) {
+                          const typeStr = p.type as string;
+                          try {
+                            // Try to parse as JSON array
+                            const parsed = JSON.parse(typeStr);
+                            types = Array.isArray(parsed) ? parsed : [typeStr];
+                          } catch {
+                            // If not valid JSON, treat as comma-separated or single value
+                            types = typeStr.includes(',') ? typeStr.split(',').map((t: string) => t.trim()) : [typeStr];
+                          }
+                        } else if (Array.isArray(p.type)) {
+                          types = p.type;
+                        }
+
+                        if (types.length > 0) {
+                          return (
+                            <div className="flex flex-wrap gap-1">
+                              {types.map((ty, i) => (
+                                <span
+                                  key={i}
+                                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                >
+                                  {ty}
+                                </span>
+                              ))}
+                            </div>
+                          );
+                        }
+                        return <span className="text-gray-500">{t('products.no_types')}</span>;
+                      })()}
                     </TableCell>
                     <TableCell>
                       {p.product_specs?.length ? (

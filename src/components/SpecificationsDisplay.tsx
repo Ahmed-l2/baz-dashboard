@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ProductSpec } from '../hooks/useProducts';
 
 interface SpecificationsDisplayProps {
@@ -6,6 +7,7 @@ interface SpecificationsDisplayProps {
 }
 
 export default function SpecificationsDisplay({ specs, className = '' }: SpecificationsDisplayProps) {
+  const { t } = useTranslation();
   if (!specs || specs.length === 0) {
     return (
       <div className={`text-sm text-gray-500 ${className}`}>
@@ -18,7 +20,7 @@ export default function SpecificationsDisplay({ specs, className = '' }: Specifi
     <div className={`space-y-2 ${className}`}>
       {specs.map((spec, index) => (
         <div key={index} className="text-sm">
-          <span className="font-medium text-gray-900">{spec.spec_name}</span>
+          <span className="font-medium text-gray-900">{t(`specs.${spec.spec_name}`)}</span>
           {spec.unit && <span className="text-gray-500"> ({spec.unit})</span>}
           {(spec.min_value !== null || spec.max_value !== null) && (
             <span className="text-gray-600">

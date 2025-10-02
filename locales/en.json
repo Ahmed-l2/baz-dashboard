@@ -61,7 +61,7 @@
       "types_placeholder": "e.g. Hot Rolled, Cold Rolled (comma separated)",
       "types_helper": "Enter multiple types separated by commas",
       "image_url": "Image URL",
-      "image_helper": "Enter a valid image URL or upload to Supabase storage"
+      "image_helper": "Enter a valid image URL or upload to storage"
     },
     "add_spec": "Add Spec",
     "no_specifications_yet": "No specifications yet. Add some to define product constraints.",
@@ -176,7 +176,11 @@
     "category_placeholder": "e.g. Welded Pipes",
     "arabic_category_placeholder": "مثال: الأنابيب الملحومة",
     "description_optional": "Description (optional)",
-    "description_placeholder": "Brief description of this category"
+    "description_placeholder": "Brief description of this category",
+    "select_icon": "Select an icon",
+    "search_icons": "Search icons...",
+    "no_icons_found": "No icons found",
+    "selected_icon": "Selected icon"
   },
    "banners": {
     "title": "Homepage Banners",
@@ -211,7 +215,7 @@
       "imageUrl": {
         "label": "Image URL",
         "placeholder": "https://example.com/banner.jpg",
-        "helperText": "Enter a valid image URL or upload to Supabase storage"
+        "helperText": "Enter a valid image URL or upload to storage"
       },
       "linkUrl": {
         "label": "Link URL",
