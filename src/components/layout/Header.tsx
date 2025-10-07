@@ -61,18 +61,20 @@ export default function Header({ sidebarOpen, setSidebarOpen }: HeaderProps) {
         {/* Right side */}
         <div className="flex flex-1 justify-end items-center gap-x-4 lg:gap-x-6">
           {/* Language switcher */}
-          <select
-            onChange={(e) => changeLanguage(e.target.value)}
-            value={i18n.language}
-            className="rounded-full border bg-baz/20 text-black px-2 py-2 text-sm focus:outline-none min-w-0"
+          <button
+            onClick={() => changeLanguage(i18n.language === 'ar' ? 'en' : 'ar')}
+            className="bg-baz/10 hover:bg-baz/20 text-baz px-3 py-2 rounded-lg font-medium transition-all duration-200 border border-baz/20 flex items-center gap-2"
           >
-            <option className="bg-white text-baz" value="en">
-              EN
-            </option>
-            <option className="bg-white text-baz" value="ar">
-              AR
-            </option>
-          </select>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389c-.188-.196-.373-.396-.554-.6a19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98a1 1 0 11-1.79.895L15.383 16h-4.764l-.724 1.447a1 1 0 11-1.788-.894l.99-1.98.019-.038 2.99-5.982A1 1 0 0113 8zm-1.382 6h2.764L13 11.236 11.618 14z" clipRule="evenodd" />
+            </svg>
+            <span className="hidden sm:inline">
+              {i18n.language === 'ar' ? 'English' : 'العربية'}
+            </span>
+            <span className="sm:hidden">
+              {i18n.language === 'ar' ? 'EN' : 'ع'}
+            </span>
+          </button>
 
           {/* Separator */}
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" />

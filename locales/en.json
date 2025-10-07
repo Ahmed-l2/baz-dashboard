@@ -2,6 +2,14 @@
   "welcome": "Welcome to the dashboard",
   "logout": "Logout",
 
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Sign In"
+  },
 
    "sidebar": {
     "title":"Baz steel admin",
@@ -92,7 +100,8 @@
     "length": "Length",
     "height": "Height",
     "weight": "Weight",
-    "diameter": "Diameter"
+    "diameter": "Diameter",
+    "dimensions": "Dimensions"
   },
   "units": {
     "mm": "mm (millimeters)",

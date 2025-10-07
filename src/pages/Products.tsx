@@ -403,14 +403,11 @@ export default function Products() {
 
           <Table>
             <TableHeader>
-              <TableHead className='rtl:text-right'>{t('products.product')}</TableHead>
-              <TableHead className='rtl:text-right'>{t('products.category')}</TableHead>
-              <TableHead className='rtl:text-right'>{t('products.type')}</TableHead>
-              <TableHead className='rtl:text-right'>{t('products.specifications')}</TableHead>
-              <TableHead className='rtl:text-right'>{t('products.image')}</TableHead>
-              <TableHead className="relative rtl:text-right">
-                <span className="sr-only">{t('products.actions')}</span>
-              </TableHead>
+              <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>{t('products.product')}</TableHead>
+              <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>{t('products.type')}</TableHead>
+              <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>{t('products.specifications')}</TableHead>
+              <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>{t('products.image')}</TableHead>
+              <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>{t('products.actions')}</TableHead>
             </TableHeader>
             <TableBody>
               {products?.map((p) => (
@@ -420,10 +417,12 @@ export default function Products() {
                     <TableCell>
                       {(() => {
                         // Parse types - handle both array and string (JSON string) formats
+                        // Use arabic_type if RTL, otherwise use type
+                        const typeField = isRTL && p.arabic_type ? p.arabic_type : p.type;
                         let types: string[] = [];
 
-                        if (typeof p.type === 'string' && p.type) {
-                          const typeStr = p.type as string;
+                        if (typeof typeField === 'string' && typeField) {
+                          const typeStr = typeField as string;
                           try {
                             // Try to parse as JSON array
                             const parsed = JSON.parse(typeStr);
@@ -432,8 +431,8 @@ export default function Products() {
                             // If not valid JSON, treat as comma-separated or single value
                             types = typeStr.includes(',') ? typeStr.split(',').map((t: string) => t.trim()) : [typeStr];
                           }
-                        } else if (Array.isArray(p.type)) {
-                          types = p.type;
+                        } else if (Array.isArray(typeField)) {
+                          types = typeField;
                         }
 
                         if (types.length > 0) {
@@ -485,7 +484,7 @@ export default function Products() {
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="text-right space-x-2 rtl:space-x-reverse">
+                    <TableCell className="text-left space-x-2 rtl:text-right rtl:space-x-reverse">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -508,7 +507,7 @@ export default function Products() {
 
                   {expandedRows.has(p.id) && p.product_specs?.length && (
                     <TableRow>
-                      <TableCell colSpan={6} className="bg-gray-50 border-t-0">
+                      <TableCell colSpan={5} className="bg-gray-50 border-t-0">
                         <div className="py-4">
                           <h4 className="text-sm font-medium text-gray-900 mb-3">
                             {t('products.product_specifications')}
