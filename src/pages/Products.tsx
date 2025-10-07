@@ -39,6 +39,7 @@ interface ProductForm {
   category_id: string;
   image_url: string;
   specs: ProductSpec[];
+  featured: boolean;
 }
 
 // Upload helper functions for products
@@ -281,6 +282,7 @@ export default function Products() {
         category_id: currentCategoryId || undefined,
         image_url: data.image_url || undefined,
         specs: currentSpecs.filter(spec => spec.spec_name && spec.unit),
+        featured: data.featured || false,
       };
       if (editingProduct) {
         await updateMutation.mutateAsync({ id: editingProduct.id, ...payload });
@@ -318,12 +320,13 @@ export default function Products() {
         type: typeString,
         category_id: product.category_id || '',
         image_url: product.image_url || '',
-        specs: []
+        specs: [],
+        featured: product.featured || false
       });
       setCurrentCategoryId(product.category_id || '');
       setCurrentSpecs(product.product_specs || []);
     } else {
-      reset({ name: '', arabic_name: '', type: '', category_id: '', image_url: '', specs: [] });
+      reset({ name: '', arabic_name: '', type: '', category_id: '', image_url: '', specs: [], featured: false });
       setCurrentCategoryId('');
       setCurrentSpecs([]);
     }
@@ -578,6 +581,41 @@ export default function Products() {
                 selectedCategoryId={currentCategoryId}
                 onCategoryChange={setCurrentCategoryId}
                 isRTL={isRTL}
+              />
+            </div>
+
+            {/* Featured Product Toggle */}
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex-1">
+                <label htmlFor="featured-toggle" className="text-sm font-medium text-gray-700 cursor-pointer">
+                  {t('products.form.featured')}
+                </label>
+                <p className="text-xs text-gray-500 mt-1">
+                  {t('products.form.featured_helper')}
+                </p>
+              </div>
+              <Controller
+                name="featured"
+                control={control}
+                defaultValue={false}
+                render={({ field }) => (
+                  <button
+                    id="featured-toggle"
+                    type="button"
+                    role="switch"
+                    aria-checked={field.value}
+                    onClick={() => field.onChange(!field.value)}
+                    className={`${
+                      field.value ? 'bg-baz' : 'bg-gray-200'
+                    } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-baz focus:ring-offset-2`}
+                  >
+                    <span
+                      className={`${
+                        field.value ? (isRTL ? 'translate-x-[-20px]' : 'translate-x-5') : 'translate-x-0'
+                      } pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
+                    />
+                  </button>
+                )}
               />
             </div>
 

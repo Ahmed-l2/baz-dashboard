@@ -69,7 +69,9 @@
       "types_placeholder": "e.g. Hot Rolled, Cold Rolled (comma separated)",
       "types_helper": "Enter multiple types separated by commas",
       "image_url": "Image URL",
-      "image_helper": "Enter a valid image URL or upload to storage"
+      "image_helper": "Enter a valid image URL or upload to storage",
+      "featured": "Featured Product",
+      "featured_helper": "This product will appear in the featured products section"
     },
     "add_spec": "Add Spec",
     "no_specifications_yet": "No specifications yet. Add some to define product constraints.",

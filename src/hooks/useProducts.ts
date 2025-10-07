@@ -95,9 +95,12 @@ export const useCreateProduct = () => {
   return useMutation({
     mutationFn: async (data: {
       name: string;
+      arabic_name?: string;
       type?: string[];
+      arabic_type?: string[];
       image_url?: string;
       category_id?: string;
+      featured?: boolean;
       specs?: { spec_name: string; unit: string; min_value?: number; max_value?: number; notes?: string }[]
     }) => {
       // Insert the product first
@@ -105,9 +108,12 @@ export const useCreateProduct = () => {
         .from('products')
         .insert([{
           name: data.name,
+          arabic_name: data.arabic_name || null,
           type: data.type || null,
+          arabic_type: data.arabic_type || null,
           image_url: data.image_url || null,
-          category_id: data.category_id || null
+          category_id: data.category_id || null,
+          featured: data.featured || false
         }])
         .select()
         .single();
@@ -152,17 +158,23 @@ export const useUpdateProduct = () => {
     mutationFn: async ({ id, specs, ...data }: {
       id: string;
       name?: string;
+      arabic_name?: string;
       type?: string[];
+      arabic_type?: string[];
       image_url?: string;
       category_id?: string;
+      featured?: boolean;
       specs?: { spec_name: string; unit: string; min_value?: number; max_value?: number; notes?: string }[]
     }) => {
       // Update the product
       const updateData: any = {};
       if (data.name !== undefined) updateData.name = data.name;
+      if (data.arabic_name !== undefined) updateData.arabic_name = data.arabic_name;
       if (data.type !== undefined) updateData.type = data.type;
+      if (data.arabic_type !== undefined) updateData.arabic_type = data.arabic_type;
       if (data.image_url !== undefined) updateData.image_url = data.image_url;
       if (data.category_id !== undefined) updateData.category_id = data.category_id;
+      if (data.featured !== undefined) updateData.featured = data.featured;
 
       const { error: productError } = await supabase
         .from('products')
