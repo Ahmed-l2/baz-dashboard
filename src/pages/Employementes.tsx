@@ -32,7 +32,7 @@ export default function EmploymentApplications() {
   };
 
   const formatDate = (dateString: string) => {
-    const locale = isRTL ? 'ar-SA' : 'en-US';
+    const locale = isRTL ? 'ar-EG' : 'en-US';
     return new Date(dateString).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',

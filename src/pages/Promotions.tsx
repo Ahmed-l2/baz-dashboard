@@ -226,9 +226,9 @@ export default function Promotions() {
       if (isNaN(date.getTime())) return t('promotions.common.invalidDate');
 
       if (formatType === 'short') {
-        return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric' });
+        return date.toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' });
       } else {
-        return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
+        return date.toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
           month: 'short',
           day: 'numeric',
           year: 'numeric'

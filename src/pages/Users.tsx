@@ -192,7 +192,7 @@ export default function Users() {
 
   const formatDate = (timestamp: number | null): string => {
     if (!timestamp) return t('users.never', 'Never');
-    return new Date(timestamp).toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
+    return new Date(timestamp).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
