@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  Bell, 
-  Send, 
-  Users, 
+import {
+  Bell,
+  Send,
+  Users,
   Calendar,
   Edit,
   Trash2,
@@ -18,12 +18,12 @@ import {
 
 // Import the separated services and templates
 import { oneSignalService } from '../lib/onesignal/oneSignalService';
-import { 
-  steelNotificationTemplates, 
-  templateCategories, 
+import {
+  steelNotificationTemplates,
+  templateCategories,
   getTemplateById,
   getAllTemplates,
-  type NotificationTemplate 
+  type NotificationTemplate
 } from '../lib/data/notificationTemplates';
 
 export default function Promotions() {
@@ -35,13 +35,16 @@ export default function Promotions() {
   const [promoMessage, setPromoMessage] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  
+
+  // Separate notification content language from UI language
+  const [notificationLang, setNotificationLang] = useState<'en' | 'ar'>('ar');
+
   // Notification states
   const [notification, setNotification] = useState<{
     type: 'success' | 'error' | null;
     message: string;
   }>({ type: null, message: '' });
-  
+
   // Modal states
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -99,8 +102,9 @@ export default function Promotions() {
     const template = getTemplateById(templateId);
     if (template) {
       setSelectedTemplate(templateId);
-      setPromoTitle(template.title);
-      setPromoMessage(template.message);
+      // Use the selected notification language for template content
+      setPromoTitle(notificationLang === 'ar' ? template.titleAr : template.title);
+      setPromoMessage(notificationLang === 'ar' ? template.messageAr : template.message);
       setImageUrl(template.imageUrl || '');
     }
   };
@@ -137,9 +141,9 @@ export default function Promotions() {
           image_url: imageUrl || null
         };
         setSentNotifications(prev => [newNotification, ...prev]);
-        
+
         showNotification('success', t('promotions.notifications.sentSuccessfully'));
-        
+
         // Clear form after successful send
         setPromoTitle('');
         setPromoMessage('');
@@ -182,14 +186,14 @@ export default function Promotions() {
     setLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Update notification in list
-      setSentNotifications(prev => prev.map(n => 
-        n.id === selectedNotification?.id 
+      setSentNotifications(prev => prev.map(n =>
+        n.id === selectedNotification?.id
           ? { ...n, title: promoTitle, message: promoMessage }
           : n
       ));
-      
+
       showNotification('success', t('promotions.notifications.updatedSuccessfully'));
       setShowEditModal(false);
       setPromoTitle('');
@@ -205,7 +209,7 @@ export default function Promotions() {
   const confirmDelete = async () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       setSentNotifications(prev => prev.filter(n => n.id !== selectedNotification?.id));
       showNotification('success', t('promotions.notifications.deletedSuccessfully'));
       setShowDeleteModal(false);
@@ -220,14 +224,14 @@ export default function Promotions() {
     try {
       const date = new Date(dateValue);
       if (isNaN(date.getTime())) return t('promotions.common.invalidDate');
-      
+
       if (formatType === 'short') {
         return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric' });
       } else {
-        return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', { 
-          month: 'short', 
-          day: 'numeric', 
-          year: 'numeric' 
+        return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
         });
       }
     } catch (error) {
@@ -251,7 +255,7 @@ export default function Promotions() {
     },
     {
       name: t('promotions.stats.thisMonth'),
-      value: sentNotifications.filter(n => 
+      value: sentNotifications.filter(n =>
         new Date(n.sent_at).getMonth() === new Date().getMonth()
       ).length,
       icon: Calendar,
@@ -274,8 +278,8 @@ export default function Promotions() {
           {/* Notification Toast */}
           {notification.type && (
             <div className={`fixed top-4 ${isRTL ? 'left-4' : 'right-4'} z-50 flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-lg shadow-lg max-w-sm sm:max-w-md ${
-              notification.type === 'success' 
-                ? 'bg-green-50 border border-green-200 text-green-800' 
+              notification.type === 'success'
+                ? 'bg-green-50 border border-green-200 text-green-800'
                 : 'bg-red-50 border border-red-200 text-red-800'
             }`}>
               {notification.type === 'success' ? (
@@ -338,25 +342,85 @@ export default function Promotions() {
                 <p className="text-sm text-gray-500 mb-4 sm:mb-6">
                   {t('promotions.form.description')}
                 </p>
-                
+
                 <div className="space-y-4 sm:space-y-6">
+                  {/* Notification Content Language Toggle */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className={`flex items-center justify-between gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Target className="h-5 w-5 text-amber-600" />
+                        <label className={`text-sm font-medium text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+                          {t('promotions.form.notificationLanguage')}
+                        </label>
+                      </div>
+                      <div className="flex bg-white rounded-lg border border-gray-300 p-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setNotificationLang('ar');
+                            // Re-apply template if one is selected
+                            if (selectedTemplate && selectedTemplate !== 'custom') {
+                              const template = getTemplateById(selectedTemplate);
+                              if (template) {
+                                setPromoTitle(template.titleAr);
+                                setPromoMessage(template.messageAr);
+                              }
+                            }
+                          }}
+                          className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
+                            notificationLang === 'ar'
+                              ? 'bg-baz text-white'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          العربية
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setNotificationLang('en');
+                            // Re-apply template if one is selected
+                            if (selectedTemplate && selectedTemplate !== 'custom') {
+                              const template = getTemplateById(selectedTemplate);
+                              if (template) {
+                                setPromoTitle(template.title);
+                                setPromoMessage(template.message);
+                              }
+                            }
+                          }}
+                          className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
+                            notificationLang === 'en'
+                              ? 'bg-baz text-white'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          English
+                        </button>
+                      </div>
+                    </div>
+                    <p className={`text-xs text-amber-700 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+                      {t('promotions.form.notificationLanguageHint')}
+                    </p>
+                  </div>
+
                   {/* Template Selection */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-500">
+                    <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>
                       {t('promotions.form.templateLabel')}
                     </label>
                     <select
                       value={selectedTemplate}
                       onChange={(e) => handleTemplateSelect(e.target.value)}
-                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-baz/15 border-gray-300 focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent rounded-md"
+                      className={`mt-1 block w-full px-3 py-2 text-base bg-gray-500/15 border-gray-300 focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent rounded-md ${isRTL ? 'text-right' : 'text-left'}`}
+                      dir={notificationLang === 'ar' ? 'rtl' : 'ltr'}
                     >
                       <option value="">{t('promotions.form.templateSelect')}</option>
                       <option value="custom">{t('promotions.form.customMessage')}</option>
-                      {Object.entries(templateCategories).map(([category, label]) => (
-                        <optgroup key={category} label={label}>
+                      {Object.entries(templateCategories).map(([category, labels]) => (
+                        <optgroup key={category} label={isRTL ? labels.ar : labels.en}>
                           {steelNotificationTemplates[category]?.map((template) => (
                             <option key={template.id} value={template.id}>
-                              {template.name}
+                              {notificationLang === 'ar' ? template.nameAr : template.name}
                             </option>
                           ))}
                         </optgroup>
@@ -366,7 +430,7 @@ export default function Promotions() {
 
                   {/* Title Input */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-500">
+                    <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>
                       {t('promotions.form.titleLabel')}
                     </label>
                     <input
@@ -374,13 +438,14 @@ export default function Promotions() {
                       placeholder={t('promotions.form.titlePlaceholder')}
                       value={promoTitle}
                       onChange={(e) => setPromoTitle(e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 bg-baz/15 rounded-md shadow-sm py-2 px-3 sm:py-3 sm:px-4 text-base focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent"
+                      className={`mt-1 block w-full border border-gray-300 bg-gray-500/15 rounded-md shadow-sm py-2 px-3 sm:py-3 sm:px-4 text-base focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent ${notificationLang === 'ar' ? 'text-right' : 'text-left'}`}
+                      dir={notificationLang === 'ar' ? 'rtl' : 'ltr'}
                     />
                   </div>
 
                   {/* Message Input */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-500">
+                    <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>
                       {t('promotions.form.messageLabel')}
                     </label>
                     <textarea
@@ -388,7 +453,8 @@ export default function Promotions() {
                       value={promoMessage}
                       onChange={(e) => setPromoMessage(e.target.value)}
                       rows={4}
-                      className="mt-1 block w-full border border-gray-300 bg-baz/15 rounded-md shadow-sm py-2 px-3 text-base focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent"
+                      className={`mt-1 block w-full border border-gray-300 bg-gray-500/15 rounded-md shadow-sm py-2 px-3 text-base focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent ${notificationLang === 'ar' ? 'text-right' : 'text-left'}`}
+                      dir={notificationLang === 'ar' ? 'rtl' : 'ltr'}
                     />
                   </div>
 
@@ -402,7 +468,7 @@ export default function Promotions() {
                       placeholder={t('promotions.form.imagePlaceholder')}
                       value={imageUrl}
                       onChange={(e) => setImageUrl(e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 bg-baz/15 rounded-md shadow-sm py-2 px-3 text-base focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent"
+                      className="mt-1 block w-full border border-gray-300 bg-gray-500/15 rounded-md shadow-sm py-2 px-3 text-base focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500">
                       {t('promotions.form.imageHint')}
@@ -433,9 +499,9 @@ export default function Promotions() {
                             )}
                             {imageUrl && (
                               <div className="mt-2">
-                                <img 
-                                  src={imageUrl} 
-                                  alt="Notification preview" 
+                                <img
+                                  src={imageUrl}
+                                  alt="Notification preview"
                                   className="max-w-full h-20 sm:h-24 object-cover rounded border"
                                   onError={(e) => {
                                     e.currentTarget.style.display = 'none';
@@ -507,9 +573,9 @@ export default function Promotions() {
       {/* View Modal */}
       {showViewModal && selectedNotification && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm sm:max-w-md">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-lg font-medium text-gray-900">{t('promotions.modals.view.title')}</h3>
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm sm:max-w-md" dir={isRTL ? 'rtl' : 'ltr'}>
+            <div className={`flex items-center justify-between mb-3 sm:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <h3 className={`text-lg font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.view.title')}</h3>
               <button
                 onClick={() => setShowViewModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -519,27 +585,27 @@ export default function Promotions() {
             </div>
             <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-500">{t('promotions.modals.view.titleLabel')}</label>
-                <p className="mt-1 text-sm text-gray-900">{selectedNotification.title}</p>
+                <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.view.titleLabel')}</label>
+                <p className={`mt-1 text-sm text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{selectedNotification.title}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-500">{t('promotions.modals.view.messageLabel')}</label>
-                <p className="mt-1 text-sm text-gray-900">{selectedNotification.message}</p>
+                <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.view.messageLabel')}</label>
+                <p className={`mt-1 text-sm text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{selectedNotification.message}</p>
               </div>
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-500">{t('promotions.modals.view.recipientsLabel')}</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedNotification.recipients.toLocaleString()}</p>
+                  <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.view.recipientsLabel')}</label>
+                  <p className={`mt-1 text-sm text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{selectedNotification.recipients.toLocaleString()}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-500">{t('promotions.modals.view.sentDateLabel')}</label>
-                  <p className="mt-1 text-sm text-gray-900">
+                  <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.view.sentDateLabel')}</label>
+                  <p className={`mt-1 text-sm text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                     {safeFormatDate(selectedNotification.sent_at, 'full')}
                   </p>
                 </div>
               </div>
             </div>
-            <div className="flex justify-end mt-4 sm:mt-6">
+            <div className={`flex mt-4 sm:mt-6 ${isRTL ? 'justify-start' : 'justify-end'}`}>
               <button
                 onClick={() => setShowViewModal(false)}
                 className="px-3 py-2 sm:px-4 sm:py-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
@@ -554,9 +620,9 @@ export default function Promotions() {
       {/* Edit Modal */}
       {showEditModal && selectedNotification && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg lg:max-w-2xl">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-lg font-medium text-gray-900">{t('promotions.modals.edit.title')}</h3>
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg lg:max-w-2xl" dir={isRTL ? 'rtl' : 'ltr'}>
+            <div className={`flex items-center justify-between mb-3 sm:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <h3 className={`text-lg font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.edit.title')}</h3>
               <button
                 onClick={() => {
                   setShowEditModal(false);
@@ -571,25 +637,27 @@ export default function Promotions() {
             </div>
             <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-500">{t('promotions.modals.edit.titleLabel')}</label>
+                <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.edit.titleLabel')}</label>
                 <input
                   type="text"
                   value={promoTitle}
                   onChange={(e) => setPromoTitle(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent"
+                  className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent ${isRTL ? 'text-right' : 'text-left'}`}
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-500">{t('promotions.modals.edit.messageLabel')}</label>
+                <label className={`block text-sm font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.edit.messageLabel')}</label>
                 <textarea
                   value={promoMessage}
                   onChange={(e) => setPromoMessage(e.target.value)}
                   rows={4}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent"
+                  className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-baz focus:border-transparent ${isRTL ? 'text-right' : 'text-left'}`}
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <div className={`flex gap-2 sm:gap-3 mt-4 sm:mt-6 ${isRTL ? 'justify-start flex-row-reverse' : 'justify-end'}`}>
               <button
                 onClick={() => {
                   setShowEditModal(false);
@@ -616,9 +684,9 @@ export default function Promotions() {
       {/* Delete Modal */}
       {showDeleteModal && selectedNotification && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm sm:max-w-md">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-lg font-medium text-gray-900">{t('promotions.modals.delete.title')}</h3>
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm sm:max-w-md" dir={isRTL ? 'rtl' : 'ltr'}>
+            <div className={`flex items-center justify-between mb-3 sm:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <h3 className={`text-lg font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('promotions.modals.delete.title')}</h3>
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -626,10 +694,10 @@ export default function Promotions() {
                 <X className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
-            <p className="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6">
+            <p className={`text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
               {t('promotions.modals.delete.confirmMessage', { title: selectedNotification.title })}
             </p>
-            <div className="flex justify-end gap-2 sm:gap-3">
+            <div className={`flex gap-2 sm:gap-3 ${isRTL ? 'justify-start flex-row-reverse' : 'justify-end'}`}>
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="px-3 py-2 sm:px-4 sm:py-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"

@@ -46,8 +46,8 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className={`w-full ${maxWidthClasses[maxWidth]} transform overflow-hidden rounded-2xl bg-white p-6 ${isRTL ? 'text-right' : 'text-left'} align-middle shadow-xl transition-all`}>
-                <div className={`flex items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Dialog.Panel className={`w-full ${maxWidthClasses[maxWidth]} max-h-[90vh] flex flex-col transform rounded-2xl bg-white ${isRTL ? 'text-right' : 'text-left'} align-middle shadow-xl transition-all`}>
+                <div className={`flex items-center justify-between p-6 pb-4 flex-shrink-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <Dialog.Title as="h3" className={`text-lg font-medium leading-6 text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                     {title}
                   </Dialog.Title>
@@ -58,7 +58,9 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
                     <X className="h-5 w-5" />
                   </button>
                 </div>
-                {children}
+                <div className="overflow-y-auto px-6 pb-6 flex-1">
+                  {children}
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

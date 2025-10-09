@@ -3,8 +3,11 @@
 export interface NotificationTemplate {
   id: string;
   name: string;
+  nameAr: string;
   title: string;
+  titleAr: string;
   message: string;
+  messageAr: string;
   category: string;
   imageUrl?: string;
 }
@@ -14,104 +17,140 @@ export const steelNotificationTemplates: { [category: string]: NotificationTempl
     {
       id: 'steel_sale',
       name: 'Steel Products Sale',
+      nameAr: 'تخفيض على المنتجات المعدنية',
       category: 'sales',
-      title: '🔥 عرض خاص على المنتجات المعدنية - خصم 15%',
-      message: 'احصل على منتجات معدنية عالية الجودة بأسعار لا تُقاوم! عرض محدود على جميع منتجاتنا المعدنية.',
+      title: '🔥 Special Offer on Steel Products - 15% Discount',
+      titleAr: '🔥 عرض خاص على المنتجات المعدنية - خصم 15%',
+      message: 'Get high-quality steel products at unbeatable prices! Limited offer on all our steel products.',
+      messageAr: 'احصل على منتجات معدنية عالية الجودة بأسعار لا تُقاوم! عرض محدود على جميع منتجاتنا المعدنية.',
     },
     {
       id: 'bulk_discount',
       name: 'Bulk Order Discount',
+      nameAr: 'خصم الكميات الكبيرة',
       category: 'sales',
-      title: '💰 عرض الكميات الكبيرة - خصم يصل إلى 25%',
-      message: 'اطلب بالجملة واحصل على خصومات كبيرة! مثالي لمشاريع البناء والاحتياجات الصناعية.',
+      title: '💰 Bulk Order Special - Up to 25% Discount',
+      titleAr: '💰 عرض الكميات الكبيرة - خصم يصل إلى 25%',
+      message: 'Order in bulk and get massive discounts! Perfect for construction projects and industrial needs.',
+      messageAr: 'اطلب بالجملة واحصل على خصومات كبيرة! مثالي لمشاريع البناء والاحتياجات الصناعية.',
     },
     {
       id: 'weekend_special',
       name: 'Weekend Special',
+      nameAr: 'عرض نهاية الأسبوع',
       category: 'sales',
-      title: '🎉 عرض نهاية الأسبوع - خصم 20% على جميع المنتجات',
-      message: 'استمتع بخصم 20% على جميع المنتجات المعدنية خلال نهاية الأسبوع. اطلب عرض سعر الآن!',
+      title: '🎉 Weekend Special - 20% Off All Products',
+      titleAr: '🎉 عرض نهاية الأسبوع - خصم 20% على جميع المنتجات',
+      message: 'Enjoy 20% discount on all steel products this weekend. Request a quote now!',
+      messageAr: 'استمتع بخصم 20% على جميع المنتجات المعدنية خلال نهاية الأسبوع. اطلب عرض سعر الآن!',
     },
     {
       id: 'new_customer_offer',
       name: 'New Customer Offer',
+      nameAr: 'عرض العملاء الجدد',
       category: 'sales',
-      title: '🎁 عرض العملاء الجدد - خصم 10%',
-      message: 'مرحباً بك في باز ستيل! احصل على خصم 10% على أول طلب عرض سعر لك.',
+      title: '🎁 New Customer Offer - 10% Discount',
+      titleAr: '🎁 عرض العملاء الجدد - خصم 10%',
+      message: 'Welcome to Baz Steel! Get 10% off your first quote request.',
+      messageAr: 'مرحباً بك في باز ستيل! احصل على خصم 10% على أول طلب عرض سعر لك.',
     }
   ],
-  
+
   updates: [
     {
       id: 'price_update',
       name: 'Steel Price Update',
+      nameAr: 'تحديث أسعار المعادن',
       category: 'updates',
-      title: 'تحديث أسعار المعادن - أسعار جديدة متاحة',
-      message: 'تم تحديث أسعار المعادن حسب السوق العالمي. اطلب عرض سعر محدث الآن.',
+      title: '📊 Steel Price Update - New Prices Available',
+      titleAr: '📊 تحديث أسعار المعادن - أسعار جديدة متاحة',
+      message: 'Steel prices updated according to global market. Request an updated quote now.',
+      messageAr: 'تم تحديث أسعار المعادن حسب السوق العالمي. اطلب عرض سعر محدث الآن.',
     },
     {
       id: 'new_steel_grade',
       name: 'New Steel Grade',
+      nameAr: 'منتج جديد - درجة فولاذ',
       category: 'updates',
-      title: 'منتج جديد - درجة فولاذ عالية الجودة',
-      message: 'نقدم درجات فولاذ عالية القوة للتطبيقات الصناعية المتقدمة. اطلب عرض سعر للمنتجات الجديدة.',
+      title: '🆕 New Product - High-Grade Steel',
+      titleAr: '🆕 منتج جديد - درجة فولاذ عالية الجودة',
+      message: 'Introducing high-strength steel grades for advanced industrial applications. Request a quote for new products.',
+      messageAr: 'نقدم درجات فولاذ عالية القوة للتطبيقات الصناعية المتقدمة. اطلب عرض سعر للمنتجات الجديدة.',
     },
     {
       id: 'inventory_update',
       name: 'Inventory Update',
+      nameAr: 'تحديث المخزون',
       category: 'updates',
-      title: 'تحديث المخزون - منتجات جديدة متاحة',
-      message: 'وصلت شحنة جديدة من أفضل المنتجات المعدنية. اطلب عرض سعر من المخزون الجديد.',
+      title: '📦 Inventory Update - New Products Available',
+      titleAr: '📦 تحديث المخزون - منتجات جديدة متاحة',
+      message: 'New shipment of premium steel products has arrived. Request a quote from our fresh inventory.',
+      messageAr: 'وصلت شحنة جديدة من أفضل المنتجات المعدنية. اطلب عرض سعر من المخزون الجديد.',
     }
   ],
-  
+
   services: [
     {
       id: 'quote_service',
       name: 'Quote Request Service',
+      nameAr: 'خدمة طلب عروض الأسعار',
       category: 'services',
-      title: '📋 خدمة طلب عروض الأسعار',
-      message: 'احصل على عرض سعر مجاني ومفصل لجميع احتياجاتك من المنتجات المعدنية خلال 24 ساعة.',
+      title: '📋 Quote Request Service',
+      titleAr: '📋 خدمة طلب عروض الأسعار',
+      message: 'Get a free and detailed quote for all your steel product needs within 24 hours.',
+      messageAr: 'احصل على عرض سعر مجاني ومفصل لجميع احتياجاتك من المنتجات المعدنية خلال 24 ساعة.',
     },
     {
       id: 'consultation_service',
       name: 'Technical Consultation',
+      nameAr: 'استشارة فنية مجانية',
       category: 'services',
-      title: '🔧 استشارة فنية مجانية',
-      message: 'احصل على استشارة فنية مجانية من خبرائنا لاختيار أفضل المنتجات المعدنية لمشروعك.',
+      title: '🔧 Free Technical Consultation',
+      titleAr: '🔧 استشارة فنية مجانية',
+      message: 'Get free technical consultation from our experts to choose the best steel products for your project.',
+      messageAr: 'احصل على استشارة فنية مجانية من خبرائنا لاختيار أفضل المنتجات المعدنية لمشروعك.',
     },
     {
       id: 'delivery_service',
       name: 'Delivery Service',
+      nameAr: 'خدمة التوصيل السريع',
       category: 'services',
-      title: '🚛 خدمة التوصيل السريع',
-      message: 'خدمة توصيل سريعة وموثوقة لجميع المنتجات المعدنية داخل منطقة جدة ومكة.',
+      title: '🚛 Fast Delivery Service',
+      titleAr: '🚛 خدمة التوصيل السريع',
+      message: 'Fast and reliable delivery service for all steel products in Jeddah and Makkah regions.',
+      messageAr: 'خدمة توصيل سريعة وموثوقة لجميع المنتجات المعدنية داخل منطقة جدة ومكة.',
     }
   ],
-  
+
   quality: [
     {
       id: 'quality_assurance',
       name: 'Quality Assurance',
+      nameAr: 'ضمان الجودة',
       category: 'quality',
-      title: '✅ ضمان الجودة - شهادات دولية',
-      message: 'جميع منتجاتنا المعدنية معتمدة دولياً وتخضع لأعلى معايير الجودة والسلامة.',
+      title: '✅ Quality Assurance - International Certifications',
+      titleAr: '✅ ضمان الجودة - شهادات دولية',
+      message: 'All our steel products are internationally certified and meet the highest quality and safety standards.',
+      messageAr: 'جميع منتجاتنا المعدنية معتمدة دولياً وتخضع لأعلى معايير الجودة والسلامة.',
     },
     {
       id: 'testing_services',
       name: 'Material Testing',
+      nameAr: 'خدمات فحص المواد',
       category: 'quality',
-      title: '🔬 خدمات فحص المواد',
-      message: 'نوفر خدمات فحص شاملة للمواد المعدنية لضمان المطابقة للمواصفات المطلوبة.',
+      title: '🔬 Material Testing Services',
+      titleAr: '🔬 خدمات فحص المواد',
+      message: 'We provide comprehensive testing services for steel materials to ensure compliance with required specifications.',
+      messageAr: 'نوفر خدمات فحص شاملة للمواد المعدنية لضمان المطابقة للمواصفات المطلوبة.',
     }
   ]
 };
 
 export const templateCategories = {
-  sales: 'العروض والمبيعات',
-  updates: 'تحديثات المنتجات', 
-  services: 'الخدمات',
-  quality: 'الجودة والاعتماد'
+  sales: { en: 'Sales & Offers', ar: 'العروض والمبيعات' },
+  updates: { en: 'Product Updates', ar: 'تحديثات المنتجات' },
+  services: { en: 'Services', ar: 'الخدمات' },
+  quality: { en: 'Quality & Certification', ar: 'الجودة والاعتماد' }
 };
 
 // Helper function to get templates by category

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Trash2, Ban, Shield, Mail, Phone, Wallet, Key, Calendar, Clock, Eye, 
-  Info, Users as UsersIcon, UserCheck, UserX, ShieldAlert, ChevronLeft, 
-  ChevronRight, Plus, ImageIcon, Edit 
+import {
+  Trash2, Ban, Shield, Mail, Phone, Wallet, Key, Calendar, Clock, Eye,
+  Info, Users as UsersIcon, UserCheck, UserX, ShieldAlert, ChevronLeft,
+  ChevronRight, Plus, ImageIcon, Edit
 } from 'lucide-react';
 import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
@@ -74,11 +74,11 @@ export default function Users() {
     highSecurity: 0,
     online: 0,
   });
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<ClerkUser | null>(null);
   const [confirmAction, setConfirmAction] = useState<{ type: 'ban' | 'delete'; user: ClerkUser } | null>(null);
-  
+
   const limit = 10;
 
   const getSecurityScore = (user: ClerkUser): number => {
@@ -98,12 +98,12 @@ export default function Users() {
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-all-users?limit=250&order_by=-created_at`
         );
-        
+
         if (!response.ok) throw new Error(`Failed to fetch stats: ${response.status}`);
-        
+
         const data = await response.json();
         let allUsers: ClerkUser[] = [];
-        
+
         if (Array.isArray(data)) {
           allUsers = data;
         } else if (data && typeof data === 'object') {
@@ -135,10 +135,10 @@ export default function Users() {
         setLoading(true);
         const offset = (currentPage - 1) * limit;
         const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-all-users?limit=${limit}&offset=${offset}&order_by=-created_at`;
-        
+
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Failed to fetch users: ${response.status}`);
-        
+
         const data = await response.json();
         let usersArray: ClerkUser[] = [];
         let totalCountValue = 0;
@@ -174,13 +174,13 @@ export default function Users() {
       if (!users.length) return;
       const currentTime = Date.now();
       const activeUserIds = new Set<string>();
-      
+
       users.forEach(user => {
         if (user.last_active_at && (currentTime - user.last_active_at) <= 300000) {
           activeUserIds.add(user.id);
         }
       });
-      
+
       setActiveUsers(activeUserIds);
       setStats(prev => ({ ...prev, online: activeUserIds.size }));
     };
@@ -203,7 +203,7 @@ export default function Users() {
 
   const handleBanUser = async (user: ClerkUser) => {
     const action = user.banned ? 'unlock' : 'lock';
-    
+
     // Optimistic update
     setUsers(users.map(u => u.id === user.id ? { ...u, banned: !u.banned } : u));
     setStats(prev => ({
@@ -299,8 +299,8 @@ export default function Users() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-red-600">{t('users.error.title')}</h3>
             <p className="mt-2 text-sm text-gray-700">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
+            <button
+              onClick={() => window.location.reload()}
               className="mt-4 w-full bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
             >
               {t('users.error.retry')}
@@ -370,7 +370,7 @@ export default function Users() {
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-900 uppercase tracking-wider">
                       {t('users.table.headers.status')}
                     </th>
-                    
+
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-900 uppercase tracking-wider">
                       {t('users.table.headers.lastActivity')}
                     </th>
@@ -416,7 +416,7 @@ export default function Users() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(user)}
                       </td>
-                      
+
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                         {formatDate(user.last_active_at)}
                       </td>
@@ -499,10 +499,10 @@ export default function Users() {
       {/* User Details Modal */}
       {isModalOpen && selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">{t('users.details.title')}</h3>
+              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <h3 className={`text-lg font-semibold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('users.details.title')}</h3>
                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                   ×
                 </button>
@@ -525,30 +525,30 @@ export default function Users() {
                   )}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-xl font-semibold text-gray-900">
+                  <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <h4 className={`text-xl font-semibold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                       {selectedUser.first_name || t('users.unknown')} {selectedUser.last_name || ''}
                     </h4>
                     {getStatusBadge(selectedUser)}
                   </div>
-                  <p className="text-gray-700">{selectedUser.email_addresses?.[0]?.email_address || t('users.noEmail')}</p>
+                  <p className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{selectedUser.email_addresses?.[0]?.email_address || t('users.noEmail')}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Contact Information */}
                 <div>
-                  <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <h5 className={`font-semibold text-gray-900 mb-3 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''} ${isRTL ? 'text-right' : 'text-left'}`}>
                     <Mail className="w-4 h-4" />
                     {t('users.details.contact')}
                   </h5>
                   <div className="space-y-2">
                     {selectedUser.email_addresses?.map((email, idx) => (
-                      <div key={idx} className="flex justify-between items-center">
-                        <span className="text-gray-700">{email.email_address}</span>
+                      <div key={idx} className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <span className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{email.email_address}</span>
                         <span className={`px-2 py-1 text-xs rounded-full ${
-                          email.verification?.status === 'verified' 
-                            ? 'bg-green-100 text-green-800' 
+                          email.verification?.status === 'verified'
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
                         }`}>
                           {email.verification?.status === 'verified' ? t('users.details.verified') : t('users.details.unverified')}
@@ -560,30 +560,30 @@ export default function Users() {
 
                 {/* Security Information */}
                 <div>
-                  <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <h5 className={`font-semibold text-gray-900 mb-3 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''} ${isRTL ? 'text-right' : 'text-left'}`}>
                     <Shield className="w-4 h-4" />
                     {t('users.details.security')}
                   </h5>
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700">{t('users.details.securityLevel')}</span>
+                    <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <span className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{t('users.details.securityLevel')}</span>
                       {getSecurityBadge(getSecurityScore(selectedUser))}
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700">{t('users.details.passwordEnabled')}</span>
+                    <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <span className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{t('users.details.passwordEnabled')}</span>
                       <span className={`px-2 py-1 text-xs rounded-full ${
-                        selectedUser.password_enabled 
-                          ? 'bg-green-100 text-green-800' 
+                        selectedUser.password_enabled
+                          ? 'bg-green-100 text-green-800'
                           : 'bg-gray-100 text-gray-800'
                       }`}>
                         {selectedUser.password_enabled ? t('users.yes') : t('users.no')}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700">{t('users.details.twoFactor')}</span>
+                    <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <span className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{t('users.details.twoFactor')}</span>
                       <span className={`px-2 py-1 text-xs rounded-full ${
-                        selectedUser.two_factor_enabled 
-                          ? 'bg-green-100 text-green-800' 
+                        selectedUser.two_factor_enabled
+                          ? 'bg-green-100 text-green-800'
                           : 'bg-gray-100 text-gray-800'
                       }`}>
                         {selectedUser.two_factor_enabled ? t('users.yes') : t('users.no')}
@@ -594,22 +594,22 @@ export default function Users() {
 
                 {/* Activity Information */}
                 <div className="lg:col-span-2">
-                  <h5 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <h5 className={`font-semibold text-gray-900 mb-3 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''} ${isRTL ? 'text-right' : 'text-left'}`}>
                     <Clock className="w-4 h-4" />
                     {t('users.details.activity')}
                   </h5>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <span className="text-sm text-gray-600">{t('users.details.lastSignIn')}</span>
-                      <p className="text-gray-900">{formatDate(selectedUser.last_sign_in_at)}</p>
+                      <span className={`text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'} block`}>{t('users.details.lastSignIn')}</span>
+                      <p className={`text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{formatDate(selectedUser.last_sign_in_at)}</p>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-600">{t('users.details.lastActivity')}</span>
-                      <p className="text-gray-900">{formatDate(selectedUser.last_active_at)}</p>
+                      <span className={`text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'} block`}>{t('users.details.lastActivity')}</span>
+                      <p className={`text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{formatDate(selectedUser.last_active_at)}</p>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-600">{t('users.details.memberSince')}</span>
-                      <p className="text-gray-900">{formatDate(selectedUser.created_at)}</p>
+                      <span className={`text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'} block`}>{t('users.details.memberSince')}</span>
+                      <p className={`text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{formatDate(selectedUser.created_at)}</p>
                     </div>
                   </div>
                 </div>
@@ -622,27 +622,27 @@ export default function Users() {
       {/* Confirmation Dialog */}
       {confirmAction && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full">
+          <div className="bg-white rounded-lg max-w-md w-full" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {confirmAction.type === 'ban' 
-                  ? (confirmAction.user.banned 
-                      ? t('users.dialogs.unban.title') 
+              <h3 className={`text-lg font-semibold text-gray-900 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {confirmAction.type === 'ban'
+                  ? (confirmAction.user.banned
+                      ? t('users.dialogs.unban.title')
                       : t('users.dialogs.ban.title')
                     )
                   : t('users.dialogs.delete.title')
                 }
               </h3>
-              <p className="text-gray-700">
-                {confirmAction.type === 'ban' 
-                  ? (confirmAction.user.banned 
+              <p className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {confirmAction.type === 'ban'
+                  ? (confirmAction.user.banned
                       ? t('users.dialogs.unban.description', { name: confirmAction.user.first_name || t('users.unknown') })
                       : t('users.dialogs.ban.description', { name: confirmAction.user.first_name || t('users.unknown') })
                     )
                   : t('users.dialogs.delete.description', { name: confirmAction.user.first_name || t('users.unknown') })
                 }
               </p>
-              <div className="mt-6 flex justify-end space-x-3">
+              <div className={`mt-6 flex space-x-3 ${isRTL ? 'justify-start flex-row-reverse space-x-reverse' : 'justify-end'}`}>
                 <button
                   onClick={() => setConfirmAction(null)}
                   className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
@@ -658,12 +658,12 @@ export default function Users() {
                     }
                   }}
                   className={`px-4 py-2 text-white rounded-md ${
-                    confirmAction.type === 'delete' 
-                      ? 'bg-red-600 hover:bg-red-700' 
+                    confirmAction.type === 'delete'
+                      ? 'bg-red-600 hover:bg-red-700'
                       : 'bg-gray-600 hover:bg-gray-700'
                   }`}
                 >
-                  {confirmAction.type === 'ban' 
+                  {confirmAction.type === 'ban'
                     ? (confirmAction.user.banned ? t('users.table.unban') : t('users.table.ban'))
                     : t('users.table.delete')
                   }

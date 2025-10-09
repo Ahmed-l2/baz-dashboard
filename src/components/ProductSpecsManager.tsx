@@ -89,7 +89,7 @@ export default function ProductSpecsManager({ specs, onChange, isRTL = false }: 
           </Button>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2">
           {specs.map((spec, index) => (
             <div key={index} className="bg-gray-50 p-4 rounded-lg space-y-4">
               {/* First row: Name and Unit */}
@@ -135,16 +135,14 @@ export default function ProductSpecsManager({ specs, onChange, isRTL = false }: 
               </div>
 
               {/* Third row: Notes and Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div className="md:col-span-3">
-                  <Input
-                    label={t('products.notes')}
-                    placeholder={t('products.notes_placeholder')}
-                    value={spec.notes || ''}
-                    onChange={(e) => updateSpec(index, 'notes', e.target.value)}
-                    isRTL={isRTLLang}
-                  />
-                </div>
+              <div className="grid grid-cols-1 gap-4">
+                <Input
+                  label={t('products.notes')}
+                  placeholder={t('products.notes_placeholder')}
+                  value={spec.notes || ''}
+                  onChange={(e) => updateSpec(index, 'notes', e.target.value)}
+                  isRTL={isRTLLang}
+                />
                 <div className={`flex ${isRTLLang ? 'justify-start' : 'justify-end'}`}>
                   <Button
                     type="button"

@@ -63,13 +63,20 @@
       "arabic_name": "اسم المنتج (عربي)",
       "arabic_name_placeholder": "اسم المنتج بالعربية",
       "name_required": "اسم المنتج مطلوب",
-      "types": "أنواع المنتج",
-      "types_placeholder": "مثل: مدرفل على الساخن، مدرفل على البارد",
-      "types_helper": "أدخل أنواعًا متعددة مفصولة بفواصل",
-      "image_url": "رابط الصورة",
-      "image_helper": "أدخل رابط صورة صحيح أو ارفعها",
+      "types": "أنواع المنتج (إنجليزي)",
+      "types_placeholder": "e.g. Hot Rolled, Cold Rolled (comma separated)",
+      "types_helper": "أدخل أنواعًا متعددة بالإنجليزية مفصولة بفواصل",
+      "arabic_types": "أنواع المنتج (عربي)",
+      "arabic_types_placeholder": "مثال: ساخن الدرفلة، بارد الدرفلة (مفصولة بفواصل)",
+      "arabic_types_helper": "أدخل أنواعًا متعددة بالعربية مفصولة بفواصل",
+      "image_url": "رفع الصورة",
+      "image_helper": "ارفع صورة المنتج أو اسحبها وأفلتها هنا",
       "featured": "منتج مميز",
-      "featured_helper": "سيظهر هذا المنتج في قسم المنتجات المميزة"
+      "featured_helper": "سيظهر هذا المنتج في قسم المنتجات المميزة",
+      "uploadButton": "رفع الصورة",
+      "dragDropText": "أو اسحب وأفلت صورتك هنا",
+      "fileTypeText": "PNG، JPG، GIF حتى 5 ميجابايت",
+      "imagePreview": "معاينة المنتج"
     },
     "add_spec": "إضافة مواصفة",
     "no_specifications_yet": "لا توجد مواصفات بعد. أضف بعضها لتحديد قيود المنتج.",
@@ -222,15 +229,19 @@
         "placeholder": "العنوان الفرعي للبانر"
       },
       "imageUrl": {
-        "label": "رابط الصورة",
+        "label": "رفع الصورة",
         "placeholder": "https://example.com/banner.jpg",
-        "helperText": "أدخل رابط صورة صالح أو ارفعها إلى التخزين"
+        "helperText": "ارفع صورة البانر أو اسحبها وأفلتها هنا"
       },
       "linkUrl": {
         "label": "رابط الصفحة",
         "placeholder": "https://example.com/page",
         "helperText": "المكان الذي سينتقل إليه المستخدمون عند النقر على البانر"
-      }
+      },
+      "uploadButton": "رفع الصورة",
+      "dragDropText": "أو اسحب وأفلت صورتك هنا",
+      "fileTypeText": "PNG، JPG، GIF حتى 5 ميجابايت",
+      "imagePreview": "معاينة البانر"
     }
   },
     "quoteRequests": {
@@ -241,7 +252,7 @@
     "itemsCount": "{{count}} عنصر",
     "unknownProduct": "منتج غير معروف",
     "type": "النوع",
-    "noSpecifications": "لا توجد مواصفات",
+    "noSpecifications": "لا توجد",
     "notSet": "غير محدد",
     "notCalculated": "غير محسوب",
     "table": {
@@ -397,6 +408,8 @@
     "form": {
       "title": "إرسال إشعار ترويجي لجميع مستخدمي تطبيق باز",
       "description": "سيتم إرسال هذا الإشعار إلى جميع مستخدمي تطبيق باز ",
+      "notificationLanguage": "لغة محتوى الإشعار",
+      "notificationLanguageHint": "اختر اللغة لمحتوى إشعارك. هذا منفصل عن لغة واجهة لوحة التحكم وسيحدد أي إصدار من القوالب سيتم استخدامه.",
       "templateLabel": "اختر قالب أو أنشئ رسالة مخصصة",
       "templateSelect": "اختر قالب أو أنشئ رسالة مخصصة",
       "customMessage": "رسالة مخصصة",

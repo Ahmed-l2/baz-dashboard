@@ -65,13 +65,20 @@
       "arabic_name": "Product Name (Arabic)",
       "arabic_name_placeholder": "اسم المنتج بالعربية",
       "name_required": "Product name is required",
-      "types": "Product Types",
+      "types": "Product Types (English)",
       "types_placeholder": "e.g. Hot Rolled, Cold Rolled (comma separated)",
-      "types_helper": "Enter multiple types separated by commas",
-      "image_url": "Image URL",
-      "image_helper": "Enter a valid image URL or upload to storage",
+      "types_helper": "Enter multiple types in English separated by commas",
+      "arabic_types": "Product Types (Arabic)",
+      "arabic_types_placeholder": "مثال: ساخن الدرفلة، بارد الدرفلة (مفصولة بفواصل)",
+      "arabic_types_helper": "أدخل أنواع متعددة بالعربية مفصولة بفواصل",
+      "image_url": "Upload Image",
+      "image_helper": "Upload a product image or drag and drop here",
       "featured": "Featured Product",
-      "featured_helper": "This product will appear in the featured products section"
+      "featured_helper": "This product will appear in the featured products section",
+      "uploadButton": "Upload Image",
+      "dragDropText": "or drag and drop your image here",
+      "fileTypeText": "PNG, JPG, GIF up to 5MB",
+      "imagePreview": "Product preview"
     },
     "add_spec": "Add Spec",
     "no_specifications_yet": "No specifications yet. Add some to define product constraints.",
@@ -224,15 +231,19 @@
         "placeholder": "Banner subtitle"
       },
       "imageUrl": {
-        "label": "Image URL",
+        "label": "Upload Image",
         "placeholder": "https://example.com/banner.jpg",
-        "helperText": "Enter a valid image URL or upload to storage"
+        "helperText": "Upload a banner image or drag and drop here"
       },
       "linkUrl": {
         "label": "Link URL",
         "placeholder": "https://example.com/page",
         "helperText": "Where users will navigate when tapping the banner"
-      }
+      },
+      "uploadButton": "Upload Image",
+      "dragDropText": "or drag and drop your image here",
+      "fileTypeText": "PNG, JPG, GIF up to 5MB",
+      "imagePreview": "Banner preview"
     }
   },
    "quoteRequests": {
@@ -243,7 +254,7 @@
     "itemsCount": "{{count}} item(s)",
     "unknownProduct": "Unknown Product",
     "type": "Type",
-    "noSpecifications": "No specifications",
+    "noSpecifications": "None",
     "notSet": "Not set",
     "notCalculated": "Not calculated",
     "table": {
@@ -397,6 +408,8 @@
     "form": {
       "title": "Send Promotional Notification to All baz App Users",
       "description": "This notification will be sent to all subscribed baz app users",
+      "notificationLanguage": "Notification Content Language",
+      "notificationLanguageHint": "Choose the language for your notification content. This is separate from the dashboard UI language and will determine which version of templates is used.",
       "templateLabel": "Choose Template or Create Custom Message",
       "templateSelect": "Select a template or create custom message",
       "customMessage": "Custom Message",
@@ -408,7 +421,7 @@
       "imagePlaceholder": "https://example.com/image.jpg",
       "imageHint": "Add an image URL to make your notification more engaging (JPG, PNG, WebP)",
       "previewLabel": "Notification Preview",
-      "sendButton": "Send to All Steel App Users",
+      "sendButton": "Send to All BAZ App Users",
       "sending": "Sending...",
       "now": "now"
     },

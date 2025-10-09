@@ -59,7 +59,7 @@ export default function QuoteRequests() {
   const updateItemMutation = useUpdateQuoteItemPrice();
 
   const { register, handleSubmit, reset, control, watch, formState: { errors } } = useForm<QuoteResponseForm>();
-  const { fields, update } = useFieldArray({
+  const { update } = useFieldArray({
     control,
     name: "items"
   });
@@ -327,12 +327,12 @@ export default function QuoteRequests() {
             <TableBody>
               {quoteRequests?.map((request) => (
                 <TableRow key={request.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium text-gray-900">
+                  <TableCell className="max-w-xs">
+                    <div className="space-y-1">
+                      <div className="font-medium text-gray-900 break-words">
                         {request.customer_name || t('quoteRequests.anonymous')}
                       </div>
-                      <div className="text-gray-500 text-sm">
+                      <div className="text-gray-500 text-sm break-words">
                         {request.customer_email}
                       </div>
                       {request.customer_phone && (
@@ -342,56 +342,58 @@ export default function QuoteRequests() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     <div className="text-sm">
                       {t('quoteRequests.itemsCount', { count: request.quote_items?.length || 0 })}
                     </div>
                   </TableCell>
-                  <TableCell>{getStatusBadge(request.status || 'pending')}</TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">{getStatusBadge(request.status || 'pending')}</TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {format(new Date(request.created_at), 'MMM d, yyyy')}
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      icon={<Eye className="h-4 w-4" />}
-                      onClick={() => openDetailModal(request)}
-                    >
-                      {t('quoteRequests.actions.view')}
-                    </Button>
-                    {(request.status === 'submitted' || request.status === 'pending') && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        icon={<Send className="h-4 w-4" />}
-                        onClick={() => openModal(request)}
-                      >
-                        {t('quoteRequests.actions.respond')}
-                      </Button>
-                    )}
-                    {request.quote_response && (
-                      <div className="flex space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        icon={<Download className="h-4 w-4" />}
-                        onClick={() => handleGeneratePDF(request, false)}
-                        loading={isGeneratingPDF}
-                      >
-                        {t('quoteRequests.actions.downloadPDF')}
-                      </Button>
+                  <TableCell className="text-right space-x-2 min-w-[250px]">
+                    <div className="flex flex-wrap gap-2 justify-end">
                       <Button
                         variant="ghost"
                         size="sm"
                         icon={<Eye className="h-4 w-4" />}
-                        onClick={() => handleGeneratePDF(request, true)}
-                        loading={isGeneratingPDF}
+                        onClick={() => openDetailModal(request)}
                       >
-                        {t('quoteRequests.actions.previewPDF')}
+                        {t('quoteRequests.actions.view')}
                       </Button>
-                      </div>
-                    )}
+                      {(request.status === 'submitted' || request.status === 'pending') && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          icon={<Send className="h-4 w-4" />}
+                          onClick={() => openModal(request)}
+                        >
+                          {t('quoteRequests.actions.respond')}
+                        </Button>
+                      )}
+                      {request.quote_response && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={<Download className="h-4 w-4" />}
+                            onClick={() => handleGeneratePDF(request, false)}
+                            loading={isGeneratingPDF}
+                          >
+                            {t('quoteRequests.actions.downloadPDF')}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={<Eye className="h-4 w-4" />}
+                            onClick={() => handleGeneratePDF(request, true)}
+                            loading={isGeneratingPDF}
+                          >
+                            {t('quoteRequests.actions.previewPDF')}
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -416,21 +418,22 @@ export default function QuoteRequests() {
         onClose={closeDetailModal}
         title={t('quoteRequests.detailModal.title')}
         maxWidth="2xl"
+        isRTL={isRTL}
       >
         {selectedRequest && (
-          <div className="space-y-6">
+          <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.customerInformation')}</h4>
-                <div className="mt-2 space-y-1 text-sm text-gray-600">
+                <h4 className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.detailModal.customerInformation')}</h4>
+                <div className={`mt-2 space-y-1 text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
                   <p>{t('quoteRequests.detailModal.name')}: {selectedRequest.customer_name || t('common.notProvided')}</p>
                   <p>{t('quoteRequests.detailModal.email')}: {selectedRequest.customer_email || t('common.notProvided')}</p>
                   <p>{t('quoteRequests.detailModal.phone')}: {selectedRequest.customer_phone || t('common.notProvided')}</p>
                 </div>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.requestInformation')}</h4>
-                <div className="mt-2 space-y-1 text-sm text-gray-600">
+                <h4 className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.detailModal.requestInformation')}</h4>
+                <div className={`mt-2 space-y-1 text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
                   <p>{t('quoteRequests.detailModal.status')}: {getStatusBadge(selectedRequest.status || 'pending')}</p>
                   <p>{t('quoteRequests.detailModal.created')}: {format(new Date(selectedRequest.created_at), 'MMM d, yyyy HH:mm')}</p>
                   <p>{t('quoteRequests.detailModal.items')}: {selectedRequest.quote_items?.length || 0}</p>
@@ -440,30 +443,30 @@ export default function QuoteRequests() {
 
             {selectedRequest.notes && (
               <div>
-                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.notes')}</h4>
-                <p className="mt-2 text-sm text-gray-600">{selectedRequest.notes}</p>
+                <h4 className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.detailModal.notes')}</h4>
+                <p className={`mt-2 text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>{selectedRequest.notes}</p>
               </div>
             )}
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-3">{t('quoteRequests.detailModal.quoteItems')}</h4>
-              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+              <h4 className={`font-medium text-gray-900 mb-3 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.detailModal.quoteItems')}</h4>
+              <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {t('quoteRequests.detailModal.product')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {t('quoteRequests.detailModal.dimensions')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         {t('quoteRequests.detailModal.quantity')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         {t('quoteRequests.detailModal.unitPrice')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         {t('quoteRequests.detailModal.total')}
                       </th>
                     </tr>
@@ -471,23 +474,23 @@ export default function QuoteRequests() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {selectedRequest.quote_items?.map((item: any) => (
                       <tr key={item.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
+                        <td className="px-4 py-4 max-w-[200px]">
+                          <div className="text-sm font-medium text-gray-900 break-words">
                             {item.product?.name || t('quoteRequests.unknownProduct')}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-gray-500 break-words">
                             {item.product?.type && `${t('quoteRequests.type')}: ${Array.isArray(item.product.type) ? item.product.type.join(', ') : item.product.type}`}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 max-w-[180px]">
                           <div className="text-sm text-gray-500">
                             {formatProductSpecs(item.requested_specs)}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                           {item.quantity}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           {(selectedRequest.status === 'submitted' || selectedRequest.status === 'pending') ? (
                             <input
                               type="number"
@@ -508,7 +511,7 @@ export default function QuoteRequests() {
                             </span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                           {item.total_price ? `SAR ${item.total_price.toFixed(2)}` : t('quoteRequests.notCalculated')}
                         </td>
                       </tr>
@@ -520,16 +523,16 @@ export default function QuoteRequests() {
               {/* Display item notes if any exist */}
               {selectedRequest.quote_items?.some((item: any) => item.notes) && (
                 <div className="mt-4">
-                  <h5 className="text-sm font-medium text-gray-900 mb-2">{t('quoteRequests.detailModal.itemNotes')}</h5>
+                  <h5 className={`text-sm font-medium text-gray-900 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.detailModal.itemNotes')}</h5>
                   <div className="space-y-2">
                     {selectedRequest.quote_items
                       ?.filter((item: any) => item.notes)
                       .map((item: any) => (
                         <div key={`notes-${item.id}`} className="p-3 bg-blue-50 rounded-lg">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className={`text-sm font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                             {item.product?.name || t('quoteRequests.unknownProduct')}
                           </div>
-                          <div className="text-sm text-gray-600 mt-1">
+                          <div className={`text-sm text-gray-600 mt-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                             {item.notes.replace(/"/g, '')}
                           </div>
                         </div>
@@ -541,16 +544,16 @@ export default function QuoteRequests() {
 
             {selectedRequest.quote_response && (
               <div>
-                <h4 className="font-medium text-gray-900">{t('quoteRequests.detailModal.quoteResponse')}</h4>
+                <h4 className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.detailModal.quoteResponse')}</h4>
                 <div className="mt-2 p-4 bg-green-50 rounded-lg">
-                  <p className="text-sm text-gray-600">
+                  <p className={`text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
                     <span className="font-medium">{t('quoteRequests.detailModal.totalAmount')}:</span> SAR {selectedRequest.quote_response[0]?.total_amount?.toFixed(2)}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className={`text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
                     <span className="font-medium">{t('quoteRequests.detailModal.validFor')}:</span> {t('quoteRequests.detailModal.validityDays', { days: selectedRequest.quote_response[0]?.validity_period })}
                   </p>
                   {selectedRequest.quote_response[0]?.response_notes && (
-                    <p className="text-sm text-gray-600 mt-2">
+                    <p className={`text-sm text-gray-600 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
                       <span className="font-medium">{t('quoteRequests.detailModal.notes')}:</span> {selectedRequest.quote_response[0]?.response_notes}
                     </p>
                   )}
@@ -567,28 +570,29 @@ export default function QuoteRequests() {
         onClose={closeModal}
         title={t('quoteRequests.responseModal.title')}
         maxWidth="2xl"
+        isRTL={isRTL}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
           {/* Quote Items Section */}
           <div>
-            <h4 className="font-medium text-gray-900 mb-4">{t('quoteRequests.responseModal.itemsPricing')}</h4>
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <h4 className={`font-medium text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.responseModal.itemsPricing')}</h4>
+            <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('quoteRequests.responseModal.product')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('quoteRequests.responseModal.dimensions')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                       {t('quoteRequests.responseModal.qty')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                       {t('quoteRequests.responseModal.unitPrice')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left rtl:text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                       {t('quoteRequests.responseModal.total')}
                     </th>
                   </tr>
@@ -596,23 +600,23 @@ export default function QuoteRequests() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {selectedRequest?.quote_items?.map((item: any, index: number) => (
                     <tr key={item.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
+                      <td className="px-4 py-4 max-w-[200px]">
+                        <div className="text-sm font-medium text-gray-900 break-words">
                           {item.product?.name || t('quoteRequests.unknownProduct')}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 break-words">
                           {item.product?.type && `${t('quoteRequests.type')}: ${Array.isArray(item.product.type) ? item.product.type.join(', ') : item.product.type}`}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 max-w-[180px]">
                         <div className="text-sm text-gray-500">
                           {formatProductSpecs(item.requested_specs)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                         {item.quantity}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <input
                           type="number"
                           step="0.01"
@@ -634,7 +638,7 @@ export default function QuoteRequests() {
                         />
                         <input type="hidden" {...register(`items.${index}.quote_item_id` as const)} value={item.id} />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                         SAR {(watchedItems?.[index]?.total_price || 0).toFixed(2)}
                         <input type="hidden" {...register(`items.${index}.total_price` as const)} />
                       </td>
@@ -646,9 +650,9 @@ export default function QuoteRequests() {
 
             {/* Total Amount Display */}
             <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-medium text-gray-900">{t('quoteRequests.responseModal.totalQuoteAmount')}:</span>
-                <span className="text-xl font-bold text-green-600">
+              <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <span className={`text-lg font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('quoteRequests.responseModal.totalQuoteAmount')}:</span>
+                <span className={`text-xl font-bold text-green-600 ${isRTL ? 'text-left' : 'text-right'}`}>
                   SAR {(watchedItems?.reduce((sum, item) => sum + (item?.total_price || 0), 0) || 0).toFixed(2)}
                 </span>
               </div>
@@ -667,6 +671,7 @@ export default function QuoteRequests() {
               error={errors.validity_period?.message}
               placeholder="30"
               helperText={t('quoteRequests.responseModal.validityHelperText')}
+              isRTL={isRTL}
             />
           </div>
 
@@ -703,8 +708,9 @@ export default function QuoteRequests() {
         onClose={closeCreateModal}
         title={t('quoteRequests.createModal.title')}
         maxWidth="2xl"
+        isRTL={isRTL}
       >
-        <form onSubmit={handleSubmitCreate(onSubmitCreate)} className="space-y-6">
+        <form onSubmit={handleSubmitCreate(onSubmitCreate)} className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
           {/* Customer Information */}
           <div>
             <h4 className={`font-medium text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -718,6 +724,7 @@ export default function QuoteRequests() {
                 })}
                 error={errorsCreate.customer_name?.message}
                 placeholder={t('quoteRequests.createModal.customerNamePlaceholder')}
+                isRTL={isRTL}
               />
 
               <Input
@@ -732,6 +739,7 @@ export default function QuoteRequests() {
                 })}
                 error={errorsCreate.customer_email?.message}
                 placeholder={t('quoteRequests.createModal.customerEmailPlaceholder')}
+                isRTL={isRTL}
               />
 
               <Input
@@ -741,12 +749,14 @@ export default function QuoteRequests() {
                 })}
                 error={errorsCreate.customer_phone?.message}
                 placeholder={t('quoteRequests.createModal.customerPhonePlaceholder')}
+                isRTL={isRTL}
               />
 
               <Input
                 label={t('quoteRequests.createModal.companyName')}
                 {...registerCreate('customer_company')}
                 placeholder={t('quoteRequests.createModal.companyNamePlaceholder')}
+                isRTL={isRTL}
               />
 
               <Input
@@ -754,6 +764,7 @@ export default function QuoteRequests() {
                 {...registerCreate('project_name')}
                 placeholder={t('quoteRequests.createModal.projectNamePlaceholder')}
                 className="col-span-2"
+                isRTL={isRTL}
               />
             </div>
 
@@ -818,7 +829,7 @@ export default function QuoteRequests() {
                       error={errorsCreate.quote_items?.[index]?.product_id?.message}
                       options={products?.map(product => ({
                         value: product.id,
-                        label: isRTL? product.arabic_name : product.name
+                        label: isRTL ? (typeof product.arabic_name === 'string' ? product.arabic_name : product.name) : product.name
                       })) || []}
                       placeholder={t('quoteRequests.createModal.selectProduct')}
                     />
@@ -833,6 +844,7 @@ export default function QuoteRequests() {
                       })}
                       error={errorsCreate.quote_items?.[index]?.quantity?.message}
                       placeholder="1"
+                      isRTL={isRTL}
                     />
                   </div>
 

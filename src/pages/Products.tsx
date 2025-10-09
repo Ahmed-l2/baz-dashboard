@@ -36,6 +36,7 @@ interface ProductForm {
   name: string;
   arabic_name: string;
   type: string;
+  arabic_type: string;
   category_id: string;
   image_url: string;
   specs: ProductSpec[];
@@ -127,6 +128,7 @@ function ProductFileUpload({
   label,
   helperText
 }: FileUploadProps) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -185,7 +187,7 @@ function ProductFileUpload({
         <div className="relative inline-block">
           <img
             src={value}
-            alt="Product preview"
+            alt={t('products.form.imagePreview', 'Product preview')}
             className="h-32 w-32 rounded-lg object-cover border border-gray-300"
           />
           <Button
@@ -220,14 +222,14 @@ function ProductFileUpload({
                 loading={uploadLoading}
                 icon={<Upload className="h-4 w-4" />}
               >
-                Upload Image
+                {t('products.form.uploadButton', 'Upload Image')}
               </Button>
             </div>
             <p className="mt-2 text-sm text-gray-500">
-              or drag and drop your image here
+              {t('products.form.dragDropText', 'or drag and drop your image here')}
             </p>
             <p className="text-xs text-gray-400">
-              PNG, JPG, GIF up to 5MB
+              {t('products.form.fileTypeText', 'PNG, JPG, GIF up to 5MB')}
             </p>
           </div>
           <input
@@ -279,6 +281,9 @@ export default function Products() {
         type: data.type?.trim()
           ? data.type.split(',').map(t => t.trim()).filter(Boolean)
           : undefined,
+        arabic_type: data.arabic_type?.trim()
+          ? data.arabic_type.split(',').map(t => t.trim()).filter(Boolean)
+          : undefined,
         category_id: currentCategoryId || undefined,
         image_url: data.image_url || undefined,
         specs: currentSpecs.filter(spec => spec.spec_name && spec.unit),
@@ -299,7 +304,7 @@ export default function Products() {
     setEditingProduct(product || null);
     setUploadError('');
     if (product) {
-      // Parse types for display in the form
+      // Parse English types for display in the form
       let typeString = '';
       if (typeof product.type === 'string' && product.type) {
         try {
@@ -314,10 +319,26 @@ export default function Products() {
         typeString = product.type.join(', ');
       }
 
+      // Parse Arabic types for display in the form
+      let arabicTypeString = '';
+      if (typeof product.arabic_type === 'string' && product.arabic_type) {
+        try {
+          // Try to parse if it's a JSON string
+          const parsed = JSON.parse(product.arabic_type);
+          arabicTypeString = Array.isArray(parsed) ? parsed.join(', ') : product.arabic_type;
+        } catch {
+          // If not JSON, use as is
+          arabicTypeString = product.arabic_type;
+        }
+      } else if (Array.isArray(product.arabic_type)) {
+        arabicTypeString = product.arabic_type.join(', ');
+      }
+
       reset({
         name: product.name,
         arabic_name: product.arabic_name || '',
         type: typeString,
+        arabic_type: arabicTypeString,
         category_id: product.category_id || '',
         image_url: product.image_url || '',
         specs: [],
@@ -326,7 +347,7 @@ export default function Products() {
       setCurrentCategoryId(product.category_id || '');
       setCurrentSpecs(product.product_specs || []);
     } else {
-      reset({ name: '', arabic_name: '', type: '', category_id: '', image_url: '', specs: [], featured: false });
+      reset({ name: '', arabic_name: '', type: '', arabic_type: '', category_id: '', image_url: '', specs: [], featured: false });
       setCurrentCategoryId('');
       setCurrentSpecs([]);
     }
@@ -416,8 +437,10 @@ export default function Products() {
               {products?.map((p) => (
                 <>
                   <TableRow key={p.id}>
-                    <TableCell className="font-medium"> {isRTL && p.arabic_name ? p.arabic_name : p.name}</TableCell>
-                    <TableCell>
+                    <TableCell className="font-medium max-w-xs break-words">
+                      {isRTL && p.arabic_name ? p.arabic_name : p.name}
+                    </TableCell>
+                    <TableCell className="max-w-xs">
                       {(() => {
                         // Parse types - handle both array and string (JSON string) formats
                         // Use arabic_type if RTL, otherwise use type
@@ -444,7 +467,7 @@ export default function Products() {
                               {types.map((ty, i) => (
                                 <span
                                   key={i}
-                                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 break-words"
                                 >
                                   {ty}
                                 </span>
@@ -455,10 +478,10 @@ export default function Products() {
                         return <span className="text-gray-500">{t('products.no_types')}</span>;
                       })()}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="min-w-[180px]">
                       {p.product_specs?.length ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-600">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm text-gray-600 whitespace-nowrap">
                             {p.product_specs.length} {t('products.specifications')}
                           </span>
                           <Button
@@ -478,7 +501,7 @@ export default function Products() {
                         <span className="text-gray-500">{t('products.no_specs')}</span>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap">
                       {p.image_url ? (
                         <img src={p.image_url} alt={p.name} className="h-10 w-10 rounded object-cover" />
                       ) : (
@@ -487,7 +510,7 @@ export default function Products() {
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="text-left space-x-2 rtl:text-right rtl:space-x-reverse">
+                    <TableCell className="text-left space-x-2 rtl:text-right rtl:space-x-reverse min-w-[200px]">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -511,7 +534,7 @@ export default function Products() {
                   {expandedRows.has(p.id) && p.product_specs?.length && (
                     <TableRow>
                       <TableCell colSpan={5} className="bg-gray-50 border-t-0">
-                        <div className="py-4">
+                        <div className="py-4 max-w-full overflow-x-auto">
                           <h4 className="text-sm font-medium text-gray-900 mb-3">
                             {t('products.product_specifications')}
                           </h4>
@@ -567,7 +590,7 @@ export default function Products() {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 label={t('products.form.types')}
                 {...register('type')}
@@ -575,7 +598,16 @@ export default function Products() {
                 helperText={t('products.form.types_helper')}
                 isRTL={isRTL}
               />
+              <Input
+                label={t('products.form.arabic_types')}
+                {...register('arabic_type')}
+                placeholder={t('products.form.arabic_types_placeholder')}
+                helperText={t('products.form.arabic_types_helper')}
+                isRTL={isRTL}
+              />
+            </div>
 
+            <div className="grid grid-cols-1 gap-4">
               <CategorySelector
                 categories={categories || []}
                 selectedCategoryId={currentCategoryId}

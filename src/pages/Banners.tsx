@@ -92,6 +92,7 @@ interface FileUploadProps {
   error?: string;
   label?: string;
   helperText?: string;
+  isRTL?: boolean;
 }
 
 function FileUpload({
@@ -101,8 +102,10 @@ function FileUpload({
   loading = false,
   error,
   label,
-  helperText
+  helperText,
+  isRTL = false
 }: FileUploadProps) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -122,7 +125,7 @@ function FileUpload({
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
@@ -131,15 +134,15 @@ function FileUpload({
   const handleFile = async (file: File) => {
     setUploadLoading(true);
     setUploadError('');
-    
+
     const result = await uploadBannerImage(file);
-    
+
     if (result.success && result.url) {
       onChange(result.url);
     } else if (result.error) {
       setUploadError(result.error);
     }
-    
+
     setUploadLoading(false);
   };
 
@@ -150,25 +153,25 @@ function FileUpload({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" dir={isRTL ? 'rtl' : 'ltr'}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className={`block text-sm font-medium text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
           {label}
         </label>
       )}
-      
+
       {value ? (
         <div className="relative inline-block">
           <img
             src={value}
-            alt="Banner preview"
+            alt={t('banners.form.imagePreview', 'Banner preview')}
             className="h-32 w-48 rounded-lg object-cover border border-gray-300"
           />
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+            className={`absolute -top-2 h-6 w-6 rounded-full p-0 ${isRTL ? '-left-2' : '-right-2'}`}
             onClick={onRemove}
           >
             <X className="h-4 w-4" />
@@ -196,14 +199,14 @@ function FileUpload({
                 loading={uploadLoading}
                 icon={<Upload className="h-4 w-4" />}
               >
-                Upload Image
+                {t('banners.form.uploadButton', 'Upload Image')}
               </Button>
             </div>
-            <p className="mt-2 text-sm text-gray-500">
-              or drag and drop your image here
+            <p className={`mt-2 text-sm text-gray-500 ${isRTL ? 'text-center' : 'text-center'}`}>
+              {t('banners.form.dragDropText', 'or drag and drop your image here')}
             </p>
             <p className="text-xs text-gray-400">
-              PNG, JPG, GIF up to 5MB
+              {t('banners.form.fileTypeText', 'PNG, JPG, GIF up to 5MB')}
             </p>
           </div>
           <input
@@ -215,13 +218,13 @@ function FileUpload({
           />
         </div>
       )}
-      
+
       {(uploadError || error) && (
-        <p className="text-sm text-red-600">{uploadError || error}</p>
+        <p className={`text-sm text-red-600 ${isRTL ? 'text-right' : 'text-left'}`}>{uploadError || error}</p>
       )}
-      
+
       {helperText && !uploadError && !error && (
-        <p className="text-sm text-gray-500">{helperText}</p>
+        <p className={`text-sm text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{helperText}</p>
       )}
     </div>
   );
@@ -231,7 +234,6 @@ export default function Banners() {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<any>(null);
-  const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadError, setUploadError] = useState<string>('');
 
   const { data: banners, isLoading } = useBanners();
@@ -240,7 +242,7 @@ export default function Banners() {
   const deleteMutation = useDeleteBanner();
 
   const { register, handleSubmit, reset, control, setValue, watch, formState: { errors } } = useForm<BannerForm>();
-  
+
   const watchedImageUrl = watch('image_url');
 
   const onSubmit = async (data: BannerForm) => {
@@ -297,7 +299,7 @@ export default function Banners() {
   const handleDelete = async (id: string) => {
     if (window.confirm(t('banners.deleteConfirm'))) {
       const banner = banners?.find(b => b.id === id);
-      
+
       // Delete the image from storage if it exists and is from our storage
       if (banner?.image_url && banner.image_url.includes('supabase')) {
         try {
@@ -306,7 +308,7 @@ export default function Banners() {
           console.error('Failed to delete image from storage:', error);
         }
       }
-      
+
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -371,8 +373,8 @@ export default function Banners() {
                 <TableRow key={banner.id}>
                   <TableCell>
                     {banner.image_url ? (
-                      <img 
-                        src={banner.image_url} 
+                      <img
+                        src={banner.image_url}
                         alt={banner.title || t('banners.table.bannerAlt')}
                         className="h-16 w-24 rounded object-cover"
                       />
@@ -390,7 +392,7 @@ export default function Banners() {
                   </TableCell>
                   <TableCell>
                     {banner.url ? ( // Changed from link_url to url
-                      <a 
+                      <a
                         href={banner.url} // Changed from link_url to url
                         target="_blank"
                         rel="noopener noreferrer"
@@ -446,22 +448,25 @@ export default function Banners() {
         onClose={closeModal}
         title={editingBanner ? t('banners.modal.editTitle') : t('banners.modal.addTitle')}
         maxWidth="lg"
+        isRTL={isRTL}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
           <Input
             label={t('banners.form.title.label')}
             {...register('title')}
             error={errors.title?.message}
             placeholder={t('banners.form.title.placeholder')}
+            isRTL={isRTL}
           />
-          
+
           <Input
             label={t('banners.form.subtitle.label')}
             {...register('subtitle')}
             error={errors.subtitle?.message}
             placeholder={t('banners.form.subtitle.placeholder')}
+            isRTL={isRTL}
           />
-          
+
           <Controller
             name="image_url"
             control={control}
@@ -471,21 +476,22 @@ export default function Banners() {
                 value={field.value}
                 onChange={handleImageUpload}
                 onRemove={handleImageRemove}
-                loading={uploadLoading}
                 error={uploadError || errors.image_url?.message}
                 helperText={t('banners.form.imageUrl.helperText')}
+                isRTL={isRTL}
               />
             )}
           />
-          
+
           <Input
             label={t('banners.form.linkUrl.label')}
             {...register('url')} // Changed from link_url to url
             error={errors.url?.message} // Changed from link_url to url
             placeholder={t('banners.form.linkUrl.placeholder')}
             helperText={t('banners.form.linkUrl.helperText')}
+            isRTL={isRTL}
           />
-          
+
           <div className={`flex justify-end space-x-3 pt-4 ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
             <Button variant="secondary" onClick={closeModal}>
               {t('common.cancel')}
