@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  Trash2, Ban, Shield, Mail, Phone, Wallet, Key, Calendar, Clock, Eye,
-  Info, Users as UsersIcon, UserCheck, UserX, ShieldAlert, ChevronLeft,
-  ChevronRight, Plus, ImageIcon, Edit
+  Trash2, Ban, Shield, Mail, Clock, Eye,
+  Users as UsersIcon, UserCheck, UserX, ShieldAlert, ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
@@ -63,7 +63,6 @@ export default function Users() {
   const [activeUsers, setActiveUsers] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
   const { t } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
   const [stats, setStats] = useState<StatsData>({
@@ -142,21 +141,17 @@ export default function Users() {
         const data = await response.json();
         let usersArray: ClerkUser[] = [];
         let totalCountValue = 0;
-        let hasMoreValue = false;
 
         if (Array.isArray(data)) {
           usersArray = data;
-          totalCountValue = data.length;
-          hasMoreValue = data.length === limit;
+          totalCountValue = stats.total || data.length;
         } else if (data && typeof data === 'object') {
           usersArray = data.users || data.data || [];
-          totalCountValue = data.total_count || data.total || stats.total || usersArray.length;
-          hasMoreValue = data.has_more || data.next_page || usersArray.length === limit;
+          totalCountValue = data.total_count || stats.total || usersArray.length;
         }
 
         setUsers(usersArray);
         setTotalCount(totalCountValue);
-        setHasMore(hasMoreValue);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
@@ -275,9 +270,11 @@ export default function Users() {
     return <span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">{t('users.security.low')}</span>;
   };
 
-  const totalPages = Math.ceil(totalCount / limit) || 1;
+  // Use stats.total as the source of truth for total count
+  const effectiveTotalCount = stats.total || totalCount;
+  const totalPages = Math.max(Math.ceil(effectiveTotalCount / limit), 1);
   const canGoPrevious = currentPage > 1;
-  const canGoNext = hasMore || currentPage < totalPages;
+  const canGoNext = currentPage < totalPages;
 
   if (loading && !users.length) {
     return (
@@ -461,21 +458,21 @@ export default function Users() {
           {/* Pagination */}
           {users.length > 0 && (
             <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700">
+              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`text-sm text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
                   {t('users.pagination.showing', {
                     from: ((currentPage - 1) * limit) + 1,
-                    to: Math.min(currentPage * limit, totalCount),
-                    total: stats.total
+                    to: Math.min(currentPage * limit, effectiveTotalCount),
+                    total: effectiveTotalCount
                   })}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <button
                     onClick={() => setCurrentPage(prev => prev - 1)}
                     disabled={!canGoPrevious}
-                    className="flex items-center gap-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                    className={`flex items-center gap-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed ${isRTL ? 'flex-row-reverse' : ''}`}
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                     {t('users.previous')}
                   </button>
                   <span className="text-sm text-gray-700 mx-2">
@@ -484,10 +481,10 @@ export default function Users() {
                   <button
                     onClick={() => setCurrentPage(prev => prev + 1)}
                     disabled={!canGoNext}
-                    className="flex items-center gap-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                    className={`flex items-center gap-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed ${isRTL ? 'flex-row-reverse' : ''}`}
                   >
                     {t('users.next')}
-                    <ChevronLeft className="w-4 h-4" />
+                    {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
