@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useState } from 'react';
 
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
@@ -12,13 +13,14 @@ import QuoteRequests from './pages/QuoteRequests';
 import Promotions from './pages/Promotions';
 import Employements from './pages/Employementes';
 import Users from './pages/Users';
+import Agents from './pages/Agents';
+import Login from './pages/Login';
 
 import './i18n';
 import i18n from './i18n';
 
-import { useState } from 'react';
-import { AuthProvider } from "./lib/contexts/AuthContext";
-import RequireAuth from './lib/contexts/RequireAuth';
+import { AuthProvider, useAuth } from "./lib/contexts/AuthContext";
+import { Loader } from './components/loader';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +31,8 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppContent() {
+// Layout wrapper for authenticated pages
+function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -40,23 +43,56 @@ function AppContent() {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      {/* Main content */}
-      <main className="min-h-screen  transition-all duration-300">
-        <div className="">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/metal-prices" element={<MetalPrices />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/banners" element={<Banners />} />
-            <Route path="/quote-requests" element={<QuoteRequests />} />
-            <Route path="/promotions" element={<Promotions />} />
-            <Route path="/employements" element={<Employements />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/settings" element={<Dashboard />} />
-          </Routes>
-        </div>
+      <main className="min-h-screen transition-all duration-300">
+        <div>{children}</div>
       </main>
     </div>
+  );
+}
+
+// App Content with Routes
+function AppContent() {
+  const { session, loading } = useAuth();
+
+  // Single loading check at the top level
+  if (loading) {
+    return <Loader />;
+  }
+
+  return (
+    <Routes>
+      {/* Public Route - Login */}
+      <Route 
+        path="/login" 
+        element={
+          session ? <Navigate to="/" replace /> : <Login />
+        } 
+      />
+
+      {/* Protected Routes - No session redirects to login */}
+      <Route
+        path="/*"
+        element={
+          session ? (
+            <AuthenticatedLayout>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/metal-prices" element={<MetalPrices />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/banners" element={<Banners />} />
+                <Route path="/quote-requests" element={<QuoteRequests />} />
+                <Route path="/promotions" element={<Promotions />} />
+                <Route path="/employements" element={<Employements />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/agents" element={<Agents />} />
+              </Routes>
+            </AuthenticatedLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+    </Routes>
   );
 }
 
@@ -65,9 +101,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
-          <RequireAuth>
-            <AppContent />
-          </RequireAuth>
+          <AppContent />
           <Toaster
             position="top-right"
             toastOptions={{

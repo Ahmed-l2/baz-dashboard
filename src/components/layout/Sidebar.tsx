@@ -8,9 +8,11 @@ import {
   Bell,
   Briefcase,
   Activity,
-  X
+  X,
+  UserCog
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../lib/contexts/AuthContext'; // <-- import your auth hook
 
 const navigation = [
   { key: 'dashboard', href: '/', icon: BarChart3 },
@@ -20,7 +22,8 @@ const navigation = [
   { key: 'quoteRequests', href: '/quote-requests', icon: FileText },
   { key: 'users', href: '/users', icon: Users },
   { key: 'pushNotifications', href: '/promotions', icon: Bell },
-  { key: 'employements', href: '/employements', icon: Briefcase }
+  { key: 'employements', href: '/employements', icon: Briefcase },
+  { key: 'agents', href: '/agents', icon: UserCog}
 ];
 
 interface SidebarProps {
@@ -32,6 +35,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const { allowedRoutes, user } = useAuth(); // <-- get allowedRoutes from context
+
+  // Filter navigation based on allowedRoutes
+  const filteredNavigation = allowedRoutes.includes('all')
+    ? navigation
+    : navigation.filter((item) => allowedRoutes.includes(item.href));
 
   const sidebarContent = (
     <div className="flex flex-col flex-grow shadow-2xl bg-white backdrop-blur-lg rounded-br-3xl pt-5 pb-4 overflow-y-auto h-full">
@@ -43,8 +52,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
             {t(`sidebar.title`)}
           </span>
         </div>
-        
-        {/* Close button for mobile */}
         <button
           onClick={() => setSidebarOpen(false)}
           className="lg:hidden -m-2.5 p-2.5 text-gray-700 hover:text-gray-900 transition-colors"
@@ -56,7 +63,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       {/* Navigation */}
       <nav className="mt-8 flex-1 flex flex-col divide-y divide-gray-800 overflow-y-auto">
         <div className="px-2 space-y-1">
-          {navigation.map((item) => {
+          {filteredNavigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link

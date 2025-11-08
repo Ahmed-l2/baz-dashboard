@@ -20,7 +20,8 @@
     "quoteRequests": "Quote Requests",
     "users": "Users",
     "pushNotifications": "Push Notifications",
-    "employements": "Employements"
+    "employements": "Employements",
+    "agents": "Agents"
   },
 
   "header": {
@@ -590,6 +591,65 @@
     "never": "Never",
     "yes": "Yes",
     "no": "No"
+  },
+  "agents": {
+    "title": "Users Management",
+    "description": "Manage system users and assign routes to agents",
+    "addButton": "Add User",
+    "deleteConfirm": "Are you sure you want to delete this user? This action cannot be undone.",
+    "table": {
+      "email": "Email",
+      "fullName": "Full Name",
+      "role": "Role"
+    },
+    "roles": {
+      "admin": "Admin",
+      "user": "Agent"
+    },
+    "modal": {
+      "addTitle": "Add New User",
+      "editTitle": "Edit User"
+    },
+    "form": {
+      "email": {
+        "label": "Email Address",
+        "placeholder": "user@example.com",
+        "required": "Email is required",
+        "invalid": "Please enter a valid email address"
+      },
+      "fullName": {
+        "label": "Full Name",
+        "placeholder": "John Doe"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter password",
+        "required": "Password is required",
+        "minLength": "Password must be at least 6 characters"
+      },
+      "role": {
+        "label": "User Role"
+      },
+      "routes": {
+        "label": "Assign Routes",
+        "empty": "No routes available. Please create routes first."
+      }
+    },
+    "empty": {
+      "title": "No users found",
+      "description": "Get started by creating your first user"
+    },
+    "success": {
+      "created": "User created successfully",
+      "updated": "User updated successfully",
+      "deleted": "User deleted successfully"
+    },
+    "errors": {
+      "fetchFailed": "Failed to fetch users",
+      "saveFailed": "Failed to save user",
+      "deleteFailed": "Failed to delete user",
+      "error": "Error"
+    }
   }
 
 

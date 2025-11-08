@@ -1,20 +1,37 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../lib/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { t, i18n } = useTranslation();
   const { signIn } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const isRTL = i18n.language === 'ar';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await signIn(email, password);
-    if (error) setError(error.message);
+    setError(null);
+    setLoading(true);
+
+    try {
+      const { error } = await signIn(email, password);
+      if (error) {
+        setError(error.message);
+      } else {
+        // Successfully signed in - navigate to dashboard
+        navigate("/");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleLanguage = () => {
@@ -36,18 +53,17 @@ export default function Login() {
       </button>
 
       <div className="w-full max-w-md border-4 bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* رأس مع الشعار */}
+        {/* Header with logo */}
         <div className="bg-baz rounded-b-3xl text-white py-3 px-6 text-center flex flex-col items-center">
           <img
             src="/assets/logo/image.png"
             alt="شعار باز"
-            className="w-1/3 h-auto  rounded-xl"
+            className="w-1/3 h-auto rounded-xl"
           />
-
         </div>
 
-        {/* النموذج */}
-        <form onSubmit={handleSubmit} className="p-6  space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
             <p className="text-red-500 text-sm bg-red-50 border border-red-200 rounded px-3 py-2">
               {error}
@@ -63,7 +79,9 @@ export default function Login() {
               placeholder={t('login.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-baz focus:outline-none"
+              disabled={loading}
+              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-baz focus:outline-none disabled:opacity-50"
+              required
             />
           </div>
 
@@ -76,15 +94,18 @@ export default function Login() {
               placeholder={t('login.passwordPlaceholder')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-baz focus:outline-none"
+              disabled={loading}
+              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-baz focus:outline-none disabled:opacity-50"
+              required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-baz text-white py-3 rounded-lg font-semibold hover:bg-baz/90 transition-colors"
+            disabled={loading}
+            className="w-full bg-baz text-white py-3 rounded-lg font-semibold hover:bg-baz/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {t('login.submit')}
+            {loading ? t('login.loading', 'Loading...') : t('login.submit')}
           </button>
         </form>
       </div>
