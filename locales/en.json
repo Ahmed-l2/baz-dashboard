@@ -24,6 +24,37 @@
     "agents": "Agents"
   },
 
+  "routes": {
+    "Dashboard": "Dashboard",
+    "dashboard": "Dashboard",
+    "Metal Prices": "Metal Prices",
+    "MetalPrices": "Metal Prices",
+    "metalPrices": "Metal Prices",
+    "metalprices": "Metal Prices",
+    "metal-prices": "Metal Prices",
+    "Products": "Products",
+    "products": "Products",
+    "Banners": "Banners",
+    "banners": "Banners",
+    "Quote Requests": "Quote Requests",
+    "QuoteRequests": "Quote Requests",
+    "quoteRequests": "Quote Requests",
+    "quoterequests": "Quote Requests",
+    "quote-requests": "Quote Requests",
+    "Users": "Users",
+    "users": "Users",
+    "Push Notifications": "Push Notifications",
+    "PushNotifications": "Push Notifications",
+    "pushNotifications": "Push Notifications",
+    "pushnotifications": "Push Notifications",
+    "Promotions": "Push Notifications",
+    "promotions": "Push Notifications",
+    "Employements": "Employements",
+    "employements": "Employements",
+    "Agents": "Agents",
+    "agents": "Agents"
+  },
+
   "header": {
     "search": "Search..."
   },
@@ -363,10 +394,95 @@
   },
   "users": {
     "title": "User Management",
-    "description": "Manage registered users and their permissions",
+    "description": "Manage application users and their permissions",
     "managementTitle": "User Management",
     "managementDescription": "User management is handled through Clerk. Visit your Clerk dashboard to manage users, roles, and permissions.",
-    "openClerkDashboard": "Open Clerk Dashboard"
+    "openClerkDashboard": "Open Clerk Dashboard",
+    "stats": {
+      "total": "Total Users",
+      "active": "Active Users",
+      "online": "Online Now",
+      "banned": "Banned Users",
+      "locked": "Locked Users"
+    },
+    "table": {
+      "title": "Users List",
+      "description": "Showing {{count}} out of {{total}} users",
+      "headers": {
+        "user": "User",
+        "status": "Status",
+        "security": "Security",
+        "lastActivity": "Last Activity",
+        "actions": "Actions"
+      },
+      "view": "View",
+      "ban": "Ban",
+      "unban": "Unban",
+      "delete": "Delete",
+      "empty": {
+        "title": "No users",
+        "description": "No users found in the system."
+      }
+    },
+    "status": {
+      "banned": "Banned",
+      "locked": "Locked",
+      "online": "Online Now"
+    },
+    "security": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "details": {
+      "title": "User Details",
+      "contact": "Contact Information",
+      "security": "Security",
+      "securityLevel": "Security Level",
+      "activity": "Activity",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "passwordEnabled": "Password Enabled",
+      "twoFactor": "Two-Factor Authentication",
+      "lastSignIn": "Last Sign In",
+      "lastActivity": "Last Activity",
+      "memberSince": "Member Since",
+      "currentStatus": "Current Status",
+      "online": "Online Now",
+      "offline": "Offline"
+    },
+    "dialogs": {
+      "ban": {
+        "title": "Ban User?",
+        "description": "Will prevent {{name}} from accessing the application."
+      },
+      "unban": {
+        "title": "Unban User?",
+        "description": "Will restore {{name}}'s access to the application."
+      },
+      "delete": {
+        "title": "Delete User?",
+        "description": "This action cannot be undone. The account {{name}} will be permanently deleted and all associated data will be removed."
+      },
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "loading": "Loading users...",
+    "updating": "Updating...",
+    "error": {
+      "title": "Error loading users",
+      "retry": "Try Again"
+    },
+    "pagination": {
+      "showing": "Showing {{from}} to {{to}} of {{total}} users"
+    },
+    "previous": "Previous",
+    "next": "Next",
+    "unknown": "Unknown",
+    "noEmail": "No email",
+    "never": "Never",
+    "yes": "Yes",
+    "no": "No"
   },
   "employmentApplications": {
     "title": "Employment Applications",
@@ -383,7 +499,8 @@
     "actions": {
       "view": "View",
       "hide": "Hide",
-      "delete": "Delete"
+      "delete": "Delete",
+      "forward": "Forward"
     },
     "details": {
       "title": "Application Details",
@@ -396,6 +513,19 @@
     "empty": {
       "title": "No applications",
       "description": "No employment applications have been submitted yet."
+    },
+    "forwardModal": {
+      "title": "Forward Application",
+      "description": "Send this employment application to an email address",
+      "recipientLabel": "Recipient Email Address",
+      "recipientPlaceholder": "example@company.com",
+      "languageLabel": "Email Language",
+      "languageHint": "Choose the language for the email content",
+      "sendButton": "Send Email",
+      "cancel": "Cancel",
+      "sending": "Sending...",
+      "success": "Application forwarded successfully!",
+      "error": "Failed to send email. Please try again."
     }
   },
    "promotions": {
@@ -502,95 +632,6 @@
       "notAvailable": "Not Available",
       "invalidDate": "Invalid Date"
     }
-  },
-  "users": {
-    "title": "User Management",
-    "description": "Manage application users and their permissions",
-    "stats": {
-      "total": "Total Users",
-      "active": "Active Users",
-      "online": "Online Now",
-      "banned": "Banned Users",
-      "locked": "Locked Users"
-    },
-    "table": {
-      "title": "Users List",
-      "description": "Showing {{count}} out of {{total}} users",
-      "headers": {
-        "user": "User",
-        "status": "Status",
-        "security": "Security",
-        "lastActivity": "Last Activity",
-        "actions": "Actions"
-      },
-      "view": "View",
-      "ban": "Ban",
-      "unban": "Unban",
-      "delete": "Delete",
-      "empty": {
-        "title": "No users",
-        "description": "No users found in the system."
-      }
-    },
-    "status": {
-      "banned": "Banned",
-      "locked": "Locked",
-      "online": "Online Now"
-    },
-    "security": {
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low"
-    },
-    "details": {
-      "title": "User Details",
-      "contact": "Contact Information",
-      "security": "Security",
-      "securityLevel": "Security Level",
-      "activity": "Activity",
-      "verified": "Verified",
-      "unverified": "Unverified",
-      "passwordEnabled": "Password Enabled",
-      "twoFactor": "Two-Factor Authentication",
-      "lastSignIn": "Last Sign In",
-      "lastActivity": "Last Activity",
-      "memberSince": "Member Since",
-      "currentStatus": "Current Status",
-      "online": "Online Now",
-      "offline": "Offline"
-    },
-    "dialogs": {
-      "ban": {
-        "title": "Ban User?",
-        "description": "Will prevent {{name}} from accessing the application."
-      },
-      "unban": {
-        "title": "Unban User?",
-        "description": "Will restore {{name}}'s access to the application."
-      },
-      "delete": {
-        "title": "Delete User?",
-        "description": "This action cannot be undone. The account {{name}} will be permanently deleted and all associated data will be removed."
-      },
-      "cancel": "Cancel",
-      "confirm": "Confirm"
-    },
-    "loading": "Loading users...",
-    "updating": "Updating...",
-    "error": {
-      "title": "Error loading users",
-      "retry": "Try Again"
-    },
-    "pagination": {
-      "showing": "Showing {{from}} to {{to}} of {{total}} users"
-    },
-    "previous": "Previous",
-    "next": "Next",
-    "unknown": "Unknown",
-    "noEmail": "No email",
-    "never": "Never",
-    "yes": "Yes",
-    "no": "No"
   },
   "agents": {
     "title": "Users Management",

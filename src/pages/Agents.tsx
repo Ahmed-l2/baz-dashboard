@@ -63,6 +63,53 @@ export default function Agents() {
     setRoutes(data || []);
   };
 
+  // Get route name with proper translation
+  const getRouteName = (route: any) => {
+    if (!route) return '';
+
+    const routeName = route.name || '';
+
+    // Try exact match first (e.g., "Metal Prices", "Dashboard")
+    if (routeName && t(`routes.${routeName}`, { defaultValue: '' })) {
+      return t(`routes.${routeName}`);
+    }
+
+    // Try without spaces and lowercase (e.g., "Metal Prices" -> "metalprices")
+    const noSpaces = routeName.toLowerCase().replace(/\s+/g, '');
+    if (noSpaces && t(`routes.${noSpaces}`, { defaultValue: '' })) {
+      return t(`routes.${noSpaces}`);
+    }
+
+    // Try camelCase version (e.g., "Metal Prices" -> "metalPrices")
+    const camelCase = routeName
+      .split(' ')
+      .map((word: string, idx: number) =>
+        idx === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      )
+      .join('');
+    if (camelCase && t(`routes.${camelCase}`, { defaultValue: '' })) {
+      return t(`routes.${camelCase}`);
+    }
+
+    // Try with dashes (e.g., "Metal Prices" -> "metal-prices")
+    const dashed = routeName.toLowerCase().replace(/\s+/g, '-');
+    if (dashed && t(`routes.${dashed}`, { defaultValue: '' })) {
+      return t(`routes.${dashed}`);
+    }
+
+    // Try sidebar translations as fallback
+    if (noSpaces && t(`sidebar.${noSpaces}`, { defaultValue: '' })) {
+      return t(`sidebar.${noSpaces}`);
+    }
+
+    if (camelCase && t(`sidebar.${camelCase}`, { defaultValue: '' })) {
+      return t(`sidebar.${camelCase}`);
+    }
+
+    // Last fallback to route.name
+    return routeName;
+  };
+
   useEffect(() => {
     if (session) {
       fetchUsers();
@@ -98,7 +145,7 @@ export default function Agents() {
       setSubmitting(true);
 
       // Only include routeIds if role is 'user'
-      const payload = editingUser
+      const payload: any = editingUser
         ? { ...data, id: editingUser.id, routeIds: data.role === 'user' ? data.routeIds : [] }
         : { ...data, routeIds: data.role === 'user' ? data.routeIds : [] };
 
@@ -162,8 +209,8 @@ export default function Agents() {
               <h1 className="text-3xl font-bold text-gray-500">{t('agents.title')}</h1>
               <p className="mt-2 text-sm text-gray-700">{t('agents.description')}</p>
             </div>
-            <Button 
-              icon={<Plus className="h-4 w-4" />} 
+            <Button
+              icon={<Plus className="h-4 w-4" />}
               onClick={() => openModal()}
               disabled={submitting || !!deletingUserId}
             >
@@ -193,20 +240,20 @@ export default function Agents() {
                     </span>
                   </TableCell>
                   <TableCell className="space-x-2 rtl:space-x-reverse">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      icon={<Edit />} 
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={<Edit />}
                       onClick={() => openModal(user)}
                       loading={editingUserId === user.id}
                       disabled={!!deletingUserId || submitting}
                     >
                       {t('common.edit')}
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      icon={<Trash2 />} 
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={<Trash2 />}
                       onClick={() => handleDelete(user.id)}
                       loading={deletingUserId === user.id}
                       disabled={!!editingUserId || submitting}
@@ -223,8 +270,8 @@ export default function Agents() {
             <div className="text-center py-12">
               <h3 className="mt-2 text-sm font-medium text-gray-900">{t('agents.empty.title')}</h3>
               <p className="mt-1 text-sm text-gray-500">{t('agents.empty.description')}</p>
-              <Button 
-                className="mt-6" 
+              <Button
+                className="mt-6"
                 onClick={() => openModal()}
                 disabled={submitting || !!deletingUserId}
               >
@@ -268,8 +315,8 @@ export default function Agents() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">{t('agents.form.role.label')}</label>
-            <select 
-              {...register('role')} 
+            <select
+              {...register('role')}
               className="border rounded p-2 w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={submitting}
             >
@@ -286,14 +333,14 @@ export default function Agents() {
               ) : (
                 routes.map(route => (
                   <label key={route.id} className="flex items-center space-x-2 rtl:space-x-reverse">
-                    <input 
-                      type="checkbox" 
-                      value={route.id} 
-                      {...register('routeIds')} 
+                    <input
+                      type="checkbox"
+                      value={route.id}
+                      {...register('routeIds')}
                       className="rounded disabled:cursor-not-allowed"
                       disabled={submitting}
                     />
-                    <span className={submitting ? 'text-gray-400' : ''}>{route.name}</span>
+                    <span className={submitting ? 'text-gray-400' : ''}>{getRouteName(route)}</span>
                   </label>
                 ))
               )}
@@ -301,15 +348,15 @@ export default function Agents() {
           )}
 
           <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-4">
-            <Button 
-              variant="secondary" 
+            <Button
+              variant="secondary"
               onClick={closeModal}
               disabled={submitting}
             >
               {t('common.cancel')}
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               loading={submitting}
               disabled={submitting}
             >

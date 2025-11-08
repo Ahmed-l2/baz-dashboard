@@ -23,6 +23,37 @@
     "employements": "التوظيف",
     "agents": "الوكلاء"
   },
+
+  "routes": {
+    "Dashboard": "لوحة التحكم",
+    "dashboard": "لوحة التحكم",
+    "Metal Prices": "أسعار الحديد",
+    "MetalPrices": "أسعار الحديد",
+    "metalPrices": "أسعار الحديد",
+    "metalprices": "أسعار الحديد",
+    "metal-prices": "أسعار الحديد",
+    "Products": "المنتجات",
+    "products": "المنتجات",
+    "Banners": "اللافتات",
+    "banners": "اللافتات",
+    "Quote Requests": "طلبات التسعير",
+    "QuoteRequests": "طلبات التسعير",
+    "quoteRequests": "طلبات التسعير",
+    "quoterequests": "طلبات التسعير",
+    "quote-requests": "طلبات التسعير",
+    "Users": "المستخدمون",
+    "users": "المستخدمون",
+    "Push Notifications": "الحملات الترويجية",
+    "PushNotifications": "الحملات الترويجية",
+    "pushNotifications": "الحملات الترويجية",
+    "pushnotifications": "الحملات الترويجية",
+    "Promotions": "الحملات الترويجية",
+    "promotions": "الحملات الترويجية",
+    "Employements": "التوظيف",
+    "employements": "التوظيف",
+    "Agents": "الوكلاء",
+    "agents": "الوكلاء"
+  },
   "header": {
     "search": "ابحث..."
   },
@@ -362,10 +393,95 @@
 
    "users": {
     "title": "إدارة المستخدمين",
-    "description": "إدارة المستخدمين المسجلين وصلاحياتهم",
+    "description": "إدارة مستخدمي التطبيق وصلاحياتهم",
     "managementTitle": "إدارة المستخدمين",
     "managementDescription": "تتم إدارة المستخدمين من خلال Clerk. قم بزيارة لوحة تحكم Clerk الخاصة بك لإدارة المستخدمين والأدوار والصلاحيات.",
-    "openClerkDashboard": "فتح لوحة تحكم Clerk"
+    "openClerkDashboard": "فتح لوحة تحكم Clerk",
+    "stats": {
+      "total": "إجمالي المستخدمين",
+      "active": "المستخدمين النشطين",
+      "online": "متصل الآن",
+      "banned": "المستخدمين المحظورين",
+      "locked": "المستخدمين المقفلين"
+    },
+    "table": {
+      "title": "قائمة المستخدمين",
+      "description": "عرض {{count}} من أصل {{total}} مستخدم",
+      "headers": {
+        "user": "المستخدم",
+        "status": "الحالة",
+        "security": "الأمان",
+        "lastActivity": "آخر نشاط",
+        "actions": "الإجراءات"
+      },
+      "view": "عرض",
+      "ban": "حظر",
+      "unban": "إلغاء الحظر",
+      "delete": "حذف",
+      "empty": {
+        "title": "لا يوجد مستخدمين",
+        "description": "لم يتم العثور على أي مستخدمين في النظام."
+      }
+    },
+    "status": {
+      "banned": "محظور",
+      "locked": "مقفل",
+      "online": "متصل الآن"
+    },
+    "security": {
+      "high": "عالي",
+      "medium": "متوسط",
+      "low": "منخفض"
+    },
+    "details": {
+      "title": "تفاصيل المستخدم",
+      "contact": "معلومات الاتصال",
+      "security": "الأمان",
+      "securityLevel": "مستوى الأمان",
+      "activity": "النشاط",
+      "verified": "مُتحقق",
+      "unverified": "غير مُتحقق",
+      "passwordEnabled": "كلمة المرور مفعلة",
+      "twoFactor": "المصادقة الثنائية",
+      "lastSignIn": "آخر تسجيل دخول",
+      "lastActivity": "آخر نشاط",
+      "memberSince": "عضو منذ",
+      "currentStatus": "الحالة الحالية",
+      "online": "متصل الآن",
+      "offline": "غير متصل"
+    },
+    "dialogs": {
+      "ban": {
+        "title": "حظر المستخدم؟",
+        "description": "سيتم منع {{name}} من الوصول إلى التطبيق."
+      },
+      "unban": {
+        "title": "إلغاء حظر المستخدم؟",
+        "description": "سيتم استعادة وصول {{name}} إلى التطبيق."
+      },
+      "delete": {
+        "title": "حذف المستخدم؟",
+        "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف حساب {{name}} نهائياً وإزالة جميع البيانات المرتبطة به."
+      },
+      "cancel": "إلغاء",
+      "confirm": "تأكيد"
+    },
+    "loading": "جاري تحميل المستخدمين...",
+    "updating": "جاري التحديث...",
+    "error": {
+      "title": "خطأ في تحميل المستخدمين",
+      "retry": "حاول مرة أخرى"
+    },
+    "pagination": {
+      "showing": "عرض {{from}} إلى {{to}} من أصل {{total}} مستخدم"
+    },
+    "previous": "السابق",
+    "next": "التالي",
+    "unknown": "غير معروف",
+    "noEmail": "لا يوجد بريد إلكتروني",
+    "never": "أبداً",
+    "yes": "نعم",
+    "no": "لا"
   },
 
   "employmentApplications": {
@@ -383,7 +499,8 @@
     "actions": {
       "view": "عرض",
       "hide": "إخفاء",
-      "delete": "حذف"
+      "delete": "حذف",
+      "forward": "إعادة توجيه"
     },
     "details": {
       "title": "تفاصيل الطلب",
@@ -396,6 +513,19 @@
     "empty": {
       "title": "لا توجد طلبات",
       "description": "لم يتم تقديم أي طلبات توظيف بعد."
+    },
+    "forwardModal": {
+      "title": "إعادة توجيه الطلب",
+      "description": "إرسال طلب التوظيف هذا إلى عنوان بريد إلكتروني",
+      "recipientLabel": "عنوان البريد الإلكتروني للمستلم",
+      "recipientPlaceholder": "example@company.com",
+      "languageLabel": "لغة البريد الإلكتروني",
+      "languageHint": "اختر لغة محتوى البريد الإلكتروني",
+      "sendButton": "إرسال البريد",
+      "cancel": "إلغاء",
+      "sending": "جاري الإرسال...",
+      "success": "تم إعادة توجيه الطلب بنجاح!",
+      "error": "فشل إرسال البريد الإلكتروني. يرجى المحاولة مرة أخرى."
     }
   },
    "promotions": {
@@ -502,95 +632,6 @@
       "notAvailable": "غير متوفر",
       "invalidDate": "تاريخ غير صحيح"
     }
-  },
-   "users": {
-    "title": "إدارة المستخدمين",
-    "description": "إدارة مستخدمي التطبيق وصلاحياتهم",
-    "stats": {
-      "total": "إجمالي المستخدمين",
-      "active": "المستخدمين النشطين",
-      "online": "متصل الآن",
-      "banned": "المستخدمين المحظورين",
-      "locked": "المستخدمين المقفلين"
-    },
-    "table": {
-      "title": "قائمة المستخدمين",
-      "description": "عرض {{count}} من أصل {{total}} مستخدم",
-      "headers": {
-        "user": "المستخدم",
-        "status": "الحالة",
-        "security": "الأمان",
-        "lastActivity": "آخر نشاط",
-        "actions": "الإجراءات"
-      },
-      "view": "عرض",
-      "ban": "حظر",
-      "unban": "إلغاء الحظر",
-      "delete": "حذف",
-      "empty": {
-        "title": "لا يوجد مستخدمين",
-        "description": "لم يتم العثور على أي مستخدمين في النظام."
-      }
-    },
-    "status": {
-      "banned": "محظور",
-      "locked": "مقفل",
-      "online": "متصل الآن"
-    },
-    "security": {
-      "high": "عالي",
-      "medium": "متوسط",
-      "low": "منخفض"
-    },
-    "details": {
-      "title": "تفاصيل المستخدم",
-      "contact": "معلومات الاتصال",
-      "security": "الأمان",
-      "securityLevel": "مستوى الأمان",
-      "activity": "النشاط",
-      "verified": "مُتحقق",
-      "unverified": "غير مُتحقق",
-      "passwordEnabled": "كلمة المرور مفعلة",
-      "twoFactor": "المصادقة الثنائية",
-      "lastSignIn": "آخر تسجيل دخول",
-      "lastActivity": "آخر نشاط",
-      "memberSince": "عضو منذ",
-      "currentStatus": "الحالة الحالية",
-      "online": "متصل الآن",
-      "offline": "غير متصل"
-    },
-    "dialogs": {
-      "ban": {
-        "title": "حظر المستخدم؟",
-        "description": "سيتم منع {{name}} من الوصول إلى التطبيق."
-      },
-      "unban": {
-        "title": "إلغاء حظر المستخدم؟",
-        "description": "سيتم استعادة وصول {{name}} إلى التطبيق."
-      },
-      "delete": {
-        "title": "حذف المستخدم؟",
-        "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف حساب {{name}} نهائياً وإزالة جميع البيانات المرتبطة به."
-      },
-      "cancel": "إلغاء",
-      "confirm": "تأكيد"
-    },
-    "loading": "جاري تحميل المستخدمين...",
-    "updating": "جاري التحديث...",
-    "error": {
-      "title": "خطأ في تحميل المستخدمين",
-      "retry": "إعادة المحاولة"
-    },
-    "pagination": {
-      "showing": "عرض {{from}} إلى {{to}} من {{total}} مستخدم"
-    },
-    "previous": "السابق",
-    "next": "التالي",
-    "unknown": "غير معروف",
-    "noEmail": "لا يوجد بريد إلكتروني",
-    "never": "أبداً",
-    "yes": "نعم",
-    "no": "لا"
   },
     "agents": {
     "title": "إدارة المستخدمين",

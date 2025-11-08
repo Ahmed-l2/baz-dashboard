@@ -1,21 +1,30 @@
 import { useState } from 'react';
-import { Users, Trash2, Mail, Phone, Briefcase, ChevronDown, ChevronRight } from 'lucide-react';
+import { Users, Trash2, Mail, Phone, Briefcase, ChevronDown, ChevronRight, Send } from 'lucide-react';
 import { useEmploymentApplications, useDeleteEmploymentApplication } from '../hooks/useEmploymentApplications';
 import { useTranslation } from 'react-i18next';
 import Button from '../components/ui/Button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
 import { Loader } from '../components/loader';
+import Modal from '../components/ui/Modal';
+import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
 import i18n from '../i18n';
+import toast from 'react-hot-toast';
 
 export default function EmploymentApplications() {
   const [expandedRows, setExpandedRows] = useState(new Set());
+  const [forwardModalOpen, setForwardModalOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<any>(null);
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [emailLanguage, setEmailLanguage] = useState('en');
+  const [isSending, setIsSending] = useState(false);
   const { t } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
   const { data: applications, isLoading } = useEmploymentApplications();
   const deleteMutation = useDeleteEmploymentApplication();
 
-  const toggleRow = (applicationId) => {
+  const toggleRow = (applicationId: string) => {
     const newExpanded = new Set(expandedRows);
     if (newExpanded.has(applicationId)) {
       newExpanded.delete(applicationId);
@@ -25,9 +34,62 @@ export default function EmploymentApplications() {
     setExpandedRows(newExpanded);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm(t('employmentApplications.confirmDelete'))) {
       await deleteMutation.mutateAsync(id);
+    }
+  };
+
+  const handleForwardClick = (application: any) => {
+    setSelectedApplication(application);
+    setRecipientEmail('');
+    setEmailLanguage(isRTL ? 'ar' : 'en');
+    setForwardModalOpen(true);
+  };
+
+  const handleSendEmail = async () => {
+    if (!recipientEmail || !selectedApplication) return;
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(recipientEmail)) {
+      toast.error(t('employmentApplications.forwardModal.error'));
+      return;
+    }
+
+    setIsSending(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-application-email`,
+        {
+          method: 'POST',
+          headers: {
+                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+            },
+          body: JSON.stringify({
+            application: selectedApplication,
+            recipientEmail,
+            language: emailLanguage,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to send email');
+      }
+
+      toast.success(t('employmentApplications.forwardModal.success'));
+      setForwardModalOpen(false);
+      setRecipientEmail('');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast.error(t('employmentApplications.forwardModal.error'));
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -122,16 +184,28 @@ export default function EmploymentApplications() {
                         {expandedRows.has(application.id) ? t('employmentApplications.actions.hide') : t('employmentApplications.actions.view')}
                       </Button>
                     </TableCell>
-                    <TableCell className={`${isRTL ? 'text-left' : 'text-right'} ${isRTL ? 'space-x-reverse' : ''} space-x-2`}>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        icon={<Trash2 className="h-4 w-4" />}
-                        onClick={() => handleDelete(application.id)}
-                        loading={deleteMutation.isPending}
-                      >
-                        {t('employmentApplications.actions.delete')}
-                      </Button>
+                    <TableCell className={`${isRTL ? 'text-left' : 'text-right'}`}>
+                      <div className={`flex ${isRTL ? 'flex-row' : 'flex-row-reverse'} gap-2 justify-end`}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          icon={<Send className="h-4 w-4" />}
+                          onClick={() => handleForwardClick(application)}
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        >
+                          {t('employmentApplications.actions.forward')}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          icon={<Trash2 className="h-4 w-4" />}
+                          onClick={() => handleDelete(application.id)}
+                          loading={deleteMutation.isPending}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          {t('employmentApplications.actions.delete')}
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                   {expandedRows.has(application.id) && (
@@ -209,6 +283,80 @@ export default function EmploymentApplications() {
           )}
         </div>
       </main>
+
+      {/* Forward Email Modal */}
+      <Modal
+        isOpen={forwardModalOpen}
+        onClose={() => setForwardModalOpen(false)}
+        title={t('employmentApplications.forwardModal.title')}
+        isRTL={isRTL}
+      >
+        <div className="space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
+          <p className={`text-sm text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
+            {t('employmentApplications.forwardModal.description')}
+          </p>
+
+          {selectedApplication && (
+            <div className={`bg-blue-50 p-4 rounded-lg ${isRTL ? 'text-right' : 'text-left'}`}>
+              <p className="text-sm font-medium text-blue-900">
+                {selectedApplication.full_name}
+              </p>
+              <p className="text-xs text-blue-700 mt-1">
+                {selectedApplication.field_of_work} • {selectedApplication.email}
+              </p>
+            </div>
+          )}
+
+          <div>
+            <Input
+              label={t('employmentApplications.forwardModal.recipientLabel')}
+              type="email"
+              value={recipientEmail}
+              onChange={(e) => setRecipientEmail(e.target.value)}
+              placeholder={t('employmentApplications.forwardModal.recipientPlaceholder')}
+              required
+              isRTL={isRTL}
+            />
+          </div>
+
+          <div>
+            <Select
+              label={t('employmentApplications.forwardModal.languageLabel')}
+              value={emailLanguage}
+              onChange={(e) => setEmailLanguage(e.target.value)}
+              options={[
+                { value: 'en', label: 'English' },
+                { value: 'ar', label: 'العربية' }
+              ]}
+            />
+            <p className={`mt-1 text-xs text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('employmentApplications.forwardModal.languageHint')}
+            </p>
+          </div>
+
+          <div className={`flex gap-3 pt-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
+            <Button
+              variant="secondary"
+              onClick={() => setForwardModalOpen(false)}
+              disabled={isSending}
+            >
+              {t('employmentApplications.forwardModal.cancel')}
+            </Button>
+            <Button
+              onClick={handleSendEmail}
+              loading={isSending}
+              disabled={!recipientEmail || isSending}
+              className="bg-blue-600 hover:bg-blue-700"
+              icon={<Send className="h-4 w-4" />}
+            >
+              {isSending
+                ? t('employmentApplications.forwardModal.sending')
+                : t('employmentApplications.forwardModal.sendButton')
+              }
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
