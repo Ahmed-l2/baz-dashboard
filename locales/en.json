@@ -79,6 +79,7 @@
     "create": "Create",
     "delete": "Delete",
     "cancel": "Cancel",
+    "manage_categories": "Manage Categories",
     "no_products": "No products",
     "get_started": "Get started by creating your first product.",
     "product": "Product",
@@ -134,6 +135,24 @@
     "length_example": "Standard 6000 mm, custom on request",
     "diameter": "diameter",
     "diameter_example": "15 - 187.5 mm"
+  },
+  "categories": {
+    "add": "Add Category",
+    "edit": "Edit Category",
+    "existing": "Existing Categories",
+    "form": {
+      "name": "Category Name",
+      "name_required": "Category name is required",
+      "name_placeholder": "Enter category name",
+      "arabic_name": "Arabic Name",
+      "arabic_name_placeholder": "Enter Arabic name",
+      "icon": "Icon Emoji",
+      "icon_helper": "Enter an emoji to represent this category",
+      "icon_image": "Category Icon",
+      "icon_image_helper": "PNG only, 64x64 pixels, max 1MB",
+      "description": "Description",
+      "description_placeholder": "Enter category description"
+    }
   },
   "specs": {
     "thickness": "Thickness",

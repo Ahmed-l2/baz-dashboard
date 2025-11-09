@@ -77,6 +77,7 @@
     "create": "إنشاء",
     "delete": "حذف",
     "cancel": "إلغاء",
+    "manage_categories": "إدارة الفئات",
     "no_products": "لا توجد منتجات",
     "get_started": "ابدأ بإنشاء أول منتج لك.",
     "product": "المنتج",
@@ -132,6 +133,24 @@
     "length_example": "Standard 6000 mm, custom on request",
     "diameter": "القطر",
     "diameter_example": "15 - 187.5 mm"
+  },
+  "categories": {
+    "add": "إضافة فئة",
+    "edit": "تعديل الفئة",
+    "existing": "الفئات الموجودة",
+    "form": {
+      "name": "اسم الفئة",
+      "name_required": "اسم الفئة مطلوب",
+      "name_placeholder": "أدخل اسم الفئة",
+      "arabic_name": "الاسم العربي",
+      "arabic_name_placeholder": "أدخل الاسم العربي",
+      "icon": "رمز الأيقونة",
+      "icon_helper": "أدخل رمز تعبيري لتمثيل هذه الفئة",
+      "icon_image": "أيقونة الفئة",
+      "icon_image_helper": "PNG فقط، 64x64 بكسل، بحد أقصى 1 ميجابايت",
+      "description": "الوصف",
+      "description_placeholder": "أدخل وصف الفئة"
+    }
   },
   "specs": {
     "thickness": "السماكة",

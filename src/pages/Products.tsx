@@ -2,17 +2,22 @@ import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Plus, Edit, Trash2, Package,
-  ChevronDown, ChevronRight, Upload, X
+  ChevronDown, ChevronRight, Upload, X, FolderTree
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import {
   useProducts, useCreateProduct,
   useUpdateProduct, useDeleteProduct
 } from '../hooks/useProducts';
-import { useCategories } from '../hooks/useCategories';
+import {
+  useCategories, useCreateCategory,
+  useUpdateCategory, useDeleteCategory
+} from '../hooks/useCategories';
 import { useForm, Controller } from 'react-hook-form';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import IconPicker from '../components/IconPicker';
 import {
   Table, TableBody, TableCell,
   TableHead, TableHeader, TableRow
@@ -253,25 +258,337 @@ function ProductFileUpload({
   );
 }
 
+// Upload helper functions for category icons
+const uploadCategoryIcon = async (file: File): Promise<{ success: boolean; url?: string; error?: string }> => {
+  try {
+    // Validate file type - must be PNG
+    if (file.type !== 'image/png') {
+      return { success: false, error: 'Icon must be a PNG file' };
+    }
+
+    // Validate file size (1MB limit for icons)
+    const maxSize = 1 * 1024 * 1024; // 1MB in bytes
+    if (file.size > maxSize) {
+      return { success: false, error: 'File size must be less than 1MB' };
+    }
+
+    // Validate dimensions (64x64)
+    const isValid = await validateImageDimensions(file, 64, 64);
+    if (!isValid) {
+      return { success: false, error: 'Icon must be exactly 64x64 pixels' };
+    }
+
+    // Generate unique filename
+    const fileName = `category-icon-${Date.now()}-${Math.random().toString(36).substring(2)}.png`;
+
+    // Upload file to Supabase storage
+    const { data, error } = await supabase.storage
+      .from('categories')
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Upload error:', error);
+      return { success: false, error: error.message };
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('categories')
+      .getPublicUrl(data.path);
+
+    return { success: true, url: publicUrl };
+  } catch (error) {
+    console.error('Upload error:', error);
+    return { success: false, error: 'Failed to upload icon' };
+  }
+};
+
+const validateImageDimensions = (file: File, width: number, height: number): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(img.width === width && img.height === height);
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(false);
+    };
+
+    img.src = objectUrl;
+  });
+};
+
+const deleteCategoryIcon = async (imageUrl: string): Promise<boolean> => {
+  try {
+    // Extract filename from URL
+    const urlParts = imageUrl.split('/');
+    const fileName = urlParts[urlParts.length - 1];
+
+    const { error } = await supabase.storage
+      .from('categories')
+      .remove([fileName]);
+
+    if (error) {
+      console.error('Delete error:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Delete error:', error);
+    return false;
+  }
+};
+
+// CategoryIconUpload component
+interface CategoryIconUploadProps {
+  value?: string;
+  onChange: (url: string) => void;
+  onRemove: () => void;
+  error?: string;
+  label?: string;
+}
+
+function CategoryIconUpload({
+  value,
+  onChange,
+  onRemove,
+  error,
+  label
+}: CategoryIconUploadProps) {
+  const { t } = useTranslation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const handleFile = async (file: File) => {
+    setUploadLoading(true);
+    setUploadError('');
+
+    const result = await uploadCategoryIcon(file);
+
+    if (result.success && result.url) {
+      onChange(result.url);
+    } else if (result.error) {
+      setUploadError(result.error);
+    }
+
+    setUploadLoading(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {label && (
+        <label className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+      )}
+
+      {value ? (
+        <div className="relative inline-block">
+          <img
+            src={value}
+            alt="Category icon"
+            className="h-16 w-16 rounded-lg object-cover border border-gray-300"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+            onClick={onRemove}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <div className="relative">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => fileInputRef.current?.click()}
+            loading={uploadLoading}
+            icon={<Upload className="h-4 w-4" />}
+          >
+            {t('products.form.uploadButton', 'Upload Image')}
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept="image/png"
+            onChange={handleInputChange}
+          />
+        </div>
+      )}
+
+      {(uploadError || error) && (
+        <p className="text-sm text-red-600">{uploadError || error}</p>
+      )}
+
+      <p className="text-xs text-gray-500">
+        {t('categories.form.icon_image_helper', 'PNG only, 64x64 pixels, max 1MB')}
+      </p>
+    </div>
+  );
+}
+
 export default function Products() {
   const { t } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
   const [currentSpecs, setCurrentSpecs] = useState<ProductSpec[]>([]);
   const [currentCategoryId, setCurrentCategoryId] = useState('');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const [uploadError, setUploadError] = useState<string>('');
 
   const { data: products, isLoading } = useProducts();
   const { data: categories } = useCategories();
   const createMutation = useCreateProduct();
   const updateMutation = useUpdateProduct();
   const deleteMutation = useDeleteProduct();
+  const createCategoryMutation = useCreateCategory();
+  const updateCategoryMutation = useUpdateCategory();
+  const deleteCategoryMutation = useDeleteCategory();
 
   const { register, handleSubmit, reset, control, setValue, watch, formState: { errors } } = useForm<ProductForm>();
 
   const watchedImageUrl = watch('image_url');
+
+  // Category form
+  const {
+    register: registerCategory,
+    handleSubmit: handleSubmitCategory,
+    reset: resetCategory,
+    control: controlCategory,
+    setValue: setValueCategory,
+    watch: watchCategory,
+    formState: { errors: errorsCategory }
+  } = useForm<{
+    name: string;
+    arabic_name: string;
+    icon: string;
+    image_url: string;
+  }>({
+    defaultValues: {
+      name: '',
+      arabic_name: '',
+      icon: 'package-variant',
+      image_url: ''
+    }
+  });
+
+  const watchedCategoryImageUrl = watchCategory('image_url');
+
+  // Category modal functions
+  const onSubmitCategory = async (data: {
+    name: string;
+    arabic_name: string;
+    icon: string;
+    image_url: string;
+  }) => {
+    try {
+      const payload = {
+        name: data.name,
+        arabic_name: data.arabic_name || undefined,
+        icon: data.icon || '📦',
+        image_url: data.image_url || undefined
+      };
+
+      if (editingCategory) {
+        await updateCategoryMutation.mutateAsync({ id: editingCategory.id, ...payload });
+      } else {
+        await createCategoryMutation.mutateAsync(payload);
+      }
+      closeCategoryModal();
+    } catch {
+      /* handled by mutation */
+    }
+  };
+
+  const openCategoryModal = (category?: any) => {
+    setEditingCategory(category || null);
+    if (category) {
+      // Ensure icon is a valid string value, default to 'package-variant' if not
+      const iconValue = category.icon && typeof category.icon === 'string'
+        ? category.icon
+        : 'package-variant';
+
+      resetCategory({
+        name: category.name,
+        arabic_name: category.arabic_name || '',
+        icon: iconValue,
+        image_url: category.image_url || ''
+      });
+    } else {
+      resetCategory({
+        name: '',
+        arabic_name: '',
+        icon: 'package-variant',
+        image_url: ''
+      });
+    }
+    setIsCategoryModalOpen(true);
+  };
+
+  const closeCategoryModal = () => {
+    setIsCategoryModalOpen(false);
+    setEditingCategory(null);
+    resetCategory({
+      name: '',
+      arabic_name: '',
+      icon: 'package-variant',
+      image_url: ''
+    });
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    if (window.confirm(t('common.confirm_delete'))) {
+      const category = categories?.find(c => c.id === id);
+
+      // Delete the image from storage if it exists and is from our storage
+      if (category?.image_url && category.image_url.includes('supabase')) {
+        try {
+          await deleteCategoryIcon(category.image_url);
+        } catch (error) {
+          console.error('Failed to delete icon from storage:', error);
+        }
+      }
+
+      await deleteCategoryMutation.mutateAsync(id);
+    }
+  };
+
+  const handleCategoryIconUpload = async (url: string) => {
+    setValueCategory('image_url', url);
+  };
+
+  const handleCategoryIconRemove = async () => {
+    const currentUrl = watchedCategoryImageUrl;
+    if (currentUrl) {
+      try {
+        await deleteCategoryIcon(currentUrl);
+      } catch (error) {
+        console.error('Failed to delete icon:', error);
+      }
+    }
+    setValueCategory('image_url', '');
+  };
 
   const onSubmit = async (data: ProductForm) => {
     try {
@@ -302,7 +619,6 @@ export default function Products() {
 
   const openModal = (product?: any) => {
     setEditingProduct(product || null);
-    setUploadError('');
     if (product) {
       // Parse English types for display in the form
       let typeString = '';
@@ -359,7 +675,6 @@ export default function Products() {
     setEditingProduct(null);
     setCurrentSpecs([]);
     setCurrentCategoryId('');
-    setUploadError('');
     reset();
   };
 
@@ -388,7 +703,6 @@ export default function Products() {
 
   const handleImageUpload = async (url: string) => {
     setValue('image_url', url);
-    setUploadError('');
   };
 
   const handleImageRemove = async () => {
@@ -418,7 +732,14 @@ export default function Products() {
                 {t('products.subtitle')}
               </p>
             </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex gap-3">
+              <Button
+                variant="secondary"
+                icon={<FolderTree className="h-4 w-4" />}
+                onClick={() => openCategoryModal()}
+              >
+                {t('products.manage_categories', 'Manage Categories')}
+              </Button>
               <Button icon={<Plus className="h-4 w-4" />} onClick={() => openModal()}>
                 {t('products.add')}
               </Button>
@@ -677,6 +998,154 @@ export default function Products() {
                 loading={createMutation.isPending || updateMutation.isPending}
               >
                 {editingProduct ? t('products.update') : t('products.create')}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+
+      {/* Category Management Modal */}
+      <Modal
+        isOpen={isCategoryModalOpen}
+        onClose={closeCategoryModal}
+        title={editingCategory ? t('categories.edit', 'Edit Category') : t('categories.add', 'Add Category')}
+        maxWidth="lg"
+        isRTL={isRTL}
+      >
+        <div dir={isRTL ? 'rtl' : 'ltr'}>
+          <form onSubmit={handleSubmitCategory(onSubmitCategory)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label={t('categories.form.name', 'Category Name')}
+                {...registerCategory('name', { required: t('categories.form.name_required', 'Category name is required') })}
+                error={errorsCategory.name?.message}
+                placeholder={t('categories.form.name_placeholder', 'Enter category name')}
+                isRTL={isRTL}
+              />
+              <Input
+                label={t('categories.form.arabic_name', 'Arabic Name')}
+                {...registerCategory('arabic_name')}
+                placeholder={t('categories.form.arabic_name_placeholder', 'Enter Arabic name')}
+                isRTL={isRTL}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Controller
+                name="icon"
+                control={controlCategory}
+                render={({ field }) => (
+                  <IconPicker
+                    label={t('categories.form.icon', 'Icon Emoji')}
+                    value={field.value || 'package-variant'}
+                    onChange={field.onChange}
+                    error={errorsCategory.icon?.message}
+                    isRTL={isRTL}
+                  />
+                )}
+              />
+              <Controller
+                name="image_url"
+                control={controlCategory}
+                render={({ field }) => (
+                  <CategoryIconUpload
+                    label={t('categories.form.icon_image', 'Category Icon')}
+                    value={field.value}
+                    onChange={handleCategoryIconUpload}
+                    onRemove={handleCategoryIconRemove}
+                    error={errorsCategory.image_url?.message}
+                  />
+                )}
+              />
+            </div>
+
+            {/* Category List */}
+            {!editingCategory && categories && categories.length > 0 && (
+              <div className="border-t pt-4">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">
+                  {t('categories.existing', 'Existing Categories')}
+                </h3>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {categories.map((category) => (
+                    <div
+                      key={category.id}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                    >
+                      <div className="flex items-center gap-3">
+                        {category.image_url ? (
+                          <img
+                            src={category.image_url}
+                            alt={category.name}
+                            className="h-8 w-8 rounded object-cover"
+                          />
+                        ) : category.icon ? (
+                          (() => {
+                            // Map category icon names to Lucide icon components
+                            const ICON_MAP: Record<string, keyof typeof LucideIcons> = {
+                              'package-variant': 'Package',
+                              'package-variant-closed': 'Package2',
+                              'cube-outline': 'Box',
+                              'cube': 'Boxes',
+                              'factory': 'Factory',
+                              'warehouse': 'Warehouse',
+                              'wrench': 'Wrench',
+                              'tools': 'Wrench',
+                              'hammer': 'Hammer',
+                              'construction': 'Construction',
+                              'pipe': 'Pipette',
+                              'home': 'Home',
+                              'building': 'Building',
+                              'office-building': 'Building2',
+                            };
+                            const iconName = ICON_MAP[category.icon] || 'Package';
+                            const IconComponent = LucideIcons[iconName] as React.ComponentType<{ className?: string }>;
+                            return <IconComponent className="h-8 w-8 text-gray-600" />;
+                          })()
+                        ) : (
+                          <span className="text-2xl">📦</span>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {isRTL && category.arabic_name ? category.arabic_name : category.name}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          icon={<Edit className="h-3 w-3" />}
+                          onClick={() => openCategoryModal(category)}
+                        >
+                          {t('common.edit', 'Edit')}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          icon={<Trash2 className="h-3 w-3" />}
+                          onClick={() => handleDeleteCategory(category.id)}
+                          loading={deleteCategoryMutation.isPending}
+                        >
+                          {t('common.delete', 'Delete')}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className={`flex pt-4 gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>
+              <Button variant="secondary" onClick={closeCategoryModal}>
+                {t('common.cancel', 'Cancel')}
+              </Button>
+              <Button
+                type="submit"
+                loading={createCategoryMutation.isPending || updateCategoryMutation.isPending}
+              >
+                {editingCategory ? t('common.update', 'Update') : t('common.create', 'Create')}
               </Button>
             </div>
           </form>

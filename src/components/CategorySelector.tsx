@@ -21,7 +21,6 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
   const [isCreating, setIsCreating] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryArabicName, setNewCategoryArabicName] = useState('');
-  const [newCategoryDescription, setNewCategoryDescription] = useState('');
   const [newCategoryIcon, setNewCategoryIcon] = useState('package-variant');
 
   const createCategoryMutation = useCreateCategory();
@@ -33,8 +32,7 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
       const newCategory = await createCategoryMutation.mutateAsync({
         name: newCategoryName,
         arabic_name: newCategoryArabicName || undefined,
-        icon: newCategoryIcon,
-        description: newCategoryDescription || undefined
+        icon: newCategoryIcon
       });
 
       // Select the newly created category
@@ -43,7 +41,6 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
       // Reset form
       setNewCategoryName('');
       setNewCategoryArabicName('');
-      setNewCategoryDescription('');
       setNewCategoryIcon('package-variant');
       setIsCreating(false);
     } catch (error) {
@@ -54,7 +51,6 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
   const cancelCreate = () => {
     setNewCategoryName('');
     setNewCategoryArabicName('');
-    setNewCategoryDescription('');
     setNewCategoryIcon('package-variant');
     setIsCreating(false);
   };
@@ -117,14 +113,6 @@ export default function CategorySelector({ categories, selectedCategoryId, onCat
               label={t('common.icon')}
               value={newCategoryIcon}
               onChange={setNewCategoryIcon}
-              isRTL={isRTLDir}
-            />
-
-            <Input
-              label={t('common.description_optional')}
-              value={newCategoryDescription}
-              onChange={(e) => setNewCategoryDescription(e.target.value)}
-              placeholder={t('common.description_placeholder')}
               isRTL={isRTLDir}
             />
 

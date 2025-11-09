@@ -206,7 +206,7 @@ export default function IconPicker({ value, onChange, label, error, isRTL = fals
             ${isRTL ? 'text-right flex-row-reverse' : 'text-left'}
           `}
         >
-          {value ? (
+          {value && ICON_MAP[value] ? (
             <div className={`flex items-center gap-2 flex-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
               {(() => {
                 const iconConfig = ICON_MAP[value];
@@ -290,7 +290,7 @@ export default function IconPicker({ value, onChange, label, error, isRTL = fals
       )}
 
       {/* Show selected icon details */}
-      {value && (
+      {value && ICON_MAP[value] && (
         <div className={`flex items-center gap-2 text-xs text-gray-500 ${isRTL ? 'flex-row-reverse text-right' : 'text-left'}`}>
           {(() => {
             const iconConfig = ICON_MAP[value];
